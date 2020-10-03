@@ -1,0 +1,113 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel} % Adds processing for some simple special characters.
+
+% Packages for better page formatting and nice footnotes. %
+\usepackage{fancyhdr} % Headers.
+\usepackage{multicol} % Columns.
+\usepackage[margin=0.75in]{geometry} % Margins.
+\pagestyle{fancy}
+\fancyhf{} % What does this do?
+\lhead{Alexander S. Wheaton}
+\rhead{\today}
+\cfoot{\thepage}
+
+% Title and author for title page. %
+
+\title{AGN Host Properties}
+\author{
+    Alexander S. Wheaton\\
+    School of Physics and Astronomy\\
+    The University of Edinburgh\\
+    s1572046@ed.ac.uk\break
+}
+
+% Utilities for fine-grained control over image insertion. %
+
+\usepackage{graphicx} % Insert images.
+\usepackage{float} % Images float in document environment.
+\usepackage{wrapfig} % Image/tables in multicols with \wrapfigure or \wraptable.
+\usepackage{caption} % Captions for single images.
+\usepackage{subcaption} % Captions for simultaneous images.
+\graphicspath{ {./img/} }
+
+% Not sure what this is for. %
+
+\usepackage{fullpage,epsf}
+\usepackage{lipsum}
+
+% Some utilities for scientific and mathematical writing. %
+
+\usepackage{siunitx} % Formatting for numbers with SI units.
+\usepackage{amsmath} % Nice matrices.
+% \usepackage{mathabx} % Astronomical symbols.
+\usepackage{isotope} % Nice markup syntax for chemical symbols.
+\usepackage{xfrac}   % Slant fractions and other utilities.
+
+% Utilities for manual kerning adjustment. %
+
+\newcommand\K{\kern.05em} % Small amount of kerning.
+\newcommand\KK{\kern.1em} % Medium amount of kerning.
+\newcommand\KKK{\kern.2em} % Large amount of kerning.
+\newcommand\KKKK{\kern.3em} % Very large amount of kerning.
+
+% Bibliography and referencing style.
+
+\usepackage[backend=bibtex,style=phys,sorting=nyt]{biblatex} % Use style=draft for troubleshooting.
+\addbibresource{references.bib}
+
+% Page formatting.
+
+\begin{document}
+
+\thispagestyle{empty}                   % No numbers of title page
+\epsfxsize=40mm                         % Size of crest
+\begin{minipage}[b]{110mm}
+    {\Huge\bf School of Physics\\ and Astronomy
+    \vspace*{17mm}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{40mm}
+    \makebox[40mm]{
+    \includegraphics[width=40mm]{crest.eps}}
+\end{minipage}
+\par\noindent                                           % Centre Title, and name
+\vspace*{2cm}
+\begin{center}
+    \Large\bf \Large\bf MPhys Project\\
+    \Large\bf Astrophysics\\[10pt]                     % Change to MP/CP/Astro
+    \LARGE\bf AGN Host Galaxy Properties
+\end{center}
+\vspace*{0.5cm}
+\begin{center}
+    \bf Alexander S. Wheaton\\
+    \today
+\end{center}
+\vspace*{5mm}
+
+\begin{abstract}
+    \lipsum[1]
+\end{abstract}
+
+\vspace*{1cm}
+
+\subsubsection*{Declaration}
+\begin{quotation}
+    I declare that this project and report is my own work.
+\end{quotation}
+
+\hspace*{1cm}Signature:\hspace*{1cm}\includegraphics[width=6cm]{signature_repaired.eps}\hspace*{1cm}Date: \today
+
+\vfill
+\noindent{\bf Supervisor:} Professor A. Lawrence, FRSE, FRaS
+\hfill
+22 Weeks
+
+\newpage
+\setcounter{page}{1} % Set page number to 1
+\tableofcontents
+
+\newpage
+\section{Introduction}\label{sec:introduction}
+
+\end{document}

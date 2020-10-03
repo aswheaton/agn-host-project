@@ -127,3 +127,22 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# LaTeX generated files.
+*-converted-to.pdf
+*-blx.bib
+*.bbl
+*.blg
+*.aux
+*.log
+*.nav
+*.out
+*.run.xml
+*.snm
+*.toc
+
+# Don't include PDFs in biblio folder.
+biblio/*
+
+# Don't commit signature vector image to tree.
+signature_repaired.eps
