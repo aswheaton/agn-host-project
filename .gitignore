@@ -141,6 +141,9 @@ dmypy.json
 *.snm
 *.toc
 
+# Don't include notebooks copied from bagpipes repository.
+# examples/*
+
 # Don't include PDFs in biblio folder.
 biblio/*
 
