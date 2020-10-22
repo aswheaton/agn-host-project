@@ -1,5 +1,6 @@
 import bagpipes as pipes
 import numpy as np
+import matplotlib.pyplot as plt
 
 def export_spectrum(filename, model):
     """
@@ -51,6 +52,7 @@ def import_spectrum(filename):
     return(lambdas, fluxes, model_components)
 
 def import_sfh(filename):
+    pass
 
 def main():
 
@@ -72,6 +74,17 @@ def main():
     goodss_filt_list = np.loadtxt("examples/filters/goodss_filt_list.txt", dtype="str")
     model = pipes.model_galaxy(model_components, filt_list=goodss_filt_list)
 
-    export_spectrum("data/model1.csv", model)
+    # export_spectrum("data/model1.csv", model)
+
+    data = np.loadtxt("data/20200127_xhoot_med15.asci", dtype="float")
+    lambdas, fluxes = data[:,0], data[:,1]
+    plt.plot(lambdas, fluxes)
+    plt.show()
+
+    data = np.loadtxt("data/20200127_xshoot_corr.asci", dtype="float")
+    lambdas, fluxes = data[:,0], data[:,1]
+    plt.plot(lambdas, fluxes)
+    plt.show()
+
 
 main()
