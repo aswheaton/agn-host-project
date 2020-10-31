@@ -37,6 +37,15 @@ def load_data(filename):
     spectrum = np.loadtxt("data/" + filename, delimiter=", ")
     return(spectrum)
 
+def load_xshooter(ID):
+    """
+    Data import function for the __init__ method of bagpipes.galaxy. Loads in
+    wavelengths and fluxes from the  XSHOOTER .asci files.
+    """
+    data = np.loadtxt("data/20200127_xshoot_corr.asci", dtype="float")
+    # lambdas, fluxes = data[:,0], data[:,1]
+    return(data)
+
 def import_spectrum(filename):
     """
     Args: receives a filename for a file containing an array of wavelengths and
@@ -54,14 +63,14 @@ def import_spectrum(filename):
     # Reassemble the model components dictionary from the header.
     file = open("data/"+filename)
     for line in file.readlines():
-        if line[0] == "#": # The line is a header line, unpack and sort.
-            line = line[2:] # Trim the header character & whitespace from the line.
+        if line[0] == "#":  # The line is a header line, unpack and sort.
+            line = line[2:] # Trim header character & whitespace from the line.
             key, value = line.split(":")
             if key == "redshift":
                 model_components[key] = float(value)
-            if key == "age" or key == "tau" or key == "tau" or key == "massformed" or key == "metallicity":
+            if key in ["age", "tau", "tau", "massformed", "metallicity"]:
                 model_components["exponential"][key] = float(value)
-            if key == "type" or key == "Av":
+            if key in ["type", "Av"]:
                 try:
                     model_components["dust"][key] = float(value)
                 except ValueError:
@@ -97,30 +106,33 @@ def main():
 
     obs_wavs = np.arange(2500., 7500., 5.)
     model = pipes.model_galaxy(model_components, spec_wavs=obs_wavs)
+    model.plot()
     export_spectrum("model1", model)
 
     galaxy, model_components = import_spectrum("model1")
+    galaxy.plot()
 
     # burst = {}
-    # burst["age"] = (0., 15.)                # Vary age from 0 to 15 Gyr
-    # burst["metallicity"] = (0., 2.5)        # Vary metallicity from 0 to 2.5 Solar
-    # burst["massformed"] = (0., 13.)         # Vary log_10(mass formed) from 0 to 13
+    # burst["age"] = (0., 15.)            # Vary age from 0 to 15 Gyr
+    # burst["metallicity"] = (0., 2.5)    # Vary metallicity from 0 to 2.5 Solar
+    # burst["massformed"] = (0., 13.)     # Vary log_10(mass formed) from 0 to 13
 
-    exp = {}                                # Tau model star formation history
-    exp["age"] = (0.0, 5.0)                 # Gyr
-    exp["tau"] = (0.0, 2.0)                 # Gyr
-    exp["massformed"] = (0.0, 15.0)         # log_10(M*/M_solar)
-    exp["metallicity"] = (0.0, 2.5)         # Z/Z_oldsolar
+    exp = {}                            # Tau model star formation history
+    exp["age"] = (0.0, 15.0)            # Gyr
+    exp["tau"] = (0.0, 2.0)             # Gyr
+    exp["massformed"] = (0.0, 15.0)     # log_10(M*/M_solar)
+    exp["metallicity"] = (0.0, 2.5)     # Z/Z_oldsolar
 
     fit_instructions = {}
     fit_instructions["exponential"] = exp     # Add the exp SFH component to the fit
     fit_instructions["redshift"] = (0.0, 10.0)  # Vary observed redshift from 0 to 10
 
     fit = pipes.fit(galaxy, fit_instructions)
-    fit.fit(verbose=False)
-    # fit.plot_spectrum_posterior()  # Shows the input and fitted spectrum/photometry
+    fit.fit(verbose=True)
+
+    fit.plot_spectrum_posterior()  # Shows the input and fitted spectrum/photometry
     fit.plot_sfh_posterior()       # Shows the fitted star-formation history
-    fit.plot_1d_posterior()        # Shows 1d posterior probability distributions
+    # fit.plot_1d_posterior()        # Shows 1d posterior probability distributions
     fit.plot_corner()              # Shows 1d and 2d posterior probability distributions
 
     # data = np.loadtxt("data/20200127_xhoot_med15.asci", dtype="float")
