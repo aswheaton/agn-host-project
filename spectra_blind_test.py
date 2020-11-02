@@ -35,16 +35,21 @@ def load_data(filename):
     """
     # Load the data and extract into wavelength and flux arrays.
     spectrum = np.loadtxt("data/" + filename, delimiter=", ")
-    return(spectrum)
+    spectrum_with_errs = np.zeros((spectrum.shape[0], 3))
+    spectrum_with_errs[:,0:2] = np.copy(spectrum)
+    spectrum_with_errs[:,2] = np.copy(np.sqrt(spectrum[:,1]))
+    return(spectrum_with_errs)
 
 def load_xshooter(ID):
     """
     Data import function for the __init__ method of bagpipes.galaxy. Loads in
     wavelengths and fluxes from the  XSHOOTER .asci files.
     """
-    data = np.loadtxt("data/20200127_xshoot_corr.asci", dtype="float")
-    # lambdas, fluxes = data[:,0], data[:,1]
-    return(data)
+    spectrum = np.loadtxt("data/20200127_xshoot_corr.asci", dtype="float")
+    spectrum_with_errs = np.zeros((spectrum.shape[0], 3))
+    spectrum_with_errs[:,0:2] = np.copy(spectrum)
+    spectrum_with_errs[:,2] = np.copy(np.sqrt(spectrum[:,1]))
+    return(spectrum_with_errs)
 
 def import_spectrum(filename):
     """
@@ -88,52 +93,56 @@ def import_sfh(filename):
     pass
 
 def main():
+    """
+    exp = {"age" : 3.0,          # Gyr
+           "tau" : 0.75,         # Gyr
+           "massformed" : 9.0,   # log_10(M*/M_solar)
+           "metallicity" : 0.5   # Z/Z_oldsolar
+           }
 
-    exp = {}                          # Tau model star formation history
-    exp["age"] = 3.                   # Gyr
-    exp["tau"] = 0.75                 # Gyr
-    exp["massformed"] = 9.            # log_10(M*/M_solar)
-    exp["metallicity"] = 0.5          # Z/Z_oldsolar
+    dust = {"type" : "Calzetti", # Define the shape of the attenuation curve
+            "Av"   : 0.2         # Extinction, in magnitudes.
+            }
 
-    dust = {}                         # Dust component
-    dust["type"] = "Calzetti"         # Define the shape of the attenuation curve
-    dust["Av"] = 0.2                  # magnitudes
-
-    model_components = {}                   # The model components dictionary
-    model_components["redshift"] = 1.0      # Observed redshift
-    model_components["exponential"] = exp
-    model_components["dust"] = dust
+    model_components = {"redshift"    : 1.0, # Observed redshift.
+                        "exponential" : exp,
+                        "dust"        : dust
+                        }
 
     obs_wavs = np.arange(2500., 7500., 5.)
     model = pipes.model_galaxy(model_components, spec_wavs=obs_wavs)
     model.plot()
     export_spectrum("model1", model)
-
-    galaxy, model_components = import_spectrum("model1")
-    galaxy.plot()
-
+    """
     # burst = {}
     # burst["age"] = (0., 15.)            # Vary age from 0 to 15 Gyr
     # burst["metallicity"] = (0., 2.5)    # Vary metallicity from 0 to 2.5 Solar
     # burst["massformed"] = (0., 13.)     # Vary log_10(mass formed) from 0 to 13
 
-    exp = {}                            # Tau model star formation history
-    exp["age"] = (0.0, 15.0)            # Gyr
-    exp["tau"] = (0.0, 2.0)             # Gyr
-    exp["massformed"] = (0.0, 15.0)     # log_10(M*/M_solar)
-    exp["metallicity"] = (0.0, 2.5)     # Z/Z_oldsolar
+    sfh_exponential = {"age"         : (0.0, 15.0),   # Gyr
+                       "tau"         : (0.0, 2.0),    # Gyr
+                       "massformed"  : (0.0, 15.0),   # log_10(M*/M_solar)
+                       "metallicity" : (0.0, 2.5)     # Z/Z_oldsolar
+                       }
 
-    fit_instructions = {}
-    fit_instructions["exponential"] = exp     # Add the exp SFH component to the fit
-    fit_instructions["redshift"] = (0.0, 10.0)  # Vary observed redshift from 0 to 10
+    fit_instructions = {"exponential" : sfh_exponential, # Add the exp SFH component.
+                        "redshift"    : (0.0, 10.0)      # Obs. redshift from 0-10.
+                        }
 
+    # galaxy, model_components = import_spectrum("model1")
+    # galaxy.plot()
+    # fit = pipes.fit(galaxy, fit_instructions)
+    # fit.fit(verbose=True)
+
+    galaxy = pipes.galaxy("20200127_xshoot_corr", load_xshooter, photometry_exists=False)
+    galaxy.plot()
     fit = pipes.fit(galaxy, fit_instructions)
     fit.fit(verbose=True)
 
-    fit.plot_spectrum_posterior()  # Shows the input and fitted spectrum/photometry
-    fit.plot_sfh_posterior()       # Shows the fitted star-formation history
+    # fit.plot_spectrum_posterior()  # Shows the input and fitted spectrum/photometry
+    # fit.plot_sfh_posterior()       # Shows the fitted star-formation history
     # fit.plot_1d_posterior()        # Shows 1d posterior probability distributions
-    fit.plot_corner()              # Shows 1d and 2d posterior probability distributions
+    # fit.plot_corner()              # Shows 1d and 2d posterior probability distributions
 
     # data = np.loadtxt("data/20200127_xhoot_med15.asci", dtype="float")
     # lambdas, fluxes = data[:,0], data[:,1]
