@@ -23,9 +23,14 @@ def noisify(values, percent_error):
 
 def export_spectrum(filename, model, percent_error):
     """
-    Args: receives a Bagpipes model_galaxy object and writes its spectrum to a
-        text file with a header containing the "secret" parameters used to
-        generate that spectrum.
+    Receives a Bagpipes model_galaxy object and writes its spectrum to a text
+    file with a header containing the "secret" parameters used to generate that
+    spectrum.
+    Args:
+        filename (str): filename to write (can end in .csv or no file extension)
+        model (model_galaxy): a Bagpipes model_galaxy object
+        percent_error (float): the percent error, as a decimal, of the median
+        flux value around which to draw noise values for the spectrum.
     Returns: None
     """
     # Generate the "secret" model components file header.
