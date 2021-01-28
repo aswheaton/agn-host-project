@@ -19,23 +19,23 @@ rframe_line_labels = ["SIII", "SIII", "CaII", "CaII", "CaII", "TiO", "SII",
 
 def main():
 
-    exp = {"age" : 2.85,          # Gyr
-           "tau" : 0.5,         # Gyr
-           "massformed" : 9.05,  # log_10(M*/M_solar)
-           "metallicity" : 0.87  # Z/Z_oldsolar
+    exp = {"age" : 6.36,          # Gyr
+           "tau" : 0.92,         # Gyr
+           "massformed" : 9.85,  # log_10(M*/M_solar)
+           "metallicity" : 0.25  # Z/Z_oldsolar
            }
 
     dblplaw = {}
-    dblplaw["tau"] = 2.25
-    dblplaw["alpha"] = 8.5
-    dblplaw["beta"] = 11.
-    dblplaw["massformed"] = 9.5
-    dblplaw["metallicity"] = 0.14
+    dblplaw["tau"] = 11.72
+    dblplaw["alpha"] = 290.39
+    dblplaw["beta"] = 240.33
+    dblplaw["massformed"] = 9.72
+    dblplaw["metallicity"] = 0.85
 
     burst1 = {}
-    burst1["age"] = 5.0
-    burst1["massformed"] = 8.05
-    burst1["metallicity"] = 0.1
+    burst1["age"] = 1.34
+    burst1["massformed"] = 9.45
+    burst1["metallicity"] = 0.89
 
     burst2 = {}
     burst2["age"] = 3.8
@@ -47,8 +47,6 @@ def main():
     burst3["massformed"] = 7.25
     burst3["metallicity"] = 0.52
 
-
-
     delayed = {}                   # Delayed Tau model t*e^-(t/tau)
     delayed["age"] = 10.0           # Time since SF began: Gyr
     delayed["tau"] = 1.45           # Timescale of decrease: Gyr
@@ -57,9 +55,9 @@ def main():
 
     lognormal1 = {}
     lognormal1["tmax"] = 10.9
-    lognormal1["fwhm"] = 0.15
-    lognormal1["massformed"] = 8.15
-    lognormal1["metallicity"] = 0.82
+    lognormal1["fwhm"] = 0.1
+    lognormal1["massformed"] = 9.15
+    lognormal1["metallicity"] = 0.92
 
     lognormal2 = {}
     lognormal2["tmax"] = 5.65
@@ -70,44 +68,46 @@ def main():
     lognormal3 = {}                       # lognormal SFH
     lognormal3["tmax"] = 8.15              # Age of Universe at peak SF: Gyr
     lognormal3["fwhm"] = 1.5
-    lognormal3["massformed"] = 8.85
+    lognormal3["massformed"] = 9.01
     lognormal3["metallicity"] = 1.25
 
     dust = {"type" : "Calzetti", # Define the shape of the attenuation curve
-            "Av"   : 0.25,        # Extinction, in magnitudes.
-            "eta"  : 1.5         # Extra dust for young stars: multiplies Av
+            "Av"   : 0.33,        # Extinction, in magnitudes.
+            "eta"  : 2.05         # Extra dust for young stars: multiplies Av
             }
 
-    nebular = {"logU" : -3.5}    # log_10(ionization parameter)
+    nebular = {"logU" : -2.87}    # log_10(ionization parameter)
 
-    model_components = {"redshift"    : 0.75,     # Observed redshift.
+    model_components = {"redshift"    : 0.037,     # Observed redshift.
                         # "exponential" : exp,
-                        # "dblplaw"     : dblplaw,
-                        "burst1"      : burst1,
-                        "burst2"      : burst2,
-                        "burst3"      : burst3,
+                        # "dblplaw1"     : dblplaw,
+                        # "burst1"      : burst1,
+                        # "burst2"      : burst2,
+                        # "burst3"      : burst3,
                         "lognormal1"   : lognormal1,
                         # "lognormal2"   : lognormal2,
                         # "lognormal3"   : lognormal3,
-                        # "delayed"     : delayed,
+                        "delayed"     : delayed,
                         "dust"        : dust,
                         "nebular"     : nebular,
-                        "t_bc"        : 0.01,    # Lifetime of birth clouds (Gyr)
-                        "veldisp"     : 323.0    # km/s
+                        "t_bc"        : 0.011,    # Lifetime of birth clouds (Gyr)
+                        "veldisp"     : 293.0    # km/s
                         }
 
     # Create the model galaxy object with the defined parameters.
-    model_ID = "model010"
-    obs_wavs = np.arange(2500.0, 9500.0, 5.0)
+    model_ID = "model020"
+    obs_wavs = np.arange(1000.0, 10000.0, 5.0)
     model = pipes.model_galaxy(model_components, spec_wavs=obs_wavs)
+
     fig, ax = model.plot(show=False)
-    sfh = model.sfh.plot(show=False)
-    ax[0].vlines(rframe_lines, ax[0].get_ylim()[0], ax[0].get_ylim()[1], colors='r', linestyles='dashed', label=rframe_line_labels)
-    # plt.tight_layout()
-    plt.savefig("pipes/plots/" + model_ID + "_sfh.pdf")
+    # sfh = model.sfh.plot(show=False)
+    # ax[0].vlines(rframe_lines, ax[0].get_ylim()[0], ax[0].get_ylim()[1], colors='r', linestyles='dashed', label=rframe_line_labels)
+    plt.tight_layout()
+    # # plt.savefig("pipes/plots/" + model_ID + "_sfh.pdf")
+    plt.savefig("present/img/" + model_ID + "_spectrum.pdf")
     plt.show()
 
-    export_spectrum(model_ID, model, 0.12)
+    # export_spectrum(model_ID, model, 0.09)
 
     # burst = {"age"         : (0.0, 3.5), # Vary age from 10 to 15 Gyr
     #          "metallicity" : (0.0, 2.5),  # Vary metallicity from 0 to 2.5 Solar
