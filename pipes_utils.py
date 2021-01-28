@@ -59,8 +59,36 @@ def load_data(filename):
     Data import function for the __init__() method of bagpipes.galaxy.
     """
     # Load the data and extract into wavelength and flux arrays.
-    spectrum_with_errs = np.loadtxt("data/" + filename, delimiter=" ")
+    spectrum_with_errs = np.loadtxt("data/" + filename + ".csv", delimiter=" ")
     return(spectrum_with_errs)
+
+def bin_spec(spectrum, n_bin):
+    """
+    Args:
+        spectrum (2Darray): two or three column array of wavelengths, fluxes,
+        and (optionally) flux errors.
+        n_bin (int): number of bins into which the fluxes are sorted.
+    Returns:
+        binspec (2Darray): bins up two or three column spectral data by a specified factor.
+    """
+
+    n_bin = int(n_bin)
+    n_bins = len(spectrum)/n_bin
+    binspec = np.zeros((n_bins, spectrum.shape[1]))
+
+    for i in range(binspec.shape[0]):
+        spec_slice = spectrum[i*n_bin:(i+1)*n_bin, :]
+        binspec[i, 0] = np.mean(spec_slice[:, 0])
+        binspec[i, 1] = np.mean(spec_slice[:, 1])
+
+        if spectrum.shape[1] == 3:
+            binspec[i,2] = (1./float(n_bin)
+                            *np.sqrt(np.sum(spec_slice[:, 2]**2)))
+    return(binspec)
+
+def load_xshooter_spec(ID):
+    data = np.loadtxt("data/20200127_xshoot_corr.asci", dtype="float")
+    lambdas, fluxes = data[:,0], data[:,1]
 
 def load_xshooter(ID):
     """
@@ -79,27 +107,36 @@ def import_spectrum(filename):
         assumptions about dust and nebulae emmission, and returns the object.
     """
     # Create empty model components dictionary.
-    model_components = {"redshift" : 0.0,
-                        "exponential" : {},
-                        "dust" : {}
-                        }
-
-    if filename[-4:] != ".csv": filename += ".csv"
+    model_components = {}
     # Reassemble the model components dictionary from the header.
-    file = open("data/"+filename)
+    file = open("data/" + filename + ".csv")
     for line in file.readlines():
         if line[0] == "#":  # The line is a header line, unpack and sort.
-            line = line[2:] # Trim header character & whitespace from the line.
-            key, value = line.split(":")
-            if key == "redshift":
-                model_components[key] = float(value)
-            if key in ["age", "tau", "tau", "massformed", "metallicity"]:
-                model_components["exponential"][key] = float(value)
-            if key in ["type", "Av"]:
-                try:
-                    model_components["dust"][key] = float(value)
-                except ValueError:
-                    model_components["dust"][key] = value[:-1]
+            line = line[2:-1] # Trim header character & newline from the line.
+            values = line.split(":")
+            # Create top-level key-value pair.
+            if len(values) == 2:
+                model_components[values[0]] = values[1]
+            # Add key-value pair to a sub-dictionary if it exists, otherwise create the sub-dicitonary.
+            if len(values) == 3:
+                if values[0] in list(model_components.keys()):
+                    model_components[values[0]][values[1]] = float(values[2])
+                else:
+                    try:
+                        model_components[values[0]] = {values[1] : float(values[2])}
+                    except ValueError:
+                        model_components[values[0]] = {values[1] : values[2]}
+
+
+            # if components[0] == "redshift":
+            #     model_components[components[0]] = float(components[1])
+            # if key in ["age", "tau", "massformed", "metallicity"]:
+            #     model_components["exponential"][key] = float(value)
+            # if key in ["type", "Av"]:
+            #     try:
+            #         model_components["dust"][key] = float(value)
+            #     except ValueError:
+            #         model_components["dust"][key] = value[:-1]
 
         else: # The line is a data line, exit the loop.
             break
