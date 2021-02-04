@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from pipes_utils import *
 
 from matplotlib import rcParams
-rcParams.update({'figure.autolayout': True})
+# rcParams.update({'figure.autolayout': True})
 
 # datafiles = ["phil_model_01", "phil_model_02", "phil_model_03", "phil_model_04", "phil_model_05",
 #              "phil_model_06", "phil_model_07", "phil_model_08", "phil_model_09", "phil_model_10"]
@@ -109,14 +109,8 @@ for filename in datafiles:
 
 
 print ('parameter     median     16th percentile     84th percentile')
-for key in fit_instructions.keys():
-    try:
-        for subkey in fit_instructions[key].keys():
-            i = key+":"+subkey
-            print(i + ': ', np.median(fit.posterior.samples[i]), np.percentile(fit.posterior.samples[i], 16), np.percentile(fit.posterior.samples[i], 84))
-    except AttributeError:
-        i = key
-        print(i + ': ', np.median(fit.posterior.samples[i]), np.percentile(fit.posterior.samples[i], 16), np.percentile(fit.posterior.samples[i], 84))
+for key in fit.posterior.samples.keys():
+    print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
 
 fig = fit.plot_spectrum_posterior(save=False, show=True)
 fig = fit.plot_sfh_posterior(save=False, show=True)
