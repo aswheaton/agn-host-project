@@ -116,7 +116,10 @@ def import_spectrum(filename):
             values = line.split(":")
             # Create top-level key-value pair.
             if len(values) == 2:
-                model_components[values[0]] = values[1]
+                try:
+                    model_components[values[0]] = float(values[1])
+                except ValueError:
+                    model_components[values[0]] = values[1]
             # Add key-value pair to a sub-dictionary if it exists, otherwise create the sub-dicitonary.
             if len(values) == 3:
                 if values[0] in list(model_components.keys()):
@@ -151,6 +154,25 @@ def export_sfh(filename, model):
 
 def import_sfh(filename):
     pass
+
+def chi_squared(galaxy, fit):
+    fit.posterior.get_advanced_quantities()
+    # Calculate the median posterior spectrum.
+    spec = fit.posterior.samples["spectrum"]
+    # TODO: these keys don't seem to exist for fit.posterior.samples
+    # spec /= fit.posterior.samples["calib"]
+    # spec += fit.posterior.samples["noise"]
+    posterior_spectrum = np.percentile(spec, 50, axis=0)
+    # Find the wavelength interval matching the a priori spectrum.
+    posterior_wavs = fit.galaxy.spectrum[:,0]
+    # prior_wavs = galaxy.spectrum[:,0]
+    # for i in range(len(posterior_wavs)):
+    #     if np.all(prior_wavs == posterior_wavs[i:i+len(prior_wavs)]):
+    #         indices = np.arange(i, i+len(prior_wavs), 1, dtype=int)
+    #         break
+    # Calculate chi_squared for flux over the a priori wavelength range.
+    chi_squared = np.sum((galaxy.spectrum[:,1]-posterior_spectrum[:])**2 / galaxy.spectrum[:,2]**2)
+    return(chi_squared)
 
 def print_fit_params(fit):
     labels = ['dust:Av', 'dblplaw:tau', 'dblplaw:alpha', 'dblplaw:beta', 'dblplaw:massformed', 'dblplaw:metallicity', 'redshift']
