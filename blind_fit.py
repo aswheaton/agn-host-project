@@ -63,13 +63,11 @@ for filename in datafiles:
 
     # Create a dictionary for storying posterior sample distribution widths.
     chi_squ_vals = {"exponential" : chi_squared(galaxy, fit)}
-    sigma_values = {"exponential" : np.percentile(fit.posterior.samples["exponential:age"], 84) - np.percentile(fit.posterior.samples["exponential:age"], 16)}
 
     # dblplaw["age"] = ()
     # fit_instructions["dblplaw"] = dblplaw
     # fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_noburst")
     # fit.fit(verbose=True)
-    # sigma_values["dblplaw"] = np.percentile(fit.posterior.samples["age"], 84) - np.percentile(fit.posterior.samples["age"], 16)
     # fit_instructions.pop("dblplaw", None)
 
     fit_instructions.pop("exponential", None)
@@ -78,7 +76,6 @@ for filename in datafiles:
     fit = pipes.fit(galaxy, fit_instructions, run="delayed_noburst")
     fit.fit(verbose=False)
     chi_squ_vals["delayed"] = chi_squared(galaxy, fit)
-    sigma_values["delayed"] = np.percentile(fit.posterior.samples["delayed:age"], 84) - np.percentile(fit.posterior.samples["delayed:age"], 16)
 
     fit_instructions.pop("delayed", None)
     lognormal["tmax"] = (13.5 - age_upper_bound, 13.5 - age_lower_bound)
@@ -86,7 +83,6 @@ for filename in datafiles:
     fit = pipes.fit(galaxy, fit_instructions, run="lognormal_noburst")
     fit.fit(verbose=False)
     chi_squ_vals["lognormal"] = chi_squared(galaxy, fit)
-    sigma_values["lognormal"] = np.percentile(fit.posterior.samples["lognormal:tmax"], 84) - np.percentile(fit.posterior.samples["lognormal:tmax"], 16)
 
     # Get the functional form with the lowest chi-squared value.
     best_func = min(chi_squ_vals, key=lambda k: chi_squ_vals[k])
@@ -105,7 +101,6 @@ for filename in datafiles:
     fit.fit(verbose=False)
 
     chi_squ_vals[best_func+"_burst"] = chi_squared(galaxy, fit)
-    sigma_values[best_func+"_burst"] = np.percentile(fit.posterior.samples["lognormal:tmax"], 84) - np.percentile(fit.posterior.samples["lognormal:tmax"], 16)
 
     # Check if the burst component improves the fit and save the appropriate plot.
     if chi_squ_vals[best_func] >= chi_squ_vals[best_func+"_burst"]:
