@@ -40,17 +40,18 @@ dust = {}
 dust["type"] = "Calzetti"
 dust["Av"] = (0.0, 1.0)
 
-fit_instructions = {
-"redshift"    : (0.0, 0.1),   # Obs. redshift from 0-10.
-"t_bc"        : (0.005, 0.015),
-"veldisp"     : (150.0, 200.0),
-"exponential" : exponential, # Add the exp SFH component.
-"dust"        : dust
-}
-
 for filename in datafiles:
 
     print("Running initial exponential fit for {}...".format(filename)),
+
+    # Create (or reset) the fit instructions dictionary.
+    fit_instructions = {
+    "redshift"    : (0.0, 0.1),   # Obs. redshift from 0-10.
+    "t_bc"        : (0.005, 0.015),
+    "veldisp"     : (150.0, 200.0),
+    "exponential" : exponential, # Add the exp SFH component.
+    "dust"        : dust
+    }
 
     # Do an initial fit with only an exponential compontent, over a large parameter space.
     galaxy, model_components = import_spectrum(filename)
