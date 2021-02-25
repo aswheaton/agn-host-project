@@ -86,17 +86,16 @@ def bin_spec(spectrum, n_bin):
                             *np.sqrt(np.sum(spec_slice[:, 2]**2)))
     return(binspec)
 
-def load_xshooter_spec(ID):
-    data = np.loadtxt("data/20200127_xshoot_corr.asci", dtype="float")
-    lambdas, fluxes = data[:,0], data[:,1]
+# def load_xshooter_spec(ID):
+#     data = np.loadtxt("data/20200127_xshoot_corr.asci", dtype="float")
+#     lambdas, fluxes = data[:,0], data[:,1]
 
 def load_xshooter(ID):
     """
     Data import function for the __init__ method of bagpipes.galaxy. Loads in
     wavelengths and fluxes from the  XSHOOTER .asci files.
     """
-    spectrum_with_errs = np.loadtxt("data/"+ID+".txt", dtype="float")
-    spectrum_with_errs = deredden(0.046, spectrum_with_errs)
+    spectrum_with_errs = np.loadtxt("data/"+ID+".ascii", dtype="float")
     return(spectrum_with_errs)
 
 def import_spectrum(filename):
