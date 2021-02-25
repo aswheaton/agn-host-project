@@ -145,7 +145,13 @@ dmypy.json
 # examples/*
 
 # Don't include PDFs in biblio folder.
-biblio/*
+report/biblio/*
+
+# Don't include nohup output files.
+nohup/*
+
+# Don't include archived files.
+archive/*
 
 # Don't commit signature vector image to tree.
 signature_repaired.eps
