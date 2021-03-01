@@ -1,15 +1,16 @@
 import bagpipes as pipes
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 from pipes_utils import *
 
 from matplotlib import rcParams
 # rcParams.update({'figure.autolayout': True})
 
-# datafiles = ["phil_model_01"]
+datafiles = [sys.argv[1]]
 # datafiles = ["phil_model_02", "phil_model_03", "phil_model_04"]
 # datafiles = ["phil_model_05", "phil_model_06", "phil_model_07"]
-datafiles = ["phil_model_08", "phil_model_09", "phil_model_10"]
+# datafiles = ["phil_model_08", "phil_model_09", "phil_model_10"]
 
 exponential = {}
 exponential["age"] = (3.5, 10.0)   # Gyr
