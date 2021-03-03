@@ -141,17 +141,8 @@ dmypy.json
 *.snm
 *.toc
 
-# Don't include notebooks copied from bagpipes repository.
-# examples/*
-
 # Don't include PDFs in biblio folder.
 report/biblio/*
-
-# Don't include nohup output files.
-nohup/*
-
-# Don't include archived files.
-archive/*
 
 # Don't commit signature vector image to tree.
 signature_repaired.eps
