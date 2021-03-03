@@ -129,17 +129,17 @@ dmypy.json
 .pyre/
 
 # LaTeX generated files.
-*-converted-to.pdf
-*-blx.bib
-*.bbl
-*.blg
-*.aux
-*.log
-*.nav
-*.out
-*.run.xml
-*.snm
-*.toc
+report/img/*-converted-to.pdf
+report/*-blx.bib
+report/*.bbl
+report/*.blg
+report/*.aux
+report/*.log
+report/*.nav
+report/*.out
+report/*.run.xml
+report/*.snm
+report/*.toc
 
 # Don't include PDFs in biblio folder.
 report/biblio/*
