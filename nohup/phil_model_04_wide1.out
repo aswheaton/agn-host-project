@@ -1,0 +1,46 @@
+Running initial exponential fit for phil_model_04...
+
+Results loaded from pipes/posterior/wide_exponential_burst/phil_model_04.h5
+
+Fitting not performed as results have already been loaded from pipes/posterior/wide_exponential_burst/phil_model_04.h5. To start over delete this file or change run.
+
+
+Results loaded from pipes/posterior/wide_dblplaw_burst/phil_model_04.h5
+
+Fitting not performed as results have already been loaded from pipes/posterior/wide_dblplaw_burst/phil_model_04.h5. To start over delete this file or change run.
+
+
+Results loaded from pipes/posterior/wide_delayed_burst/phil_model_04.h5
+
+Fitting not performed as results have already been loaded from pipes/posterior/wide_delayed_burst/phil_model_04.h5. To start over delete this file or change run.
+
+
+Results loaded from pipes/posterior/wide_lognormal_burst/phil_model_04.h5
+
+Fitting not performed as results have already been loaded from pipes/posterior/wide_lognormal_burst/phil_model_04.h5. To start over delete this file or change run.
+
+
+Results loaded from pipes/posterior/wide_lognormal_burst/phil_model_04.h5
+
+parameter     median     16th percentile     84th percentile
+dust:Av:  0.4646183325890949 0.4632149502234819 0.46572126611875386
+exponential2:age:  4.289761771842368 2.2153593681885666 7.077953335236559
+exponential2:massformed:  2.6539166759870714 1.2152174068238213 3.7740487620420895
+exponential2:metallicity:  1.2159162888182087 0.6228559908018438 1.900204258391714
+exponential2:tau:  1.039886275280326 0.5625343836767549 1.5417120386474976
+lognormal:fwhm:  2.0655499111854585 2.061855552576075 2.071006264091908
+lognormal:massformed:  9.27196982760017 9.271479047685707 9.272712826417909
+lognormal:metallicity:  0.7089519496749119 0.7058374876438505 0.7119389948302804
+lognormal:tmax:  9.680270667455627 9.670678334766883 9.686774638258475
+redshift:  0.06896347014022805 0.06895838990984951 0.06896941547677887
+t_bc:  0.009658547816084023 0.007220188698224189 0.012111271967438622
+veldisp:  199.8112040348705 199.62691470052994 199.9229957050286
+stellar_mass:  8.995004700000129 8.994662526725488 8.995601856786326
+formed_mass:  9.271970841723753 9.271480050250485 9.272712890425002
+sfr:  0.015694680229018716 0.01563457311567535 0.01576076800151425
+ssfr:  -10.799306366887054 -10.801239445142745 -10.797303243629633
+nsfr:  -0.977629947598011 -0.9796921695772723 -0.9756082450981401
+mass_weighted_age:  2.7587131687469513 2.752665758041279 2.7674324228862623
+tform:  9.791360429438745 9.78251286736231 9.797382904927757
+tquench:  99.0 99.0 99.0
+sfh:  0.015404016153308022 0.013869185848719004 0.11983705393340198
