@@ -75,7 +75,7 @@ for filename in datafiles:
 
     fit_instructions.pop("exponential1")
     fit_instructions["dblplaw"] = dblplaw
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_dblplaw_burst_rconst)
+    fit = pipes.fit(galaxy, fit_instructions, run="wide_dblplaw_burst_rconst")
     fit.fit(verbose=True)
     chi_squ_vals["wide_dblplaw_burst_rconst"] = chi_squared(galaxy, fit)
 
