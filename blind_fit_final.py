@@ -35,7 +35,7 @@ delayed["massformed"] = (5.0, 15.0)
 delayed["metallicity"] = (0.0, 2.5)
 
 lognormal = {}
-lognormal["tmax"] = 1.0, 6.0 )
+lognormal["tmax"] = (1.0, 6.0 )
 lognormal["fwhm"] = (0.1, 3.0)
 lognormal["massformed"] = (5.0, 15.0)
 lognormal["metallicity"] = (0.0, 2.5)
