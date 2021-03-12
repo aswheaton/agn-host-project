@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=blindfit_final
-#SBATCH --array=01,02,03,04,05,06,07,08,09,10
+#SBATCH --array=1-10
 #SBATCH --ntasks=4
 #SBATCH --mem=4G
 #SBATCH --time=72:00:00
