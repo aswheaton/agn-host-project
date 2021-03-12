@@ -7,6 +7,6 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=alex.s.wheaton@gmail.com
 
-module load anaconda/3 multinest
+module load mpich anaconda/3 multinest
 cd /home/awheaton/agn-host-project
 mpirun -n 4 python3 blind_fit_final.py phil_model_$SLURM_ARRAY_TASK_ID >> nohup/phil_model_$SLURM_ARRAY_TASK_ID\_final.out
