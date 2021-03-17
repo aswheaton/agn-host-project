@@ -57,7 +57,7 @@ for filename in datafiles:
     # Calculate redshift constraints.
     z_low, z_high = model_components["redshift"] - 0.001,  model_components["redshift"] + 0.001
 
-    if run = "exponential_burst_final":
+    if run == "exponential_burst_final":
         # Create (or reset) the fit instructions dictionary.
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
@@ -76,7 +76,7 @@ for filename in datafiles:
         # Create a dictionary for storying posterior sample distribution widths.
         chi_squ_vals = {"exponential_burst_final" : chi_squared(galaxy, fit)}
 
-    if run = "dblplaw_burst_final":
+    if run == "dblplaw_burst_final":
         # Create (or reset) the fit instructions dictionary.
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
@@ -95,7 +95,7 @@ for filename in datafiles:
         # Create a dictionary for storying posterior sample distribution widths.
         chi_squ_vals = {"dblplaw_burst_final" : chi_squared(galaxy, fit)}
 
-    if run = "delayed_burst_final":
+    if run == "delayed_burst_final":
         # Create (or reset) the fit instructions dictionary.
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
@@ -114,7 +114,7 @@ for filename in datafiles:
         # Create a dictionary for storying posterior sample distribution widths.
         chi_squ_vals = {"delayed_burst_final" : chi_squared(galaxy, fit)}
 
-    if run = "lognormal_burst_final":
+    if run == "lognormal_burst_final":
         # Create (or reset) the fit instructions dictionary.
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
