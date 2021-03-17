@@ -121,102 +121,134 @@ The parameter space minimally covered is:
   \item dust attenuation curve
 \end{itemize}
 
-\section{The XSHOOTER Data}
+\section{The XSHOOTER Data}\label{sec:xshooter_data}
 
-\centering
 \begin{tabular}
-    {| l | c | c | c | c | c | r |}
-    \hline
-    TDE         & Host Galaxy               & RA           & Dec          & Mag & Hubble Morphology & z        \\
-    \hline
-    AT2019qiz   & WISEA J044637.88-101334.9 & 04:46:37.880 & -10:13:34.90 & 15                      & 0.01513  \\
-    AT2019azh   & KUG 0810+227              & 08:13:16.945 & +22:38:54.03 & 15                      & 0.022    \\
-    AT2018hyz   & WISEA J100650.83+014133.4 & 10:06:50.871 & +01:41:34.08 & 17                      & 0.04573  \\
-    AT2019dsg   & WISEA J205702.96+141216.2 & 20:57:02.974 & +14:12:15.86 & 15                      & 0.0512   \\
-    iPTF16fnl   & iPTF16fnl                 & 00:29:57.010 & +32:53:37.24 & 16                      & 0.018    \\
-    AT2019ahk   & WISEA J070011.40-660224.7 & 07:00:11.546 & -66:02:24.14 & 17                      & 0.026211 \\
-    ASASSN-15oi & ASASSN-15oi               & 20:39:09.18  & -30:45:20.10 & 16                      & 0.0484   \\
-    AT2018fyk   & LCRS B224721.6-450748     & 22:50:16.090 & -44:51:53.50 & 17                      & 0.06     \\
-    ASASSN-14li & ASASSN-14li               & 12:48:15.23  & +17:46:26.44 & 15                      & 0.0206   \\
-    ASASSN-14ae & ASASSN-14ae               & 11:08:40.12  & +34:05:52.23 & 17                      & 0.0436   \\
-    \hline
+  {| l | c | c | c | c | c | r |}
+  \hline
+  TDE         & Host Galaxy               & RA           & Dec          & Mag & Hubble Morphology & z        \\
+  \hline
+  AT2019qiz   & WISEA J044637.88-101334.9 & 04:46:37.880 & -10:13:34.90 & 15                      & 0.01513  \\
+  AT2019azh   & KUG 0810+227              & 08:13:16.945 & +22:38:54.03 & 15                      & 0.022    \\
+  AT2018hyz   & WISEA J100650.83+014133.4 & 10:06:50.871 & +01:41:34.08 & 17                      & 0.04573  \\
+  AT2019dsg   & WISEA J205702.96+141216.2 & 20:57:02.974 & +14:12:15.86 & 15                      & 0.0512   \\
+  iPTF16fnl   & iPTF16fnl                 & 00:29:57.010 & +32:53:37.24 & 16                      & 0.018    \\
+  AT2019ahk   & WISEA J070011.40-660224.7 & 07:00:11.546 & -66:02:24.14 & 17                      & 0.026211 \\
+  ASASSN-15oi & ASASSN-15oi               & 20:39:09.18  & -30:45:20.10 & 16                      & 0.0484   \\
+  AT2018fyk   & LCRS B224721.6-450748     & 22:50:16.090 & -44:51:53.50 & 17                      & 0.06     \\
+  ASASSN-14li & ASASSN-14li               & 12:48:15.23  & +17:46:26.44 & 15                      & 0.0206   \\
+  ASASSN-14ae & ASASSN-14ae               & 11:08:40.12  & +34:05:52.23 & 17                      & 0.0436   \\
+  \hline
 \end{tabular}
 
 \section{Blind Testing}\label{sec:blind_testing}
 
 \subsection{Selecting Physically Reasonable Priors}\label{sec:prior_selection}
 
+Velocity dispersion of constituent stars is allowed to vary between
+
+The ionization parameter for nebular emission is allowed to vary between logU=-4 and logU=-2, a very low and very high rate of (molecular?) ionization.
+
+The lifetime of the stellar birth clouds was chosen to be a normal distribution about ${t_{BC}=17Myr}$ with ${\sigma=4Myr}$, consistent with typical cloud lifetimes in the Milky Way, as determined by Murray 2011\cite{Murray_2011}.
+
+
 \subsection{Fitting}\label{sec:fitting}
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_01_sfh.pdf}
   \includegraphics[width=0.9\textwidth]{../pipes/plots/lognormal_noburst/phil_model_01_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_lognormal_burst/phil_model_01_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_02_sfh.pdf}
   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst/phil_model_02_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_dblplaw_burst/phil_model_02_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_03_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/delayed_burst/phil_model_03_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_delayed_burst/phil_model_03_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_04_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/lognormal_burst/phil_model_04_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_lognormal_burst/phil_model_04_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_05_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_noburst/phil_model_05_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_noburst/phil_model_05_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_06_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_noburst/phil_model_06_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_delayed_burst/phil_model_06_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_07_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst/phil_model_07_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_exponential_burst/phil_model_07_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_08_sfh.pdf}
   \includegraphics[width=0.9\textwidth]{../pipes/plots/lognormal_burst/phil_model_08_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_dblplaw_burst/phil_model_08_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_09_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst/phil_model_09_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_exponential_burst/phil_model_09_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
 
-\begin{figure}[h]
+\newpage
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.9\textwidth]{../pipes/plots/prior/phil_model_10_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst/phil_model_10_sfh.pdf}
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_dblplaw_burst/phil_model_10_sfh.pdf}
   \caption{A priori and posterior SFH.}
   \label{}
 \end{figure}
