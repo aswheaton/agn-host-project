@@ -69,7 +69,7 @@ for filename in datafiles:
         "nebular"      : nebular
         }
 
-        # Do a fit with only .
+        # Do a fit with both an old exponential component and recent burst.
         fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_final")
         fit.fit(verbose=False)
 
@@ -88,7 +88,7 @@ for filename in datafiles:
         "nebular"      : nebular
         }
 
-        # Do an initial fit with only an exponential compontent, over a large parameter space.
+        # Do a fit with both an old double power law component and recent burst.
         fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_final")
         fit.fit(verbose=False)
 
@@ -107,7 +107,7 @@ for filename in datafiles:
         "nebular"      : nebular
         }
 
-        # Do an initial fit with only an exponential compontent, over a large parameter space.
+        # Do a fit with both an old delayed component and recent burst.
         fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_final")
         fit.fit(verbose=False)
 
@@ -126,7 +126,7 @@ for filename in datafiles:
         "nebular"      : nebular
         }
 
-        # Do an initial fit with only an exponential compontent, over a large parameter space.
+        # Do a fit with both an old lognormal component and recent burst.
         fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_final")
         fit.fit(verbose=False)
 
