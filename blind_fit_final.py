@@ -74,7 +74,7 @@ for filename in datafiles:
         fit.fit(verbose=False)
 
         # Create a dictionary for storying posterior sample distribution widths.
-        chi_squ_vals = {"exponential_burst_final" : chi_squared(galaxy, fit)}
+        # chi_squ_vals = {"exponential_burst_final" : chi_squared(galaxy, fit)}
 
     if run == "dblplaw_burst_final":
         # Create (or reset) the fit instructions dictionary.
@@ -93,7 +93,7 @@ for filename in datafiles:
         fit.fit(verbose=False)
 
         # Create a dictionary for storying posterior sample distribution widths.
-        chi_squ_vals = {"dblplaw_burst_final" : chi_squared(galaxy, fit)}
+        # chi_squ_vals = {"dblplaw_burst_final" : chi_squared(galaxy, fit)}
 
     if run == "delayed_burst_final":
         # Create (or reset) the fit instructions dictionary.
@@ -112,7 +112,7 @@ for filename in datafiles:
         fit.fit(verbose=False)
 
         # Create a dictionary for storying posterior sample distribution widths.
-        chi_squ_vals = {"delayed_burst_final" : chi_squared(galaxy, fit)}
+        # chi_squ_vals = {"delayed_burst_final" : chi_squared(galaxy, fit)}
 
     if run == "lognormal_burst_final":
         # Create (or reset) the fit instructions dictionary.
@@ -131,7 +131,7 @@ for filename in datafiles:
         fit.fit(verbose=False)
 
         # Create a dictionary for storying posterior sample distribution widths.
-        chi_squ_vals = {"lognormal_burst_final" : chi_squared(galaxy, fit)}
+        # chi_squ_vals = {"lognormal_burst_final" : chi_squared(galaxy, fit)}
 
     # # Reload all the saved fits.
 
