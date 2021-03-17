@@ -158,6 +158,6 @@ for filename in datafiles:
     # plt.tight_layout()
     # fig = fit.plot_sfh_posterior(save=True, show=False)
 
-    print ('parameter     median     16th percentile     84th percentile')
-    for key in fit.posterior.samples.keys():
-        print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
+    # print ('parameter     median     16th percentile     84th percentile')
+    # for key in fit.posterior.samples.keys():
+    #     print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
