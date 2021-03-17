@@ -8,36 +8,37 @@ from pipes_utils import *
 # rcParams.update({'figure.autolayout': True})
 
 datafiles = [sys.argv[1]]
+run = [sys.argv[2]]
 
 exponential1 = {}
 exponential1["age"] = (7.5, 12.5)   # Gyr
 exponential1["tau"] = (0.5, 2.0)    # Gyr
-exponential1["massformed"] = (5.0, 15.0)   # log_10(M*/M_solar)
+exponential1["massformed"] = (5.0, 12.5)   # log_10(M*/M_solar)
 exponential1["metallicity"] = (0.0, 2.5)     # Z/Z_oldsolar
 
 exponential2 = {}
 exponential2["age"] = (0.0, 3.5)   # Gyr, lifetime of F type stars
 exponential2["tau"] = (0.1, 2.0)    # Gyr
-exponential2["massformed"] = (0.0, 15.0)   # log_10(M*/M_solar)
+exponential2["massformed"] = (0.0, 12.5)   # log_10(M*/M_solar)
 exponential2["metallicity"] = (0.0, 2.5)     # Z/Z_oldsolar
 
 dblplaw = {}
 dblplaw["tau"] = (0.0, 4.5) # Do not let the peak occur beyond ~6.5 Gyr
 dblplaw["alpha"] = (5.0, 10.0) # Formation must begin and end reasonably fast
 dblplaw["beta"] = (5.0, 10.0) # Formation must begin and end reasonably fast
-dblplaw["massformed"] = (5.0, 15.0)
+dblplaw["massformed"] = (5.0, 12.5)
 dblplaw["metallicity"] = (0.0, 2.5)
 
 delayed = {}                   # Delayed Tau model t*e^-(t/tau)
 delayed["age"] = (7.5, 12.5)           # Time since SF began: Gyr
 delayed["tau"] = (0.1, 2.0)           # Timescale of decrease: Gyr
-delayed["massformed"] = (5.0, 15.0)
+delayed["massformed"] = (5.0, 12.5)
 delayed["metallicity"] = (0.0, 2.5)
 
 lognormal = {}
 lognormal["tmax"] = (1.0, 6.0 )
 lognormal["fwhm"] = (0.1, 3.0)
-lognormal["massformed"] = (5.0, 15.0)
+lognormal["massformed"] = (5.0, 12.5)
 lognormal["metallicity"] = (0.0, 2.5)
 
 dust = {}
