@@ -11,7 +11,9 @@ datafiles = [sys.argv[1]]
 # datafiles = ["phil_model_02", "phil_model_03", "phil_model_04"]
 # datafiles = ["phil_model_05", "phil_model_06", "phil_model_07"]
 # datafiles = ["phil_model_08", "phil_model_09", "phil_model_10"]
-
+# datafiles = ["phil_model_01", "phil_model_02", "phil_model_03", "phil_model_04",
+#              "phil_model_05", "phil_model_06", "phil_model_07", "phil_model_08",
+#              "phil_model_09", "phil_model_10"]
 exponential1 = {}
 exponential1["age"] = (3.5, 10.0)   # Gyr
 exponential1["tau"] = (0.1, 2.0)    # Gyr
@@ -54,11 +56,11 @@ for filename in datafiles:
     galaxy, model_components = import_spectrum(filename)
 
     # Calculate redshift constraints.
-    r_low, r_high = model_components["redshift"] - 0.001,  model_components["redshift"] + 0.001
+    z_low, z_high = model_components["redshift"] - 0.001,  model_components["redshift"] + 0.001
 
     # Create (or reset) the fit instructions dictionary.
     fit_instructions = {
-    "redshift"     : (r_low, r_high),   # Obs. redshift from 0-10.
+    "redshift"     : (z_low, z_high),   # Obs. redshift from 0-10.
     "t_bc"         : (0.005, 0.015),
     "veldisp"      : (150.0, 200.0),
     "exponential1" : exponential1, # Add the exp SFH component.
@@ -67,37 +69,37 @@ for filename in datafiles:
     }
 
     # Do an initial fit with only an exponential compontent, over a large parameter space.
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_exponential_burst_rconst")
+    fit = pipes.fit(galaxy, fit_instructions, run="wide_exponential_burst_zconst")
     fit.fit(verbose=False)
 
     # Create a dictionary for storying posterior sample distribution widths.
-    chi_squ_vals = {"wide_exponential_burst_rconst" : chi_squared(galaxy, fit)}
+    chi_squ_vals = {"wide_exponential_burst_zconst" : chi_squared(galaxy, fit)}
 
     fit_instructions.pop("exponential1")
     fit_instructions["dblplaw"] = dblplaw
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_dblplaw_burst_rconst")
+    fit = pipes.fit(galaxy, fit_instructions, run="wide_dblplaw_burst_zconst")
     fit.fit(verbose=True)
-    chi_squ_vals["wide_dblplaw_burst_rconst"] = chi_squared(galaxy, fit)
+    chi_squ_vals["wide_dblplaw_burst_zconst"] = chi_squared(galaxy, fit)
 
     fit_instructions.pop("dblplaw", None)
     fit_instructions["delayed"] = delayed
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_delayed_burst_rconst")
+    fit = pipes.fit(galaxy, fit_instructions, run="wide_delayed_burst_zconst")
     fit.fit(verbose=False)
-    chi_squ_vals["wide_delayed_burst_rconst"] = chi_squared(galaxy, fit)
+    chi_squ_vals["wide_delayed_burst_zconst"] = chi_squared(galaxy, fit)
 
     fit_instructions.pop("delayed", None)
     fit_instructions["lognormal"] = lognormal
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_lognormal_burst_rconst")
+    fit = pipes.fit(galaxy, fit_instructions, run="wide_lognormal_burst_zconst")
     fit.fit(verbose=False)
-    chi_squ_vals["wide_lognormal_burst_rconst"] = chi_squared(galaxy, fit)
+    chi_squ_vals["wide_lognormal_burst_zconst"] = chi_squared(galaxy, fit)
 
     # Get the functional form with the lowest chi-squared value.
     best_func = min(chi_squ_vals, key=lambda k: chi_squ_vals[k])
     # Select the fit with lowest chi-squared value and plot it.
     fit = pipes.fit(galaxy, fit_instructions, run=best_func)
-    plt.tight_layout()
-    fig = fit.plot_sfh_posterior(save=True, show=False)
+    # plt.tight_layout()
+    # fig = fit.plot_sfh_posterior(save=True, show=False)
 
-print ('parameter     median     16th percentile     84th percentile')
-for key in fit.posterior.samples.keys():
-    print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
+    print ('parameter     median     16th percentile     84th percentile')
+    for key in fit.posterior.samples.keys():
+        print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
