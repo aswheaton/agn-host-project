@@ -57,46 +57,103 @@ for filename in datafiles:
     # Calculate redshift constraints.
     z_low, z_high = model_components["redshift"] - 0.001,  model_components["redshift"] + 0.001
 
-    # Create (or reset) the fit instructions dictionary.
-    fit_instructions = {
-    "redshift"     : (z_low, z_high),   # Obs. redshift from 0-10.
-    "t_bc"         : (0.005, 2.0),
-    "veldisp"      : (1.0, 1000.0),
-    "veldisp_prior": "log_10",
-    "exponential1" : exponential1, # Add the exp SFH component.
-    "exponential2" : exponential2, # Add the burst component.
-    "dust"         : dust,
-    "nebular"      : nebular
-    }
+    if run = "exponential_burst_final":
+        # Create (or reset) the fit instructions dictionary.
+        fit_instructions = {
+        "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
+        "t_bc"         : (0.013, 0.021),  # Constraints from Murray 2011.
+        "veldisp"      : (50.0, 450.0),   # Constrained by Faber-Jackson. TODO: Lookup Minkowski 1962!
+        "exponential1" : exponential1,    # Add the exp SFH component.
+        "exponential2" : exponential2,    # Add the burst component.
+        "dust"         : dust,
+        "nebular"      : nebular
+        }
 
-    # Do an initial fit with only an exponential compontent, over a large parameter space.
-    fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_final")
-    fit.fit(verbose=False)
+        # Do a fit with only .
+        fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_final")
+        fit.fit(verbose=False)
 
-    # Create a dictionary for storying posterior sample distribution widths.
-    chi_squ_vals = {"exponential_burst_final" : chi_squared(galaxy, fit)}
+        # Create a dictionary for storying posterior sample distribution widths.
+        chi_squ_vals = {"exponential_burst_final" : chi_squared(galaxy, fit)}
 
-    fit_instructions.pop("exponential1")
-    fit_instructions["dblplaw"] = dblplaw
-    fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_final")
-    fit.fit(verbose=True)
-    chi_squ_vals["dblplaw_burst_final"] = chi_squared(galaxy, fit)
+    if run = "dblplaw_burst_final":
+        # Create (or reset) the fit instructions dictionary.
+        fit_instructions = {
+        "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
+        "t_bc"         : (0.013, 0.021),  # Constraints from Murray 2011.
+        "veldisp"      : (50.0, 450.0),   # Constrained by Faber-Jackson. TODO: Lookup Minkowski 1962!
+        "dblplaw"      : dblplaw,         # Add the dblplaw SFH component.
+        "exponential2" : exponential2,    # Add the burst component.
+        "dust"         : dust,
+        "nebular"      : nebular
+        }
 
-    fit_instructions.pop("dblplaw", None)
-    fit_instructions["delayed"] = delayed
-    fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_final")
-    fit.fit(verbose=False)
-    chi_squ_vals["delayed_burst_final"] = chi_squared(galaxy, fit)
+        # Do an initial fit with only an exponential compontent, over a large parameter space.
+        fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_final")
+        fit.fit(verbose=False)
 
-    fit_instructions.pop("delayed", None)
-    fit_instructions["lognormal"] = lognormal
-    fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_final")
-    fit.fit(verbose=False)
-    chi_squ_vals["lognormal_burst_final"] = chi_squared(galaxy, fit)
+        # Create a dictionary for storying posterior sample distribution widths.
+        chi_squ_vals = {"dblplaw_burst_final" : chi_squared(galaxy, fit)}
 
-    # Get the functional form with the lowest chi-squared value.
+    if run = "delayed_burst_final":
+        # Create (or reset) the fit instructions dictionary.
+        fit_instructions = {
+        "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
+        "t_bc"         : (0.013, 0.021),  # Constraints from Murray 2011.
+        "veldisp"      : (50.0, 450.0),   # Constrained by Faber-Jackson. TODO: Lookup Minkowski 1962!
+        "delayed"      : delayed,         # Add the delayed SFH component.
+        "exponential2" : exponential2,    # Add the burst component.
+        "dust"         : dust,
+        "nebular"      : nebular
+        }
+
+        # Do an initial fit with only an exponential compontent, over a large parameter space.
+        fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_final")
+        fit.fit(verbose=False)
+
+        # Create a dictionary for storying posterior sample distribution widths.
+        chi_squ_vals = {"delayed_burst_final" : chi_squared(galaxy, fit)}
+
+    if run = "lognormal_burst_final":
+        # Create (or reset) the fit instructions dictionary.
+        fit_instructions = {
+        "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
+        "t_bc"         : (0.013, 0.021),  # Constraints from Murray 2011.
+        "veldisp"      : (50.0, 450.0),   # Constrained by Faber-Jackson. TODO: Lookup Minkowski 1962!
+        "lognormal"    : lognormal,       # Add the lognormal SFH component.
+        "exponential2" : exponential2,    # Add the burst component.
+        "dust"         : dust,
+        "nebular"      : nebular
+        }
+
+        # Do an initial fit with only an exponential compontent, over a large parameter space.
+        fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_final")
+        fit.fit(verbose=False)
+
+        # Create a dictionary for storying posterior sample distribution widths.
+        chi_squ_vals = {"lognormal_burst_final" : chi_squared(galaxy, fit)}
+
+    # # Reload all the saved fits.
+
+    # fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_final")
+    # fit.fit(verbose=False)
+    # chi_squ_vals = {"exponential_burst_final" : chi_squared(galaxy, fit)}
+    #
+    # fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_final")
+    # fit.fit(verbose=True)
+    # chi_squ_vals["dblplaw_burst_final"] = chi_squared(galaxy, fit)
+    #
+    # fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_final")
+    # fit.fit(verbose=False)
+    # chi_squ_vals["delayed_burst_final"] = chi_squared(galaxy, fit)
+    #
+    # fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_final")
+    # fit.fit(verbose=False)
+    # chi_squ_vals["lognormal_burst_final"] = chi_squared(galaxy, fit)
+
+    # # Get the functional form with the lowest chi-squared value.
     # best_func = min(chi_squ_vals, key=lambda k: chi_squ_vals[k])
-    # Select the fit with lowest chi-squared value and plot it.
+    # # Select the fit with lowest chi-squared value and plot it.
     # fit = pipes.fit(galaxy, fit_instructions, run=best_func)
     # plt.tight_layout()
     # fig = fit.plot_sfh_posterior(save=True, show=False)
