@@ -8,7 +8,7 @@ from pipes_utils import *
 # rcParams.update({'figure.autolayout': True})
 
 datafiles = [sys.argv[1]]
-run = [sys.argv[2]]
+run = sys.argv[2]
 
 exponential1 = {}
 exponential1["age"] = (7.5, 12.5)   # Gyr
