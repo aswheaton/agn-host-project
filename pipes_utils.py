@@ -93,9 +93,9 @@ def bin_spec(spectrum, n_bin):
 def load_xshooter(ID):
     """
     Data import function for the __init__ method of bagpipes.galaxy. Loads in
-    wavelengths and fluxes from the  XSHOOTER .asci files.
+    wavelengths, fluxes, and flux errors from the  XSHOOTER datafiles.
     """
-    spectrum_with_errs = np.loadtxt("data/"+ID+".ascii", dtype="float")
+    spectrum_with_errs = np.loadtxt("data/tdes/"+ID+".txt", dtype="float")
     return(spectrum_with_errs)
 
 def import_spectrum(filename):
