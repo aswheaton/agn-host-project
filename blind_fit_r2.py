@@ -66,29 +66,29 @@ for filename in datafiles:
 
     # Do an initial fit with only an exponential compontent.
     galaxy, model_components = import_spectrum(filename)
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_exponential_burst")
+    fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_r2")
     fit.fit(verbose=False)
 
     # Create a dictionary for storying posterior sample distribution widths.
-    chi_squ_vals = {"wide_exponential_burst" : chi_squared(galaxy, fit)}
+    chi_squ_vals = {"exponential_burst_r2" : chi_squared(galaxy, fit)}
 
     fit_instructions.pop("exponential1")
     fit_instructions["dblplaw"] = dblplaw
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_dblplaw_burst")
+    fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_r2")
     fit.fit(verbose=True)
-    chi_squ_vals["wide_dblplaw_burst"] = chi_squared(galaxy, fit)
+    chi_squ_vals["dblplaw_burst_r2"] = chi_squared(galaxy, fit)
 
     fit_instructions.pop("dblplaw", None)
     fit_instructions["delayed"] = delayed
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_delayed_burst")
+    fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_r2")
     fit.fit(verbose=False)
-    chi_squ_vals["wide_delayed_burst"] = chi_squared(galaxy, fit)
+    chi_squ_vals["delayed_burst_r2"] = chi_squared(galaxy, fit)
 
     fit_instructions.pop("delayed", None)
     fit_instructions["lognormal"] = lognormal
-    fit = pipes.fit(galaxy, fit_instructions, run="wide_lognormal_burst")
+    fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_r2")
     fit.fit(verbose=False)
-    chi_squ_vals["wide_lognormal_burst"] = chi_squared(galaxy, fit)
+    chi_squ_vals["lognormal_burst_r2"] = chi_squared(galaxy, fit)
 
     # Get the functional form with the lowest chi-squared value.
     best_func = min(chi_squ_vals, key=lambda k: chi_squ_vals[k])

@@ -141,6 +141,9 @@ report/*.run.xml
 report/*.snm
 report/*.toc
 
+# Exclude nohup output.
+nohup/*
+
 # Don't include PDFs in biblio folder.
 report/biblio/*
 

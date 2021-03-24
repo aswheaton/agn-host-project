@@ -7,6 +7,16 @@ from pipes_utils import *
 from matplotlib import rcParams
 # rcParams.update({'figure.autolayout': True})
 
+rframe_lines = [9532, 9068, 8662, 8542, 8489,7150, 6731, 6716, 6583, 6563, 6180,
+                5892, 5175, 5007, 4959, 4861, 4340, 4101, 3727, 2800, 1549, 1400
+                ]
+
+rframe_line_labels = ["SIII", "SIII", "CaII", "CaII", "CaII", "TiO", "SII",
+                      "SII", "NII", "H-alpha", "TiO", "NaD", "MgIb", "OIII",
+                      "OIII", "H-beta", "H-gamma", "H-delta", "OII", "MgII",
+                      "CIV", "SiIV"
+                      ]
+
 datafiles = [sys.argv[1]]
 # datafiles = ["phil_model_02", "phil_model_03", "phil_model_04"]
 # datafiles = ["phil_model_05", "phil_model_06", "phil_model_07"]

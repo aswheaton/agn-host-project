@@ -7,8 +7,8 @@ from pipes_utils import *
 # from matplotlib import rcParams
 # rcParams.update({'figure.autolayout': True})
 
-datafiles = [sys.argv[1]]
-run = sys.argv[2]
+redshifts = [0.0206, 0.0484, 0.06, 0.026211, 0.022, 0.0512, 0.01513, 0.018]
+datafiles = ["ASASSN14li","ASASSN15oi","AT2018fyk","AT2019ahk","AT2019azh","AT2019dsg", "AT2019qiz", "iPTF16fnl"]
 
 exponential1 = {}
 exponential1["age"] = (7.5, 12.5)   # Gyr
@@ -48,17 +48,18 @@ dust["Av"] = (0.0, 2.0)
 nebular = {}
 nebular["logU"] = (-4.0,-2.0)
 
-for filename in datafiles:
+chi_squ_vals = {}
 
-    print("Running initial exponential fit for {}...".format(filename)),
+for redshift, filename in zip(redshifts, datafiles):
+
     # Get the galaxy object and a priori model compenents dictionary.
-    galaxy, model_components = import_spectrum(filename)
-
+    galaxy = pipes.galaxy(filename, load_xshooter, photometry_exists=False)
     # Calculate redshift constraints.
-    z_low, z_high = model_components["redshift"] - 0.001,  model_components["redshift"] + 0.001
+    z_low, z_high = redshift - 0.001,  redshift + 0.001
 
-    if run == "exponential_burst_final":
-        # Create (or reset) the fit instructions dictionary.
+    try:
+        f = open("pipes/posterior/exponential_burst_r4/"+filename+".h5")
+        f.close()
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
         "t_bc"         : (0.013, 0.021),  # Constraints from Murray 2011.
@@ -68,16 +69,20 @@ for filename in datafiles:
         "dust"         : dust,
         "nebular"      : nebular
         }
-
         # Do a fit with both an old exponential component and recent burst.
-        fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_final")
+        fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_r4")
         fit.fit(verbose=False)
-
         # Create a dictionary for storying posterior sample distribution widths.
-        # chi_squ_vals = {"exponential_burst_final" : chi_squared(galaxy, fit)}
+        chi_squ_vals["exponential_burst_r4"] = chi_squared(galaxy, fit)
+        # Select the fit with lowest chi-ssquared value and plot it.
+        plt.tight_layout()
+        fig = fit.plot_sfh_posterior(save=True, show=False)
+    except IOError:
+        print("Run not exponential_burst_r4 not accessible for "+filename)
 
-    if run == "dblplaw_burst_final":
-        # Create (or reset) the fit instructions dictionary.
+    try:
+        f = open("pipes/posterior/dblplaw_burst_r4/"+filename+".h5")
+        f.close()
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
         "t_bc"         : (0.013, 0.021),  # Constraints from Murray 2011.
@@ -87,16 +92,20 @@ for filename in datafiles:
         "dust"         : dust,
         "nebular"      : nebular
         }
-
-        # Do a fit with both an old double power law component and recent burst.
-        fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_final")
+        # Do a fit with both an old delayed component and recent burst.
+        fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_r4")
         fit.fit(verbose=False)
-
         # Create a dictionary for storying posterior sample distribution widths.
-        # chi_squ_vals = {"dblplaw_burst_final" : chi_squared(galaxy, fit)}
+        chi_squ_vals["dblplaw_burst_r4"] = chi_squared(galaxy, fit)
+        # Select the fit with lowest chi-squared value and plot it.
+        plt.tight_layout()
+        fig = fit.plot_sfh_posterior(save=True, show=False)
+    except IOError:
+        print("Run not dblplaw_burst_r4 not accessible for "+filename)
 
-    if run == "delayed_burst_final":
-        # Create (or reset) the fit instructions dictionary.
+    try:
+        f = open("pipes/posterior/delayed_burst_r4/"+filename+".h5")
+        f.close()
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
         "t_bc"         : (0.013, 0.021),  # Constraints from Murray 2011.
@@ -106,16 +115,20 @@ for filename in datafiles:
         "dust"         : dust,
         "nebular"      : nebular
         }
-
         # Do a fit with both an old delayed component and recent burst.
-        fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_final")
+        fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_r4")
         fit.fit(verbose=False)
-
         # Create a dictionary for storying posterior sample distribution widths.
-        # chi_squ_vals = {"delayed_burst_final" : chi_squared(galaxy, fit)}
+        chi_squ_vals["delayed_burst_r4"] = chi_squared(galaxy, fit)
+        # Select the fit with lowest chi-squared value and plot it.
+        plt.tight_layout()
+        fig = fit.plot_sfh_posterior(save=True, show=False)
+    except IOError:
+        print("Run not delayed_burst_r4 not accessible for "+filename)
 
-    if run == "lognormal_burst_final":
-        # Create (or reset) the fit instructions dictionary.
+    try:
+        f = open("pipes/posterior/lognormal_burst_r4/"+filename+".h5")
+        f.close()
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
         "t_bc"         : (0.013, 0.021),  # Constraints from Murray 2011.
@@ -125,39 +138,61 @@ for filename in datafiles:
         "dust"         : dust,
         "nebular"      : nebular
         }
-
-        # Do a fit with both an old lognormal component and recent burst.
-        fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_final")
+        # Do a fit with both an old delayed component and recent burst.
+        fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_r4")
         fit.fit(verbose=False)
-
         # Create a dictionary for storying posterior sample distribution widths.
-        # chi_squ_vals = {"lognormal_burst_final" : chi_squared(galaxy, fit)}
+        chi_squ_vals["lognormal_burst_r4"] = chi_squared(galaxy, fit)
+        # Select the fit with lowest chi-squared value and plot it.
+        plt.tight_layout()
+        fig = fit.plot_sfh_posterior(save=True, show=False)
+
+    except IOError:
+        print("Run not lognormal_burst_r4 not accessible for "+filename)
+
 
     # # Reload all the saved fits.
 
-    # fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_final")
+    # fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_r4")
     # fit.fit(verbose=False)
-    # chi_squ_vals = {"exponential_burst_final" : chi_squared(galaxy, fit)}
+    # chi_squ_vals = {"exponential_burst_r4" : chi_squared(galaxy, fit)}
     #
-    # fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_final")
+    # fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_r4")
     # fit.fit(verbose=True)
-    # chi_squ_vals["dblplaw_burst_final"] = chi_squared(galaxy, fit)
+    # chi_squ_vals["dblplaw_burst_r4"] = chi_squared(galaxy, fit)
     #
-    # fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_final")
+    # fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_r4")
     # fit.fit(verbose=False)
-    # chi_squ_vals["delayed_burst_final"] = chi_squared(galaxy, fit)
+    # chi_squ_vals["delayed_burst_r4"] = chi_squared(galaxy, fit)
     #
-    # fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_final")
+    # fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_r4")
     # fit.fit(verbose=False)
-    # chi_squ_vals["lognormal_burst_final"] = chi_squared(galaxy, fit)
+    # chi_squ_vals["lognormal_burst_r4"] = chi_squared(galaxy, fit)
 
-    # # Get the functional form with the lowest chi-squared value.
-    # best_func = min(chi_squ_vals, key=lambda k: chi_squ_vals[k])
-    # # Select the fit with lowest chi-squared value and plot it.
-    # fit = pipes.fit(galaxy, fit_instructions, run=best_func)
-    # plt.tight_layout()
-    # fig = fit.plot_sfh_posterior(save=True, show=False)
+    # Get the functional form with the lowest chi-squared value.
+    best_func = min(chi_squ_vals, key=lambda k: chi_squ_vals[k])
+    # Set the fit instructions dictionay to contain the correct priors.
+    # try:
+    #     fit_instructions.pop("")
+    # except KeyError:
+    #     pass
+    # try:
+    #     fit_instructions.pop("")
+    # except KeyError:
+    #     pass
+    # try:
+    #     fit_instructions.pop("")
+    # except KeyError:
+    #     pass
+    # try:
+    #     fit_instructions.pop("")
+    # except KeyError:
+    #     pass
+    # Select the fit with lowest chi-squared value and plot it.
+    fit = pipes.fit(galaxy, fit_instructions, run=best_func)
+    plt.tight_layout()
+    fig = fit.plot_sfh_posterior(save=False, show=True)
 
-    # print ('parameter     median     16th percentile     84th percentile')
-    # for key in fit.posterior.samples.keys():
-    #     print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
+    print ('parameter     median     16th percentile     84th percentile')
+    for key in fit.posterior.samples.keys():
+        print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
