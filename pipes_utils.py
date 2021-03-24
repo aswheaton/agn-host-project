@@ -59,7 +59,7 @@ def load_data(filename):
     Data import function for the __init__() method of bagpipes.galaxy.
     """
     # Load the data and extract into wavelength and flux arrays.
-    spectrum_with_errs = np.loadtxt("data/" + filename + ".csv", delimiter=" ")
+    spectrum_with_errs = np.loadtxt("data/mods/" + filename + ".csv", delimiter=" ")
     return(spectrum_with_errs)
 
 def bin_spec(spectrum, n_bin):
@@ -108,7 +108,7 @@ def import_spectrum(filename):
     # Create empty model components dictionary.
     model_components = {}
     # Reassemble the model components dictionary from the header.
-    file = open("data/" + filename + ".csv")
+    file = open("data/mods/" + filename + ".csv")
     for line in file.readlines():
         if line[0] == "#":  # The line is a header line, unpack and sort.
             line = line[2:-1] # Trim header character & newline from the line.
@@ -173,8 +173,204 @@ def chi_squared(galaxy, fit):
     chi_squared = np.sum((galaxy.spectrum[:,1]-posterior_spectrum[:])**2 / galaxy.spectrum[:,2]**2)
     return(chi_squared)
 
-def print_fit_params(fit):
-    labels = ['dust:Av', 'dblplaw:tau', 'dblplaw:alpha', 'dblplaw:beta', 'dblplaw:massformed', 'dblplaw:metallicity', 'redshift']
+def print_posterior(fit):
     print ('parameter     median     16th percentile     84th percentile')
-    for i in labels:
-        print ( i + ': ', np.median( fit.posterior.samples[i]), np.percentile(fit.posterior.samples[i], 16), np.percentile(fit.posterior.samples[i], 84) )
+    for key in fit.posterior.samples.keys():
+        print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
+
+
+
+def plot_corner(fit, names=[], show=False, save=True, bins=25, type="fit_params"):
+    """ Make a corner plot of the fitted parameters. """
+
+    import corner
+
+    tex_on = True
+
+    update_rcParams()
+
+    if names == []:
+        names = fit.fitted_model.params
+        samples = np.copy(fit.posterior.samples2d)
+    else:
+        for name in names:
+            index = fit.fitted_model.params.index(name)
+            column = np.array([fit.posterior.samples2d[:,index]]).T
+            try:
+                samples = np.concatenate((samples, column), axis=1)
+            except UnboundLocalError:
+                samples = column
+
+    # Set up axis labels
+    if tex_on:
+        labels = fix_param_names(names)
+    else:
+        labels = fit.fitted_model.params
+
+    # Log any parameters with log_10 priors to make them easier to see
+    for name in names:
+        i = fit.fitted_model.params.index(name) # Index among all samples.
+        j = names.index(name)                   # Index among plot samples.
+        if fit.fitted_model.pdfs[i] == "log_10":
+            samples[:, j] = np.log10(samples[:, j])
+            if tex_on:
+                labels[j] = "$\\mathrm{log_{10}}(" + labels[j][1:-1] + ")$"
+            else:
+                labels[j] = "log_10(" + labels[j] + ")"
+
+    # Make the corner plot
+    fig = corner.corner(samples, labels=labels, quantiles=[0.16, 0.5, 0.84],
+                        show_titles=True, title_kwargs={"fontsize": 13},
+                        smooth=1., smooth1d=1., bins=bins)
+
+    # Save the corner plot to file
+    if save:
+        plotpath = ("pipes/plots/" + fit.run + "/" + fit.galaxy.ID + "_corner.jpg")
+        plt.savefig(plotpath, bbox_inches="tight")
+        plt.close(fig)
+
+    # Alternatively show the corner plot
+    if show:
+        plt.show()
+        plt.close(fig)
+
+    return fig
+
+def fix_param_names(fit_params):
+
+    latex_names = {"redshift": "z",
+    "metallicity": "Z",
+    "massformed": "\\mathrm{log_{10}(M",
+    "mass": "\\mathrm{log_{10}(M_*",
+    "stellar_mass": "\\mathrm{log_{10}(M_*",
+    "tau": "\\tau",
+    "alpha": "\\alpha",
+    "beta": "\\beta",
+    "age": "\\mathrm{Age}",
+    "age_min": "\\mathrm{Min\\ Age}",
+    "age_max": "\\mathrm{Max\\ Age}",
+    "Av": "{A_V}",
+    "n": "n",
+    "veldisp": "\\sigma_{vel}",
+    "0": "\\mathrm{N}0",
+    "1": "\\mathrm{N}1",
+    "2": "\\mathrm{N}2",
+    "3": "\\mathrm{N}3",
+    "4": "\\mathrm{N}4",
+    "5": "\\mathrm{N}5",
+    "6": "\\mathrm{N}6",
+    "7": "\\mathrm{N}7",
+    "8": "\\mathrm{N}8",
+    "9": "\\mathrm{N}9",
+    "10": "\\mathrm{N}10",
+    "sfr": "\\mathrm{SFR}",
+    "mass_weighted_age": "\\mathrm{Age_{MW}}",
+    "tform": "\\mathrm{t_{form}}",
+    "tquench": "\\mathrm{t_{quench}}",
+    "ssfr": "\\mathrm{log_{10}(sSFR",
+    "sig_exp": "\\Delta",
+    "prob": "P",
+    "mu": "\\mu",
+    "sigma": "\\sigma",
+    "tau_q": "\\tau_\\mathrm{quench}",
+    "length": "l",
+    "norm": "n",
+    "scaling": "s",
+    "t_bc": "t_{BC}",
+    "B": "B",
+    "delta": "\delta",
+    "fwhm": "\\mathrm{FWHM}"}
+
+    latex_units = {"metallicity": "Z_{\\odot}",
+    "massformed": "M_{\\odot})}",
+    "mass": "M_{\\odot})}",
+    "stellar_mass": "M_{\\odot})}",
+    "tau": "\\mathrm{Gyr}",
+    "age": "\\mathrm{Gyr}",
+    "age_min": "\\mathrm{Gyr}",
+    "age_max": "\\mathrm{Gyr}",
+    "Av": "\\mathrm{mag}",
+    "veldisp": "\\mathrm{km s^{-1}}",
+    "sfr": "\\mathrm{M_\\odot\\ yr}^{-1}",
+    "ssfr": "\\mathrm{yr}^{-1})}",
+    "mass_weighted_age": "\\mathrm{Gyr}",
+    "tform": "\\mathrm{Gyr}",
+    "tau_q": "\\mathrm{Gyr}",
+    "tquench": "\\mathrm{Gyr}",
+    "t_bc": "\\mathrm{Gyr}",
+    "fwhm": "\\mathrm{Gyr}"}
+
+    latex_comps = {"dblplaw": "dpl",
+    "exponential": "exp",
+    "exponential2": "burst",
+    "constant": "const",
+    "delayed": "del",
+    "calibration": "calib",
+    "nebular": "neb",
+    "lognormal": "",
+    "iyer2019": "GP"}
+
+    new_params = []
+
+    if not isinstance(fit_params, list):
+        fit_params = [fit_params]
+
+    for fit_param in fit_params:
+        split = fit_param.split(":")
+
+        if len(split) == 1:
+            comp = None
+            param = split[0]
+        if len(split) == 2:
+            comp = split[0]
+            param = split[1]
+
+        if param in list(latex_names):
+            new_param = latex_names[param]
+
+            if comp is not None:
+                if comp in list(latex_comps):
+                    new_param += "_\\mathrm{" + latex_comps[comp] + "}"
+                else:
+                    new_param += "_\\mathrm{" + comp + "}"
+
+            if param in list(latex_units):
+                new_param = new_param + "/" + latex_units[param]
+
+            new_param = "$" + new_param + "$"
+
+        else:
+            new_param = fit_param
+
+        new_params.append(new_param)
+
+    if len(new_params) == 1:
+        new_params = new_params[0]
+
+    return new_params
+
+
+
+def update_rcParams():
+
+    import matplotlib as mpl
+
+    tex_on = True
+
+    mpl.rcParams["lines.linewidth"] = 2.
+    mpl.rcParams["axes.linewidth"] = 1.5
+    mpl.rcParams["axes.labelsize"] = 18.
+    mpl.rcParams["xtick.top"] = True
+    mpl.rcParams["xtick.labelsize"] = 14
+    mpl.rcParams["xtick.direction"] = "in"
+    mpl.rcParams["ytick.right"] = True
+    mpl.rcParams["ytick.labelsize"] = 14
+    mpl.rcParams["ytick.direction"] = "in"
+
+    if tex_on:
+        mpl.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
+        mpl.rc('text', usetex=True)
+        mpl.rcParams["text.usetex"] = True
+
+    else:
+        mpl.rcParams["text.usetex"] = False
