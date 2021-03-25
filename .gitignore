@@ -141,6 +141,9 @@ report/*.run.xml
 report/*.snm
 report/*.toc
 
+# Exclude PDF plots, for now.
+# pipes/plots/*
+
 # Exclude nohup output.
 nohup/*
 

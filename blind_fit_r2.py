@@ -11,9 +11,6 @@ datafiles = [sys.argv[1]]
 # datafiles = ["phil_model_02", "phil_model_03", "phil_model_04"]
 # datafiles = ["phil_model_05", "phil_model_06", "phil_model_07"]
 # datafiles = ["phil_model_08", "phil_model_09", "phil_model_10"]
-# datafiles = ["phil_model_01", "phil_model_02", "phil_model_03", "phil_model_04",
-#              "phil_model_05", "phil_model_06", "phil_model_07", "phil_model_08",
-#              "phil_model_09", "phil_model_10"]
 
 exponential1 = {}
 exponential1["age"] = (3.5, 10.0)   # Gyr
@@ -66,41 +63,34 @@ for filename in datafiles:
 
     # Do an initial fit with only an exponential compontent.
     galaxy, model_components = import_spectrum(filename)
-    fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_r2")
+    fit = pipes.fit(galaxy, fit_instructions, run="r2_exponential_burst")
     fit.fit(verbose=False)
 
     # Create a dictionary for storying posterior sample distribution widths.
-    chi_squ_vals = {"exponential_burst_r2" : chi_squared(galaxy, fit)}
+    chi_squ_vals = {"r2_exponential_burst" : chi_squared(galaxy, fit)}
 
     fit_instructions.pop("exponential1")
     fit_instructions["dblplaw"] = dblplaw
-    fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_r2")
+    fit = pipes.fit(galaxy, fit_instructions, run="r2_dblplaw_burst")
     fit.fit(verbose=True)
-    chi_squ_vals["dblplaw_burst_r2"] = chi_squared(galaxy, fit)
+    chi_squ_vals["r2_dblplaw_burst"] = chi_squared(galaxy, fit)
 
     fit_instructions.pop("dblplaw", None)
     fit_instructions["delayed"] = delayed
-    fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_r2")
+    fit = pipes.fit(galaxy, fit_instructions, run="r2_delayed_burst")
     fit.fit(verbose=False)
-    chi_squ_vals["delayed_burst_r2"] = chi_squared(galaxy, fit)
+    chi_squ_vals["r2_delayed_burst"] = chi_squared(galaxy, fit)
 
     fit_instructions.pop("delayed", None)
     fit_instructions["lognormal"] = lognormal
-    fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_r2")
+    fit = pipes.fit(galaxy, fit_instructions, run="r2_lognormal_burst")
     fit.fit(verbose=False)
-    chi_squ_vals["lognormal_burst_r2"] = chi_squared(galaxy, fit)
+    chi_squ_vals["r2_lognormal_burst"] = chi_squared(galaxy, fit)
 
     # Get the functional form with the lowest chi-squared value.
     best_func = min(chi_squ_vals, key=lambda k: chi_squ_vals[k])
     # Select the fit with lowest chi-squared value and plot it.
     fit = pipes.fit(galaxy, fit_instructions, run=best_func)
-    # plt.tight_layout()
-    # fig = fit.plot_sfh_posterior(save=True, show=False)
+    fig = fit.plot_sfh_posterior()
 
-    # print(filename)
-    # print(model_components["redshift"])
-    # print(np.median(fit.posterior.samples["redshift"]))
-
-    print ('parameter     median     16th percentile     84th percentile')
-    for key in fit.posterior.samples.keys():
-        print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
+    print_posterior(fit)

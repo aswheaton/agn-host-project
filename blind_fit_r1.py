@@ -28,13 +28,6 @@ exponential["tau"] = (0.1, 2.0)    # Gyr
 exponential["massformed"] = (0.0, 15.0)   # log_10(M*/M_solar)
 exponential["metallicity"] = (0.0, 2.5)     # Z/Z_oldsolar
 
-# dblplaw = {}
-# dblplaw["tau"] = 11.72
-# dblplaw["alpha"] = 290.39
-# dblplaw["beta"] = 240.33
-# dblplaw["massformed"] = 9.72
-# dblplaw["metallicity"] = 0.85
-
 delayed = {}                   # Delayed Tau model t*e^-(t/tau)
 delayed["age"] = (3.5, 10.0)           # Time since SF began: Gyr
 delayed["tau"] = (0.1, 2.0)           # Timescale of decrease: Gyr
@@ -66,7 +59,7 @@ for filename in datafiles:
 
     # Do an initial fit with only an exponential compontent, over a large parameter space.
     galaxy, model_components = import_spectrum(filename)
-    fit = pipes.fit(galaxy, fit_instructions, run="exponential_noburst")
+    fit = pipes.fit(galaxy, fit_instructions, run="r1_exponential_noburst")
     fit.fit(verbose=False)
 
     # Now run a new fit with other functional components with age constrained to one standard deviation around the exponential age.
@@ -76,23 +69,17 @@ for filename in datafiles:
     # Create a dictionary for storying posterior sample distribution widths.
     chi_squ_vals = {"exponential" : chi_squared(galaxy, fit)}
 
-    # dblplaw["age"] = ()
-    # fit_instructions["dblplaw"] = dblplaw
-    # fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_noburst")
-    # fit.fit(verbose=True)
-    # fit_instructions.pop("dblplaw", None)
-
     fit_instructions.pop("exponential", None)
     delayed["age"] = (age_lower_bound, age_upper_bound)
     fit_instructions["delayed"] = delayed
-    fit = pipes.fit(galaxy, fit_instructions, run="delayed_noburst")
+    fit = pipes.fit(galaxy, fit_instructions, run="r1_delayed_noburst")
     fit.fit(verbose=False)
     chi_squ_vals["delayed"] = chi_squared(galaxy, fit)
 
     fit_instructions.pop("delayed", None)
     lognormal["tmax"] = (13.5 - age_upper_bound, 13.5 - age_lower_bound)
     fit_instructions["lognormal"] = lognormal
-    fit = pipes.fit(galaxy, fit_instructions, run="lognormal_noburst")
+    fit = pipes.fit(galaxy, fit_instructions, run="r1_lognormal_noburst")
     fit.fit(verbose=False)
     chi_squ_vals["lognormal"] = chi_squared(galaxy, fit)
 
@@ -109,20 +96,16 @@ for filename in datafiles:
     burst["metallicity"] = (0.0, 2.5)
 
     fit_instructions["burst"] = burst
-    fit = pipes.fit(galaxy, fit_instructions, run=best_func+"_burst")
+    fit = pipes.fit(galaxy, fit_instructions, run="r1_"+best_func+"_burst")
     fit.fit(verbose=False)
 
     chi_squ_vals[best_func+"_burst"] = chi_squared(galaxy, fit)
 
     # Check if the burst component improves the fit and save the appropriate plot.
     if chi_squ_vals[best_func] >= chi_squ_vals[best_func+"_burst"]:
-        plt.tight_layout()
         fig = fit.plot_sfh_posterior(save=True, show=False)
     else:
-        fit = pipes.fit(galaxy, fit_instructions, run=best_func+"_noburst")
-        plt.tight_layout()
+        fit = pipes.fit(galaxy, fit_instructions, run="r1_"+best_func+"_noburst")
         fig = fit.plot_sfh_posterior(save=True, show=False)
 
-print ('parameter     median     16th percentile     84th percentile')
-for key in fit.posterior.samples.keys():
-    print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
+    print_posterior(fit)

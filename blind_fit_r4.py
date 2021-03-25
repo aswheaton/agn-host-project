@@ -7,10 +7,10 @@ from pipes_utils import *
 # from matplotlib import rcParams
 # rcParams.update({'figure.autolayout': True})
 
-# datafiles = [sys.argv[1]]
-datafiles = ["phil_model_1", "phil_model_2", "phil_model_3", "phil_model_4",
-             "phil_model_5", "phil_model_6", "phil_model_7", "phil_model_8",
-             "phil_model_9", "phil_model_10"]
+datafiles = [sys.argv[1]]
+# datafiles = ["phil_model_02", "phil_model_03", "phil_model_04"]
+# datafiles = ["phil_model_05", "phil_model_06", "phil_model_07"]
+# datafiles = ["phil_model_08", "phil_model_09", "phil_model_10"]
 run = sys.argv[2]
 
 exponential1 = {}
@@ -60,7 +60,7 @@ for filename in datafiles:
     # Calculate redshift constraints.
     z_low, z_high = model_components["redshift"] - 0.001,  model_components["redshift"] + 0.001
 
-    if run == "exponential_burst_r4":
+    if run == "r4_exponential_burst":
         # Create (or reset) the fit instructions dictionary.
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
@@ -73,13 +73,13 @@ for filename in datafiles:
         }
 
         # Do a fit with both an old exponential component and recent burst.
-        fit = pipes.fit(galaxy, fit_instructions, run="exponential_burst_r4")
+        fit = pipes.fit(galaxy, fit_instructions, run="r4_exponential_burst")
         fit.fit(verbose=False)
 
         # Create a dictionary for storying posterior sample distribution widths.
-        # chi_squ_vals = {"exponential_burst_r4" : chi_squared(galaxy, fit)}
+        # chi_squ_vals = {"r4_exponential_burst" : chi_squared(galaxy, fit)}
 
-    if run == "dblplaw_burst_r4":
+    if run == "r4_dblplaw_burst":
         # Create (or reset) the fit instructions dictionary.
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
@@ -92,13 +92,13 @@ for filename in datafiles:
         }
 
         # Do a fit with both an old double power law component and recent burst.
-        fit = pipes.fit(galaxy, fit_instructions, run="dblplaw_burst_r4")
+        fit = pipes.fit(galaxy, fit_instructions, run="r4_dblplaw_burst")
         fit.fit(verbose=False)
 
         # Create a dictionary for storying posterior sample distribution widths.
-        # chi_squ_vals = {"dblplaw_burst_r4" : chi_squared(galaxy, fit)}
+        # chi_squ_vals = {"r4_dblplaw_burst" : chi_squared(galaxy, fit)}
 
-    if run == "delayed_burst_r4":
+    if run == "r4_delayed_burst":
         # Create (or reset) the fit instructions dictionary.
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
@@ -111,13 +111,13 @@ for filename in datafiles:
         }
 
         # Do a fit with both an old delayed component and recent burst.
-        fit = pipes.fit(galaxy, fit_instructions, run="delayed_burst_r4")
+        fit = pipes.fit(galaxy, fit_instructions, run="r4_delayed_burst")
         fit.fit(verbose=False)
 
         # Create a dictionary for storying posterior sample distribution widths.
-        # chi_squ_vals = {"delayed_burst_r4" : chi_squared(galaxy, fit)}
+        # chi_squ_vals = {"r4_delayed_burst" : chi_squared(galaxy, fit)}
 
-    if run == "lognormal_burst_r4":
+    if run == "r4_lognormal_burst":
         # Create (or reset) the fit instructions dictionary.
         fit_instructions = {
         "redshift"     : (z_low, z_high), # z varies tight_layout around z_obs.
@@ -130,11 +130,11 @@ for filename in datafiles:
         }
 
         # Do a fit with both an old lognormal component and recent burst.
-        fit = pipes.fit(galaxy, fit_instructions, run="lognormal_burst_r4")
+        fit = pipes.fit(galaxy, fit_instructions, run="r4_lognormal_burst")
         fit.fit(verbose=False)
 
         # Create a dictionary for storying posterior sample distribution widths.
-        # chi_squ_vals = {"lognormal_burst_r4" : chi_squared(galaxy, fit)}
+        # chi_squ_vals = {"r4_lognormal_burst" : chi_squared(galaxy, fit)}
 
     # # Reload all the saved fits.
 
@@ -161,6 +161,4 @@ for filename in datafiles:
     # plt.tight_layout()
     # fig = fit.plot_sfh_posterior(save=True, show=False)
 
-    # print ('parameter     median     16th percentile     84th percentile')
-    # for key in fit.posterior.samples.keys():
-    #     print(key+": ", np.median(fit.posterior.samples[key]), np.percentile(fit.posterior.samples[key], 16), np.percentile(fit.posterior.samples[key], 84))
+    print_posterior(fit)
