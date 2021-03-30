@@ -301,7 +301,7 @@ def fix_param_names(fit_params):
     "fwhm": "\\mathrm{Gyr}"}
 
     latex_comps = {"dblplaw": "dpl",
-    "exponential": "exp",
+    "exponential1": "exp",
     "exponential2": "burst",
     "constant": "const",
     "delayed": "del",

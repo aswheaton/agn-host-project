@@ -36,7 +36,6 @@
 
 % Utilities for Beamer slides. %
 
-% \usetheme{gemini}
 \usecolortheme{mit}
 \usepackage{epstopdf}
 \setbeamertemplate{navigation symbols}{}
@@ -48,9 +47,9 @@
 
 % Title and author for title page. %
 
-\title{Properties of AGN Host Galaxies}
-\author{A. Wheaton}
-\institute[UoE]{\includegraphics[width=0.4\textwidth]{crest}\vspace{1em}}
+\title{Bayesian Inference of Star Formation History in the Host Galaxies of Tidal Disruption Events}
+\author{Alexander S. Wheaton \\ Supervisor: Andy Lawrence, FRSE}
+\institute[UoE]{\includegraphics[width=0.3\textwidth]{crest}\vspace{1em}}
 \date{\today}
 
 \begin{document}
@@ -60,41 +59,50 @@
 \end{frame}
 
 \begin{frame}{Project Aims}
+  \begin{figure}[L]
+    \includegraphics[width=\textwidth]{AT2019qiz_host_red}
+    % \includegraphics[width=\textwidth]{iPTF16fnl_host_red}
+    % \includegraphics[width=\textwidth]{ASASSN-14li_host_red}
+    \caption{AT2019qiz Host Galaxy}
+  \end{figure}
+  \begin{itemize}
+    \item Investigate the statistical behaviour of the star formation in the host galaxies of tidal disruption events.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Motivation: XSHOOTER Targets}
   \begin{table}
-    \centering
-    \resizebox{\textwidth}{!}{
-    \begin{tabular}
-      {| l | c | c | c | c | c | r |}
+    \begin{tabular}{| l | c | r |}
       \hline
-      TDE         & Host Galaxy               & RA           & Dec          & Mag & z        \\
+      TDE         & $m$ & z        \\
       \hline
-      AT2019qiz   & WISEA J044637.88-101334.9 & 04:46:37.880 & -10:13:34.90 & 15  & 0.01513  \\
-      AT2019azh   & KUG 0810+227              & 08:13:16.945 & +22:38:54.03 & 15  & 0.022    \\
-      AT2018hyz   & WISEA J100650.83+014133.4 & 10:06:50.871 & +01:41:34.08 & 17  & 0.04573  \\
-      AT2019dsg   & WISEA J205702.96+141216.2 & 20:57:02.974 & +14:12:15.86 & 15  & 0.0512   \\
-      iPTF16fnl   & iPTF16fnl                 & 00:29:57.010 & +32:53:37.24 & 16  & 0.018    \\
-      AT2019ahk   & WISEA J070011.40-660224.7 & 07:00:11.546 & -66:02:24.14 & 17  & 0.026211 \\
-      ASASSN-15oi & ASASSN-15oi               & 20:39:09.18  & -30:45:20.10 & 16  & 0.0484   \\
-      AT2018fyk   & LCRS B224721.6-450748     & 22:50:16.090 & -44:51:53.50 & 17  & 0.06     \\
-      ASASSN-14li & ASASSN-14li               & 12:48:15.23  & +17:46:26.44 & 15  & 0.0206   \\
-      ASASSN-14ae & ASASSN-14ae               & 11:08:40.12  & +34:05:52.23 & 17  & 0.0436   \\
+      ASASSN-14li & 15  & 0.0206   \\
+      ASASSN-15oi & 16  & 0.0484   \\
+      AT2018fyk   & 17  & 0.06     \\
+      AT2019ahk   & 17  & 0.026211 \\
+      AT2019azh   & 15  & 0.022    \\
+      AT2019dsg   & 15  & 0.0512   \\
+      AT2019qiz   & 15  & 0.01513  \\
+      iPTF16fnl   & 16  & 0.018    \\
+      AT2018hyz   & 17  & 0.04573  \\
+      ASASSN-14ae & 17  & 0.0436   \\
       \hline
     \end{tabular}
-    }
     \caption{The XSHOOTER targets on tidal disruption events.}
   \end{table}
-  \begin{itemize}
-    \item Investigate the statistical behaviour of the star formation in the host galaxies of tidal disruption events and active galactic nuclei (AGN).
-  \end{itemize}
 \end{frame}
 
 \begin{frame}{Active Galactic Nuclei (AGN)}
   \section{Key Features}
   \begin{itemize}
-    \item Compact, highly luminous nuclear region.\pause % From 10^35 W to 10^42 W, Milky Way core is 10^10 W.
-    \item Broad spectral energy distribution.\pause % Non-stellar emission which is inexplicable by blackbody radiation.
-    \item Strong (and sometimes broad) emission lines.\pause % Which if due only to the Doppler effect, imply gas motions of $v = 10000 km/s$.
-    \item Variability over short timescales. % Minutes to days, in some cases a few years.
+    \item Compact, highly luminous nuclear region.
+    % From 10^35 W to 10^42 W, Milky Way core is 10^10 W.
+    \item Broad spectral energy distribution.
+    % Non-stellar emission which is inexplicable by blackbody radiation.
+    \item Strong (and sometimes broad) emission lines.
+    % Which if due only to the Doppler effect, imply gas motions of $v = 10000 km/s$.
+    \item Variability over short timescales.
+    % Minutes to days, in some cases a few years.
     % \item Upper bound on size $\approx 100 pc$ \cite{Peterson_1997} % Determined by spatial resolution, but requires 10% galactic mass to be central
     % \item For smaller $r$, need extraordinary energy production.\cite{Peterson_1997}
   \end{itemize}
@@ -104,18 +112,17 @@
   \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{agn_model}
-    \caption{Accretion of matter onto surface of a black hole. Image adapted from Urry and Padovani 1995.\cite{Urry_1995}}
+    \caption{Accretion of matter onto surface of a black hole. Image adapted from Urry and Padovani 1995.}
   \end{figure}
 \end{frame}
-
 
 \begin{frame}{The Starburst-AGN Connection}
   \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{image--002}
-    \caption{Strong relationship between star formation and black hole mass. Image adapted from Veilleux 2008.\cite{Veilleux_2008}}
+    \caption{Strong relationship between star formation and black hole mass. Image adapted from Veilleux 2008.}
   \end{figure}
-  \pause
+
   \begin{itemize}
     \item Cosmologically important impact on galaxy formation and evolution.
   \end{itemize}
@@ -123,17 +130,31 @@
 
 \begin{frame}{Possible mechanisms?}
   \begin{itemize}
-    \item Gas or radiation pressure from starbursts and/or AGN-drive wind shuts off  black hole fuel supply.\pause
-    \item Direction of causation unclear.\pause
-    \item AGN is a possible source of quenching.\pause
+    \item Gas or radiation pressure from starbursts and/or AGN-driven wind shuts off  black hole fuel supply.
+    \item Direction of causation unclear.
+    \item AGN is a possible source of quenching.
     \item Need more information...
   \end{itemize}
 \end{frame}
 
-\begin{frame}{The BAGPIPEs Module}
+\begin{frame}{Tidal Disruption Events}
+  \begin{figure}
+    \includegraphics[width=0.75\textwidth]{tidal_disruption_event}
+    \caption{TDE impression, image credit NASA/JPL-Caltech.}
+    % https://images.nasa.gov/details-PIA20027
+    \label{img:tde_impression}
+  \end{figure}
   \begin{itemize}
-    \item Bayesian Analysis of Galaxies for Physical Inference and Parameter EStimation.\pause
-    \item Simulation of galactic spectra from SFH.\pause
+    \item Do TDEs exhibit the same statistical behaviour?
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{The BAGPIPEs Module}
+  \textbf{Bayesian Analysis of Galaxies for Physical Inference and Parameter EStimation.}
+  \vspace{0.5in}
+  \begin{itemize}
+    \item Simulation of galactic spectra from SFH.
     \item Fit real spectra to plausible SFH.
   \end{itemize}
 \end{frame}
@@ -170,8 +191,8 @@
 \begin{frame}{Stellar Population Dating}
   \begin{figure}
     \centering
-    \includegraphics[width=0.9\textwidth]{Screenshot.png}
-    \caption{Number density of spectral types. Table adapted from Glenn 2001.\cite{Glenn_2001}}
+    \includegraphics[width=0.9\textwidth]{Screenshot}
+    \caption{Number density of spectral types. Table adapted from Glenn 2001.}
   \end{figure}
   \begin{itemize}
     \item Poor temporal resolution beyond ~1 billion years.
@@ -180,7 +201,7 @@
 
 \begin{frame}{Stellar Population Dating}
   \begin{itemize}
-    \item Solution?\pause \KKKK Parameterise metallicity as well.\pause
+    \item Solution? Parameterise metallicity as well.
     \item How do Lyman and Balmer series lines evolve with starburst age?
     \item What about other metal lines?
   \end{itemize}
@@ -204,43 +225,223 @@
 
 \begin{frame}{SFH Inference - What is possible?}
   \begin{itemize}
-    \item Blind fitting of spectra with known priors.\pause
-    \item Fitting multiple SFH forms.\pause
+    \item Blind fitting of spectra with known priors.
+    \item Fitting multiple SFH forms.
     \item Iterative fitting.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Future Plans}
-  \begin{table}
+\begin{frame}{Exploring the SFH Parameter Space}
+  \textbf{R1: Entire Parameter Space with Two Components}
+  \begin{figure}
     \centering
-    \resizebox{\textwidth}{!}{
-    \begin{tabular}
-      {| l | c | c | c | c | c | r |}
-      \hline
-      TDE         & Host Galaxy               & RA           & Dec          & Mag & z        \\
-      \hline
-      AT2019qiz   & WISEA J044637.88-101334.9 & 04:46:37.880 & -10:13:34.90 & 15  & 0.01513  \\
-      AT2019azh   & KUG 0810+227              & 08:13:16.945 & +22:38:54.03 & 15  & 0.022    \\
-      AT2018hyz   & WISEA J100650.83+014133.4 & 10:06:50.871 & +01:41:34.08 & 17  & 0.04573  \\
-      AT2019dsg   & WISEA J205702.96+141216.2 & 20:57:02.974 & +14:12:15.86 & 15  & 0.0512   \\
-      iPTF16fnl   & iPTF16fnl                 & 00:29:57.010 & +32:53:37.24 & 16  & 0.018    \\
-      AT2019ahk   & WISEA J070011.40-660224.7 & 07:00:11.546 & -66:02:24.14 & 17  & 0.026211 \\
-      ASASSN-15oi & ASASSN-15oi               & 20:39:09.18  & -30:45:20.10 & 16  & 0.0484   \\
-      AT2018fyk   & LCRS B224721.6-450748     & 22:50:16.090 & -44:51:53.50 & 17  & 0.06     \\
-      ASASSN-14li & ASASSN-14li               & 12:48:15.23  & +17:46:26.44 & 15  & 0.0206   \\
-      ASASSN-14ae & ASASSN-14ae               & 11:08:40.12  & +34:05:52.23 & 17  & 0.0436   \\
-      \hline
-    \end{tabular}
-    }
-    \caption{The XSHOOTER targets on tidal disruption events.}
-  \end{table}
+    \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_4_sfh}
+    \caption{Example SFH.}
+  \end{figure}
   \begin{itemize}
-    \item Compare SFH of TDE galaxies with Hubble analogues, and Seyferts.
+    \item Constrain z to be less than or equal to the TDE targets
+    \item Assume separate bulk formation and burst events
+  \end{itemize}
+  % Assume most of stellar mass formed in a separate event
+  % Let burst vary over entire history of the universe
+  % Brief discussion of cosmic noon, with contrast between spirals and ellipticals
+\end{frame}
+
+\begin{frame}{Exploring the SFH Parameter Space}
+  \textbf{R2 \& R3: Iterative Fitting}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_4_sfh}
+    \caption{Example SFH.}
+  \end{figure}
+  \begin{itemize}
+    \item Insist burst component is younger than the bulk formation
   \end{itemize}
 \end{frame}
 
-\begin{frame}{References}
-  \printbibliography
+\begin{frame}{Exploring the SFH Parameter Space}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r0_priors/phil_model_4_sfh}
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r2_delayed_burst_wide/phil_model_4_sfh}
+    \caption{Prior and posterior SFH.}
+  \end{figure}
+  \begin{itemize}
+    \item ``Best''fits favour single component star formation.
+  \end{itemize}
 \end{frame}
+
+\begin{frame}{Selecting Physically Reasonable Priors}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_4_sfh}
+    \caption{Example SFH.}
+  \end{figure}
+  \begin{itemize}
+    \item SPS limits burst detection.
+    \item Precise form of old formation is unimportant.
+  \end{itemize}
+  % SPS limits burst detection to ages <3Gyr
+  % Precise form of old formation is unimportant
+  % Temporal resolution is poor beyond A type stars
+\end{frame}
+
+\begin{frame}{Selecting Physically Reasonable Priors}
+  \textbf{R4: Fixed Old Component, Free Burst Component}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_4_sfh}
+    \caption{Example SFH.}
+  \end{figure}
+  \textbf{Conclusion:}
+  \begin{itemize}
+    \item Impose a lower limit on bulk formation age and mass.
+    \item Impose an upper limit on burst age, but let mass vary freely.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Selecting Physically Reasonable Priors}
+  \textbf{R4: Fixed Old Component, Free Burst Component} \\
+  \vspace{0.5in}
+  \textbf{Other refined priors:}
+  \begin{center}
+    \begin{itemize}
+      \item Velocity dispersion, $\sigma_v$
+      \item Birth cloud lifetime, $\tau_{BC}$
+      \item Metallicity, $Z$
+      \item Extinction, $A_V$
+      \item Nebular ionisation, $U$
+    \end{itemize}
+  \end{center}
+  % Decay times/slopes of functional forms
+  % Want to be consistent with Hubble morphology & redshifts of TDE data
+\end{frame}
+
+\begin{frame}{Blind Fitting Results with R4 Priors}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r0_priors/phil_model_8_sfh}
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r4_dblplaw_burst/phil_model_8_sfh}
+    \caption{Prior and posterior SFH.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Blind Fitting Results with R4 Priors}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r0_priors/phil_model_9_sfh}
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r4_lognormal_burst/phil_model_9_sfh}
+    \caption{Prior and posterior SFH.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Blind Fitting Results with R4 Priors}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r0_priors/phil_model_2_sfh}
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r4_delayed_burst/phil_model_2_sfh}
+    \caption{Prior and posterior SFH.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Blind Fitting Results with R4 Priors}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r0_priors/phil_model_5_sfh}
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r4_delayed_burst/phil_model_5_sfh}
+    \caption{Prior and posterior SFH.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Blind Fitting Results with R4 Priors}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r0_priors/phil_model_4_sfh}
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r4_dblplaw_burst/phil_model_4_sfh}
+    \caption{Prior and posterior SFH.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Correlated Parameters}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{../pipes/plots/r4_exponential_burst/phil_model_4_corner}
+    \caption{Correlation between decay time and burst mass.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Application to XSHOOTER Data}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019ahk_sfh}
+    \caption{Posterior SFH for AT2019ahk.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Application to XSHOOTER Data}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019azh_sfh}
+    \caption{Posterior SFH for AT2019azh.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Application to XSHOOTER Data}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r4_delayed_burst/iPTF16fnl_sfh}
+    \caption{Posterior SFH for iPTF16fnl.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Application to XSHOOTER Data}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r4_exponential_burst/ASASSN14li_sfh}
+    \caption{Posterior SFH for ASASSN14li.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Application to XSHOOTER Data}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r4_exponential_burst/ASASSN15oi_sfh}
+    \caption{Posterior SFH for ASASSN15oi.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Application to XSHOOTER Data}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../pipes/plots/r4_lognormal_burst/AT2019dsg_sfh}
+    \caption{Posterior SFH for AT2019dsg.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Conclusions}
+  \begin{figure}
+    \includegraphics[width=0.75\textwidth]{tidal_disruption_event}
+    \caption{TDE impression, image credit NASA/JPL-Caltech.}
+    % https://images.nasa.gov/details-PIA20027
+    \label{img:tde_impression}
+  \end{figure}
+  \begin{itemize}
+    \item Starbusts are detectable \textbf{IF} recent %($\approx 3 Gyr$)
+    \item Assumptions about host SFH history must be made
+    \item TDE hosts exhibit strong starburst features
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Future Applications}
+  \begin{itemize}
+    \item Larger sample size.
+    \item Tailor priors to host morphology.
+    \item Compare with Hubble analogues, and Seyferts.
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}{References}
+%   \printbibliography
+% \end{frame}
 
 \end{document}
