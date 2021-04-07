@@ -1,0 +1,314 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel} % Adds processing for some simple special characters.
+
+% Packages for better page formatting and nice footnotes. %
+
+\usepackage{fancyhdr} % Headers.
+\usepackage{multicol} % Columns.
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+% Utilities for fine-grained control over image insertion. %
+
+\usepackage{graphicx} % Insert images.
+\usepackage{float} % Images float in document environment.
+\usepackage{wrapfig} % Image/tables in multicols with \wrapfigure or \wraptable.
+\usepackage[justification=centering]{caption} % Captions for single images.
+\usepackage{subcaption} % Captions for simultaneous images.
+\graphicspath{{./img/}}
+
+% Some utilities for scientific and mathematical writing. %
+
+\usepackage{siunitx} % Formatting for numbers with SI units.
+\usepackage{amsmath} % Astronomical symbols.
+\usepackage{isotope} % Nice markup syntax for chemical symbols.
+\usepackage{xfrac}   % Slant fractions and other utilities.
+\usepackage{lipsum}  % Generate pseudo-text for formatting.
+\usepackage{listings}
+
+% Utilities for manual kerning adjustment. %
+
+\newcommand\K{\kern.05em} % Small amount of kerning.
+\newcommand\KK{\kern.1em} % Medium amount of kerning.
+\newcommand\KKK{\kern.2em} % Large amount of kerning.
+\newcommand\KKKK{\kern.3em} % Very large amount of kerning.
+
+\begin{document}
+
+\noindent \newline \textbf{Welcome}
+
+\noindent \newline Hello! and thank you for coming to my talk, today. My name is Alex Wheaton,
+and I'm going to talk about AGNs, tidal disruption events, star formation,
+and the relationships between all three.
+
+\noindent \newline The aim of my project was to investigate the statistical behaviour of the star formation in the host galaxies of tidal disruption events.
+
+\noindent \newline \textbf{Motivation}
+
+\noindent \newline I was given access to the spectra and photometry for eight galaxies which
+hosted tidal disruption events within the past few years. There's a small
+table of them here, and as you can see, they are all similarly of low
+magnitude and moderate redshift. Because they are all at redshifts <0.1, we
+can say that they are approximately the same age as our own Milky Way.
+
+\noindent \newline At these distances, they occupy very little real estate on a CCD, but the
+XSHOOTER instrument on the Very Large Telescope provides us with very high
+resolution spectra from these objects.
+
+\noindent \newline \textbf{Active Galactic Nuclei (AGN)}
+
+\noindent \newline Now, if you're in the physics department you are probably familiar with the fact
+that most galaxies are host to a supermassive black hole at their centres. The
+vast majority of these, including our own Milky Way, emit little to no light which we can
+detect, and are said to be ``quiescent'', but a small percentage of galaxies
+have a core luminosity which is a significant fraction of the luminosity of the
+whole.
+
+\noindent \newline \textbf{Active Galactic Nuclei (AGN)}
+
+\noindent \newline The spectral energy distribution of this luminosity is broad featuring peaks in
+the X-ray, UV, and IR with strong and very broad emission lines. This type of
+spectrum is not explicable solely by blackbody emission, and so is believed to
+be the emission from matter accreting onto the surface of a black hole, at a
+variety of temperatures and orbital velocites.
+
+\noindent \newline \textbf{The Starburst-AGN Connection}
+
+\noindent \newline Now, for decades, a correlation between nuclear activity in distant galaxies
+star formation in those galaxies has been emerging. Many AGN have host galaxies
+with atypically blue spectra, indication recent star forming activity (more on
+that in a moment). And as you can see from this figure, there is a tight relationship
+between total stellar luminosity and black hole mass. In other words, and positive
+correlation between star formation and black hole accretion.
+
+\noindent \newline The recent component of star formation is referred to as a "starburst"---a
+short period of abnormally high star formation which occurs long after most of
+the stellar mass in a galaxy is formed.
+
+\noindent \newline \textbf{Possible mechanisms?}
+
+\noindent \newline There are a couple of proposed mechanisms for this action. It's possible that
+radiation from AGN activity heats interstellar gas such that it can not collapse
+gravitationally to form new star. It also might be that stellar wind shuts of
+the supply of fuel to AGN. But since these processes take place over the course
+of billions of years, we can only see individual galaxies in a snapshot. They
+are either active or not, they are star forming---or they are not. We can't
+observe the dynamics of this process.
+
+\noindent \newline \textbf{Tidal Disruption Events}
+
+\noindent \newline Now, another type of nuclear activity is a tidal disruption event, or TDE for short.
+This occurs when a single star makes a close orbital approach of an otherwise
+quiescent black hole. Tidal forces on the star rip it apart. Some material falls
+into the black hole and the rest is jettisoned on a wide orbit. This process
+produces a brief but intense increase the nuclear luminosity, which then fades
+over a matter of days to months. In contrast to typical AGN activity and star
+formation, this type of event is a transient---we can watch it happen in real.
+
+\noindent \newline But how are tidal disruption events related to star formation? In this project,
+I've used the XSHOOTER data on TDEs from the Very Large Telescope to investigate
+whether or not the host galaxies of transient tidal disruption events exhibit
+the same statistical behaviour as those of always-on AGN.
+
+\noindent \newline \textbf{The BAGPIPEs Module}
+
+\noindent \newline To do this, I employed the BAGPIPEs Python module, authored in 2019 by one of
+Royal Observatory's very own, to infer the star formation histories of the TDE
+hosts from their spectra.
+
+\noindent \newline \textbf{The BAGPIPEs Module}
+
+\noindent \newline BAGPIPEs has two main functions. First, it allows you to define the functional
+form of a simulated galaxies star formation history, in stellar mass formed per
+unit time, over the history of the universe. From that prior, it can simulate
+that galaxy's spectrum as it would appear to us in the present day.
+
+\noindent \newline \textbf{The BAGPIPEs Module}
+
+\noindent \newline It can also do the inverse: take in a real, observed spectrum from a galaxy and
+infer from this a distribution of posterior star formation histories.
+
+\noindent \newline \textbf{Stellar Population Dating}
+
+\noindent \newline It does this using stellar population dating, whereby the ratio of flux from
+massive blue stars is compared to that from less massive red stars to make assumptions
+about when the stellar population formed.
+
+\noindent \newline The reason this works is because very massive, blue stars live much shorter than
+their smaller counterparts, so galaxies with a high number density of blue stars
+necessarily must have had recent star formation. The problem with this, as you
+can see from this table, is that stellar lifetimes increase dramatically with
+decreases in initial mass.
+
+\noindent \newline \textbf{Stellar Population Dating}
+
+\noindent \newline The number O and B type stars in a given galaxy can give you detailed
+information about the past billion years. But while the next smallest A type
+stars are on the main sequence, it's difficult to determine whether they were
+formed a billion years ago or three billion. As you go down the spectral classification
+types, the problem only gets worse. As this table illustrates, the universe is
+mostly populated by main sequence red dwarfs, which live for many many billions
+of years.
+
+\noindent \newline \textbf{Stellar Population Dating}
+
+\noindent \newline So before I applied BAGPIPES to the TDE data, wanted to do some tests to see
+what it was really capable of detecting. I initially tried to look for signatures
+of star formation than just the ratio of blue to red light in the host galaxies.
+
+\noindent \newline \textbf{}
+
+\noindent \newline So I simulated a galaxy with a simple, Gaussian star formation component, at
+many different points in time, from a distant redshift 2.2 to the near present
+z=0.01.
+
+\noindent \newline This is the variance in flux at various wavelength as the star formation is
+evolved towards the present. Although I had hoped that certain emission lines
+would indicate past star formation, I actually found that most metal lines vary
+LESS than the overall spectrum, which is mostly affected in the blue region.
+
+\noindent \newline \textbf{}
+
+\noindent \newline Looking at deltas of these flux values rather than the variance, unfortunately
+yields similar results.
+
+\noindent \newline \textbf{SFH Inference - What is possible?}
+
+\noindent \newline I next decided to do some blind testing of BAGPIPES fitting ability---wherein
+I simulated a spectrum with a known SFH, then piped that spectrum back through
+the fitter to see if I could reconstruct the SFH from the spectrum, without any
+prior knowledge of it.
+
+
+\noindent \newline \textbf{R1: Entire Parameter Space with Two Components}
+
+\noindent \newline I failed several times. My first attempt, which I'll call R1 here, allowed the
+fitting routine to explore almost the entire parameter space of star formation
+history.
+
+\noindent \newline This is a 13-dimensional fit, that is there are 13 parameters simulated---from
+the mass and age of the different components, to their shape, metallicity, and
+other galactic properties like velocity dispersion and nebular emission.
+
+\noindent \newline Fitting a two component model with both a bulk component and burst
+that are allowed to vary over the whole history of the host usually misses the
+burst component, instead favouring a younger bulk component in the posterior
+than in the prior, to account for the blue stars produced in the burst.
+
+\noindent \newline \textbf{R2 \& R3: Iterative Fitting}
+
+\noindent \newline To make my fit a little more physically realistic, I insisted that the burst
+component be younger than the bulk component. I did this by first fitting a one
+component bulk formation to the spectrum, and then testing to see whether
+refitting with the addition of a younger burst improved the fit.
+
+\noindent \newline \textbf{R2 \& R3: Iterative Fitting}
+
+\noindent \newline Here you can see the fit (on the bottom) misses the burst in the prior (on top).
+Instead, it favours a younger, single component of bulk formation, and that
+adding a burst component doesn't shift the older one to the age in that of the prior.
+
+\noindent \newline \textbf{Selecting Physically Reasonable Priors}
+
+\noindent \newline So I went back to the drawing board. Clearly, the fit needed narrower constraints.
+I went to the literature, and found that as we peer into the cosmos at high
+redshift galaxies, star formation actually peaks at a time called "cosmic noon",
+around redshift 3-4.
+
+\noindent \newline If I insisted that this be the case in my posterior star formation histories,
+perhaps I could avoid the erasure of the burst component in the fit.
+
+
+\noindent \newline \textbf{R4: Fixed Old Component, Free Burst Component}
+
+\noindent \newline With that in mind, I devised a new set of priors, insisting that most of the
+stellar mass be formed in an earlier era, and letting the burst float freely
+over the parameter space. If a nonzero burst mass was detected, I could
+reliably infer the existence of young, high mass stars in the host. If the burst
+mass was found to be near zero, then the stellar population must be old indeed.
+
+\noindent \newline \textbf{Selecting Physically Reasonable Priors}
+\noindent \newline \textbf{R4: Fixed Old Component, Free Burst Component}
+
+\noindent \newline At this time, I also refined some other parameters be be consistent with
+literature values for my the redshifts and Hubble Morphologies of my TDE hosts.
+
+\noindent \newline \textbf{Blind Fitting Results with R4 Priors}
+
+\noindent \newline Finally, I began to successfully detect the starbursts. Here you can see one
+such "blind fit", again with the "true" SFH on top, and the fitted one on the
+bottom.
+
+\noindent \newline \textbf{Blind Fitting Results with R4 Priors}
+
+\noindent \newline When a burst of sufficient mass \textit{is} present in the prior, it detects
+them, although sometimes it struggles to pin down the age of bursts older than
+3 billion years.
+
+\noindent \newline \textbf{Blind Fitting Results with R4 Priors}
+
+\noindent \newline Importantly, fitting with these priors doesn't give false positives. When there
+is no burst in the prior, it doesn't show up in the fit either.
+
+\noindent \newline \textbf{Blind Fitting Results with R4 Priors}
+
+\noindent \newline Very low mass bursts, such as this one, are sometimes missed.
+
+\noindent \newline \textbf{Blind Fitting Results with R4 Priors}
+
+\noindent \newline Bursts of moderate mass (around 10 to the 8 solar masses) are detected, but their mass
+sometimes underestimated, as you can see here. I thought this might be due to the
+fit favouring longer decay times for older component, so that some blue stars
+are accounted for by ongoing formation instead of the burst.
+
+\noindent \newline \textbf{Correlated Parameters}
+
+\noindent \newline Upon investigation though, I found that the old component decay time and burst
+mass were not very strongly correlated, so the reason for mass underestimation
+still merits some study.
+
+\noindent \newline \textbf{Application to XSHOOTER Data}
+
+\noindent \newline Now confident in the reliability of fits performed with these priors, I turned
+BAGPIPEs on the TDE data, which of course has no "known" SFH. Here are some of
+my results:
+
+\noindent \newline \textbf{Application to XSHOOTER Data}
+
+\noindent \newline As you can see, the TDE hosts exhibit strong evidence of recent starburst activity,
+with star formation rates much higher than the typical ambient rate of 2-3 solar
+masses per year.
+
+\noindent \newline \textbf{Application to XSHOOTER Data}
+
+\noindent \newline Almost all of the fits find old components which are consistent with observational
+evidence for star formation at cosmic noon, and with burst components consistent
+with present day starburst galaxies.
+
+\noindent \newline \textbf{Application to XSHOOTER Data}
+
+\noindent \newline \textbf{Application to XSHOOTER Data}
+
+\noindent \newline \textbf{Application to XSHOOTER Data}
+
+\noindent \newline \textbf{Conclusions}
+
+\noindent \newline In summary, it seems that starburst activity in the past 3 billion years of a
+galaxy's history is inferable with some reliability, given that certain assumptions
+about what constitutes a physically realistic SFH are made. With that in mind, I've
+applied this to the spectra of several TDE hosts, and found that they indeed
+seem to share the statistical behaviour of in-transient AGN.
+
+\noindent \newline \textbf{Future Applications}
+
+\noindent \newline With that said, it's important to note that eight samples available to me for
+this project are not nearly a large enough sample size to draw this conclusion.
+This "proof of concept" has applications for larger research projects, and it
+would certainly be valuable to apply fits with the R4 priors to larger sample
+size, with priors more carefully tailored to host morphology, and to compare
+these results to quiescent galaxies with similar morphologies.
+
+\noindent \newline With those questions, I'll conclude my talk! Thank you for coming, and questions?
+
+\end{document}
