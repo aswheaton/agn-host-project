@@ -13,7 +13,6 @@
 \cfoot{\thepage}
 
 % Title and author for title page. %
-
 \title{AGN Host Properties}
 \author{
     Alexander S. Wheaton\\
@@ -23,7 +22,6 @@
 }
 
 % Utilities for fine-grained control over image insertion. %
-
 \usepackage{graphicx} % Insert images.
 \usepackage{float} % Images float in document environment.
 \usepackage{wrapfig} % Image/tables in multicols with \wrapfigure or \wraptable.
@@ -32,20 +30,20 @@
 \graphicspath{ {./img/} }
 
 % Not sure what this is for. %
-
 \usepackage{fullpage,epsf}
 \usepackage{lipsum}
 
 % Some utilities for scientific and mathematical writing. %
-
 \usepackage{amsmath} % Nice matrices.
 \usepackage{xfrac}   % Slant fractions and other utilities.
 \usepackage{isotope} % Nice markup syntax for chemical symbols.
 \usepackage{siunitx} % Formatting for numbers with SI units.
 \DeclareSIUnit\parsec{pc}
+\DeclareSIUnit\year{yr}
 \DeclareSIUnit\lightyear{ly}
-% Utilities for manual kerning adjustment. %
+\DeclareSIUnit\erg{erg}
 
+% Utilities for manual kerning adjustment. %
 \newcommand\K{\kern.05em} % Small amount of kerning.
 \newcommand\KK{\kern.1em} % Medium amount of kerning.
 \newcommand\KKK{\kern.2em} % Large amount of kerning.
@@ -54,8 +52,6 @@
 % Bibliography and referencing style. Use style=draft for troubleshooting.
 \usepackage[backend=bibtex,style=phys,sorting=nyt]{biblatex}
 \addbibresource{references.bib}
-
-% Page formatting.
 
 \begin{document}
 
@@ -128,11 +124,11 @@ Differences between the spectra of elliptical and disk galaxies hinge mostly upo
 
 Disk or ``late-type'' galaxies are characterised by younger, bluer stars, neutral \isotope{HI} and molecular \isotope{H_2} hydrogen regions.Their spiral arms are defined by \isotope{HII} regions and dust features. The emit considerably more light at wavelengths below the \SI{4000}{\angstrom} break, in the blue and near-UV. Interstellar gas ionised by hot, young stars in these galaxies produces strong emission lines, such as the Balmer-series ($\mathrm{H\alpha}$, $\mathrm{H\beta}$, $\mathrm{H\gamma}$, and $\mathrm{H\delta}$), \isotope{OII} and \isotope{OIII} lines.\cite{Mo_2010}
 
-A fraction ($\approx \sfrac{1}{3}$) of galaxies, however, feature tightly confined (\SI{10}{\kilo\parsec}) ``weak'' nuclear luminosity which is \textit{not} consistent with this model.\cite{McClure_2019} A smaller fraction ($\approx \sfrac{1}{100}$) exhibit nuclear luminosity which is a significant fraction of the host's stellar luminosity ($\approx 10\%$).\cite{Sparke_2000} These galaxies are said to have nuclei which are ``active'' and are referred to as active galactic nuclei (AGNs).\cite{McClure_2019}\cite{Peterson_1997}
+A fraction ($\approx \sfrac{1}{3}$) of galaxies, however, feature tightly confined (\SI{10}{\kilo\parsec}) ``weak'' nuclear luminosity which is \textit{not} consistent with this model.\cite{McClure_2019} A smaller fraction ($\approx \sfrac{1}{100}$) exhibit nuclear luminosity which is a significant fraction of the host's stellar luminosity ($\approx 10\%$).\cite{Sparke_2000} These galaxies are said to have nuclei which are ``active'' and are referred to as active galactic nuclei (AGN).\cite{Peterson_1997}
+
+Lower luminosity AGN fall into the broad categories of ``Seyferts'' and radio galaxies.\footnote{Additionally, a common and very low luminosity class of galaxies featuring low-ionisation nuclear emission regions (LINERs), the highly variable luminosity classes of BL Lac objects (blazars) and optically violent variables (OVVs), and narrow-line X-ray galaxies, which are Seyferts heavily reddened and extinguished by dust within the host.} Type 1 and 2 Seyferts typically occur in spiral galaxies, featuring broad and narrow emission lines, respectively. Broad-line radio galaxies (BLRGs) and narrow-line radio galaxies (NLRGs) are the elliptical analogues to Seyferts, but are additionally radio-loud.\cite{Peterson_1997}
 
 Some AGN are sufficiently have power outputs many times that of a typical host galaxy. In these objects, luminosity from the nucleus completely obscures the host galaxy. These are believed to be exceptionally rare, and as such are only detected at very high redshifts. At such distances, they appear point-like or  ``quasi-stellar,'' and are so dubbed quasars.\cite{Peterson_1997}
-
-Lower luminosity AGN fall into the broad categories of ``Seyferts'' and radio galaxies.\footnote{Additionally, a common and very low luminosity class of galaxies featuring low-ionisation nuclear emission regions (LINERs), the highly variable luminosity classes of BL Lac objects (blazars) and optically violent variables (OVVs), and narrow-line X-ray galaxies, which are Seyferts which are heavily reddened and extinguished by dust within the host.} Type 1 and 2 Seyferts typically occur in spiral galaxies, featuring broad and narrow emission lines, respectively. Broad-line radio galaxies (BLRGs) and narrow-line radio galaxies (NLRGs) are the elliptical analogues to Seyferts, but are additionally radio-loud.\cite{Peterson_1997}
 
 In general, AGN exhibit several key characteristics:
 
@@ -142,24 +138,40 @@ In general, AGN exhibit several key characteristics:
     \item variable luminosity over short timescales of days to months
 \end{itemize}
 
-Unlike the peaked blackbody emission from stars, AGN radiate across the entire electromagnetic spectrum, with a peak in the UV and secondary peaks in the near infrared and X-ray. The generally accepted explanation for continuum spectral emission of this magnitude is a hot accretion disk surrounding a supermassive black hole.\cite{Peterson_1997} As matter falls into the black hole, its potential energy is converted to kinetic, which is dissipated by viscosity in the accretion disk to thermal energy, which is then radiated. In this model, material in the disc at a range of different temperatures accounts for continuum emission, while Doppler shifting of light emitted by disc material travelling at a range of velocities creates broad emission lines.\cite{McClure_2019}
+Unlike the peaked blackbody emission from stars, AGN radiate across the entire electromagnetic spectrum, with a peak in the UV and secondary peaks in the near infrared and X-ray. The generally accepted explanation for continuum spectral emission of this magnitude is a hot accretion disk surrounding a supermassive black hole (SMBH).\cite{Sparke_2000} As matter falls into the black hole, its potential energy is converted to kinetic, which is dissipated by viscosity in the accretion disk to thermal energy, which is then radiated. In this model, material in the disc at a range of different temperatures accounts for continuum emission, while Doppler shifting of light emitted by disc material travelling at a range of velocities creates broad emission lines.\cite{Peterson_1997}
 
-\textbf{TODO: Get numbers for luminosities in this section!}
+Emission from the central black hole is said to have different ``modes'' depending on its rate of mass accretion. In a ``steady'' mode, the SMBH is constantly fed by an infall of matter.\cite{Romero_Canizales_2016, Shields_1978} This infall is believed to be fueled by stellar wind driving matter from the halo of the host galaxy into the nucleus, where it is accreted and consumed. When accreting, these SMBHs can be as luminous as an entire galaxy (\textgreater\SI{e45}{\erg\per\second}), and it is this type of accretion which fuels Seyferts, radio galaxies, and their more luminous cousins, quasars.\cite{Kormendy_2013, Peterson_1997}
 
 \subsection{The Starburst-AGN Connection}\label{sec:starburst_agn_connection}
 
 A significant fraction (HOW MANY?) of AGN exhibit signatures of recent, large-scale star formation. These signatures include exceptionally blue photometric colours and strong \isotope{HII}-region-type emission lines, presumably gas ionised by hot, young O- and B-type stars. They also feature strong radio emissions, consistent with a high number of recent supernovae remnants.\cite{Peterson_1997}
 
-Seyfert/radio galaxy frequency comparison
+\begin{itemize}
+  \item andy review \cite{Lawrence_1987}
+  \item Boisson et al. 2001 \cite{Boisson_2001}
+  \item Seyfert/radio galaxy frequency comparison, Kauffmann et al. 2003 \cite{Kauffmann_2003}
+  \item sf-black hole mass relation, Sylvain Veilleux 2008 \cite{Veilleux_2008}
+  \item Timing the AGN-Starburst Connection, Wild et al. 2010 \cite{Wild_2010}
+  \item Galaxy evolution compared to stellar evolution\cite{Mo_2010}
+\end{itemize}
 
-andy review
-star formation - black hole mass relation\cite{Veilleux_2008}
-\cite{Mo_2010}
-Galaxy evolution compared to stellar Evolution
 \subsection{Tidal Disruption Events}\label{sec:tidal_disruption_events}
+
+A different type of nuclear phenomena are tidal disruption events (TDEs). In otherwise quiescent galaxies with low-level to no nuclear emission, spectra are dominated by stellar emission, as described in \S \ref{sec:active_galactic_nuclei}. Most galaxies, including quiescent ones, however, are still believed to host one or more SMBHs at their centres.\cite{Rees_1988} In these quiescent galaxies, it is possible for the central SMBH to be in an ``intermittent'' mode, wherein it is mostly starved of fuel, but occasionally consumes cold dust clouds or individual stars.\cite{Holoien_2016a, Rees_1988, Evans_1989}
+
+If a star approaches a black hole of mass $>10^6M_\odot$ with a pericentre sufficiently close to be subject to tidal forces, the two can not simply be treated as point masses. Inside the tidal disruption radius $r_T$, orbital kinetic energy is greater than the gravitational binding energy of the star. A tidal bulge forms on the surface of the star, which rotates to face the black hole, but out of phase with its procession around the centre of gravity. A tidal torque acts on the star, and the distribution of velocities applied by this torque to different regions of the now elongated star tear it apart in a ``tidal disruption event.''\cite{Rees_1988, Evans_1989}
+
+The radiative (and therefore observational) result of this event depends on the fate of the resulting stellar debris. Approximately half of the stellar material escapes unbound on various hyperbolic orbits, but more tightly bound debris may later return within the tidal disruption radius of the black hole on elliptical orbits.\cite{Rees_1988} Over successive periods on bound orbits, this material gradually accretes on to the surface of the black hole, creating a short-lived (\textless\SI{1}{\year}) in nuclear luminosity as disk viscosity converts the material's potential energy to thermal radiation.\cite{Evans_1989}
+
+Observational data supports a slightly longer luminosity flare, with several distinct phases. For a 100-200 day period after peak bolometric luminosity, emission from the TDE flare is ``soft,'' or dominated by thermal emission in the UV/optical region, originating from the accretion disk and a short-lived corona of stellar ejecta. Approximately 500 days after peak UV/optical luminosity, this transitions to a phase of ``hard'' emission, which is dominated by higher energy photons, before finally returning to a quiescent mode.\cite{Wevers_2021} Observational data suggests that some accretion disks are stable for up to 5-10 years after peak luminosity.\cite{van_Velzen_2019}
+
+For reasons similar to those reviewed in \S\ref{sec:starburst_agn_connection}, the precise dynamics of these phenomena are of particular relevance to galactic evolution models. Like steadily luminous Seyferts and radio galaxies, feedback from the accretion process may have consequences for the galactic star formation rate, or for AGN quenching. Analytical and numerical models predict the velocity of stellar ejecta to be of sufficient order to shock the interstellar medium (ISM) and inhibit steady accretion which would otherwise be inevitable in a galaxy hosting a SMBH.\cite{Evans_1989} As the ejecta are braked by the ISM, their kinetic energy is thermalized, heating the ISM, possibly enough to stop the collapse of molecular \isotope{H_2} clouds into star forming nurseries.\cite{Rees_1988}
+
+Like AGN, observed TDEs often appear in galaxies which bear the signatures of recent star formation, but our ability to investigate the particular dynamics between the related processes of AGN, TDEs, and star formation is limited by the timescales on which these processes occur. Although we can peer at high redshift galaxies to determine \textit{trends} in galactic evolution, we can not observe the evolution of \textit{individual} galaxies in real time. In this project, I develop methods for quantifying the star formation histories of individual galaxies, and apply them to the host galaxies of eight TDEs.
+
 \subsection{The XSHOOTER Data}\label{sec:xshooter_data}
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.3\textwidth]{ASASSN-14li_host_red}
   \includegraphics[width=0.3\textwidth]{AT2019qiz_host_red}
@@ -170,22 +182,24 @@ Galaxy evolution compared to stellar Evolution
 
 % Spare table with RAs and Decs included, although this is more information than needed.
 % \begin{table}[H]
-%   \begin{tabular}{l l c c c c r}
-%     TDE         & Host Galaxy               & $\alpha$     & $\delta$     & $m$ & Morphology & $z$      \\
+%   \begin{tabular}{l c c}
+%     TDE         & $\alpha$     & $\delta$     \\
 %     \hline \hline
-%     ASASSN-14li & PGC 043234                & 12:48:15.23  & +17:46:26.44 & 15  & Compact    & 0.0206   \\
-%     ASASSN-15oi & 2MASX J20390918-3045201   & 20:39:09.18  & -30:45:20.10 & 16  & Unresolved & 0.0484   \\
-%     AT2018fyk   & LCRS B224721.6-450748     & 22:50:16.090 & -44:51:53.50 & 17  & Unresolved & 0.06     \\
-%     AT2019ahk   & 2MASX J07001137-6602251   & 07:00:11.546 & -66:02:24.14 & 17  & E+A        & 0.026211 \\
-%     AT2019azh   & KUG 0810+227              & 08:13:16.945 & +22:38:54.03 & 15  & E+A        & 0.022    \\
-%     AT2019dsg   & 2MASX J20570298+1412165   & 20:57:02.974 & +14:12:15.86 & 15  & Unresolved & 0.0512   \\
-%     AT2019qiz   & 2MASX J04463790-1013349   & 04:46:37.880 & -10:13:34.90 & 15  & Unresolved & 0.01513  \\
-%     iPTF16fnl   & Markarian 950             & 00:29:57.010 & +32:53:37.24 & 16  & E+A        & 0.018    \\
+%     ASASSN-14li & 12:48:15.23  & +17:46:26.44 \\
+%     ASASSN-15oi & 20:39:09.18  & -30:45:20.10 \\
+%     AT2018fyk   & 22:50:16.090 & -44:51:53.50 \\
+%     AT2019ahk   & 07:00:11.546 & -66:02:24.14 \\
+%     AT2019azh   & 08:13:16.945 & +22:38:54.03 \\
+%     AT2019dsg   & 20:57:02.974 & +14:12:15.86 \\
+%     AT2019qiz   & 04:46:37.880 & -10:13:34.90 \\
+%     iPTF16fnl   & 00:29:57.010 & +32:53:37.24 \\
 %     \hline
 %   \end{tabular}
 %   \caption{XSHOOTER targets and their host morphologies on the Very Large Telescope (VLT).\cite{Zwicky_1975, Jose_2014, Holoien_2016a, Arcavi_2015, Holoien_2016b, Wevers_2021, Cacella_2019, Holoien_2019, van_Velzen_2019, Perez_Torres_2019, Seibert_2019, Gezari_2016, Blagorodnova_2017}}
 %   \label{tab:xshooter_data}
 % \end{table}
+
+\lipsum[1]
 
 \begin{table}[H]
   \centering
@@ -208,7 +222,7 @@ Galaxy evolution compared to stellar Evolution
 
 \subsection{The BAGPIPEs Module}\label{sec:bagpipes_module}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{alex_model_20_sfh}
   \includegraphics[width=\textwidth]{alex_model_20_spec}
   \caption{Parameterised star formation history and simulated spectrum with \textsc{Bagpipes}.}
@@ -500,20 +514,94 @@ And an exponentially declining burst with priors:
 \end{tabular}
 \section{Application to XSHOOTER Data}\label{sec:tde_fitting}
 \section{Results \& Discussion}\label{sec:results_and_discussion}
+
+Here follows a discussion of the R4 priors applied to the eight XSHOOTER targets, their inferred star formation histories for the $\mathrm{reduced-}\chi^2$ best fit spectra, and the posterior distributions of their parameters, with comparison to established literature on the targets.
+
 \subsection{ASASSN-14li, $z=0.0206$}\label{sec:ASASSN-14li}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/ASASSN14li_sfh.pdf}
+  \caption{Observed and fitted spectrum for the host of ASASSN-14li, and posterior SFH.}
+  \label{}
+\end{figure}
 
-A very important discovery was made with ASASSN-14li.Initially identified in the optical, this is one of the few TDEs toshow evidence of both thermal and non-thermal components.ASASSN-14li was discovered by the All-Sky AutomatedSurvey for Supernovae(ASAS-SN; Shappee et al.2014)on2014 November 22 at the center of the nearby(z=0.0206,D=90.3 Mpc)post-starburst galaxy PGC 043234(Holoien et al.2016). PGC 043234 appears to be the remnant of a recentmerger that likely hosted a low-luminosity Type II AGN priorto the TDE(Prieto et al.2016). Holoien et al.(2016)present theoptical, UV, and X-ray properties of the event, followed byadditional X-ray(Miller et al.2015; Brown et al.2016),UV(Cenko et al.2016), radio(Alexander et al.2016; van Velzenet al.2016, and this work), and mid-IR(Jiang et al.2016)studies.\cite{Canizales_2016}
+A very important discovery was made with ASASSN-14li.Initially identified in the optical, this is one of the few TDEs toshow evidence of both thermal and non-thermal components.ASASSN-14li was discovered by the All-Sky AutomatedSurvey for Supernovae(ASAS-SN; Shappee et al.2014)on2014 November 22 at the center of the nearby(z=0.0206,D=90.3 Mpc)post-starburst galaxy PGC 043234(Holoien et al.2016). PGC 043234 appears to be the remnant of a recentmerger that likely hosted a low-luminosity Type II AGN priorto the TDE(Prieto et al.2016). Holoien et al.(2016)present theoptical, UV, and X-ray properties of the event, followed byadditional X-ray(Miller et al.2015; Brown et al.2016),UV(Cenko et al.2016), radio(Alexander et al.2016; van Velzenet al.2016, and this work), and mid-IR(Jiang et al.2016)studies.\cite{Romero_Canizales_2016}
 
+
+\newpage
 \subsection{ASASSN-15oi, $z=0.0484$}\label{sec:ASASSN-15oi}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/ASASSN15oi_sfh.pdf}
+  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
+  \label{}
+\end{figure}
 
 Although the redshift was originally reported as $z=0.02$, later spectra showed that the redshift of the host galaxy is $z=0.0484$, which was used in this fit.\cite{Arcavi_2015, Holoien_2016b}
+
+\newpage
 \subsection{AT2018fyk, $z=0.06$}\label{sec:AT2018fyk}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2018fyk_sfh.pdf}
+  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
+  \label{}
+\end{figure}
+
+
+Note that Wevers et al. 2021 gives this redshift as 0.059
+
+\newpage
 \subsection{AT2019ahk, $z=0.026211$}\label{sec:AT2019ahk}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019ahk_sfh.pdf}
+  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
+  \label{}
+\end{figure}
+
+
+\newpage
 \subsection{AT2019azh, $z=0.022$}\label{sec:AT2019azh}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019azh_sfh.pdf}
+  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
+  \label{}
+\end{figure}
+
+
+\newpage
 \subsection{AT2019dsg, $z=0.0512$}\label{sec:AT2019dsg}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019dsg_sfh.pdf}
+  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
+  \label{}
+\end{figure}
+
+
+\newpage
 \subsection{AT2019qiz, $z=0.01513$}\label{sec:AT2019qiz}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019qiz_sfh.pdf}
+  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
+  \label{}
+\end{figure}
+
+
+\newpage
 \subsection{iPTF16fnl, $z=0.018$}\label{sec:iPTF16fnl}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/iPTF16fnl_sfh.pdf}
+  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
+  \label{}
+\end{figure}
+
 Important to note that Blagorodnova et al. 2017 estimates this redshift to be $z=0.016328$, although this fit was run with $z=0.018$.\cite{Blagorodnova_2017}
+
 \section{Conclusion}\label{sec:conclusion}
 \begin{itemize}
   \item Summary
