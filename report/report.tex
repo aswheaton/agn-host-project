@@ -114,7 +114,17 @@ Date: \today
 \setcounter{page}{1} % Set page number to 1
 \section{Introduction}\label{sec:introduction}
 
-Little summary here
+% In this paper, I review the established literature on the phenomena of active
+% galactic nuclei (AGN), their observational signatures, and the interpreted
+% meaning of these signatures. I discuss the statistical properties of their host
+% galaxy morphologies, with particular emphasis on the evidence that AGN
+% preferentially occur in galaxies which are actively star forming
+% (``starbursts'') or which have recently experienced a high rate of star
+% formation (``post-starbursts''). I review the physics of a related phenomenon,
+% tidal disruption events and their statistical properties. I then present newly
+% gathered data on the Very Large Telescope.
+
+The apparent connection between active galactic nuclei and star formation has long been established, if not fully explained. Evidence continues to mount for some kind of causal link between these phenomena, be it galactic wind, heating of the interstellar medium, or some as of yet undiscovered mechanism. Enquiry on this front has been limited by cosmic timescales. Although we can observe whether galaxies are actively emitting from their nuclei, observation of the ``duty cycle'' switching are rare.\cite{Lawrence_1987} So too for star formation. Although we can observe trends in cosmic star formation by peering at galaxies of higher and higher redshift, we still only see each galaxy snapshot, and signatures of recent star formation fade in a few \SI{}{\mega\year}. A remedy for this limitation was developed by Carnall et al. 2018: the \textsc{Bagpipes} Python module, which employs Bayesian inference to parameterise the most probable star formation history of an \textit{individual} galaxy from its spectrum.\cite{Carnall_2018} \textsc{Bagpipes} gives us new tools to probe the relationships between nuclear activity and star formation---an essential component of our understanding of galaxy evolution. With this software, we turn to a related nuclear phenomena, the tidal disruption event. Using the \textsc{Bagpipes} module and new spectral data on eight TDEs from the Very Large Telescope to investigate what features of their star formation history can be reliably inferred and if they, too, tend to occur in galaxies with recent star formation epochs. In doing so, we create a more complete picture of nuclear processes, their dynamics, and their impact on their host galaxies, and in doing so take another step towards a more unified theory of AGN.
 
 \section{Theory \& Motivation}\label{sec:theory_and_motivation}
 \subsection{Active Galactic Nuclei}\label{sec:active_galactic_nuclei}
@@ -128,9 +138,7 @@ A fraction ($\approx \sfrac{1}{3}$) of galaxies, however, feature tightly confin
 
 Lower luminosity AGN fall into the broad categories of ``Seyferts'' and radio galaxies.\footnote{Additionally, a common and very low luminosity class of galaxies featuring low-ionisation nuclear emission regions (LINERs), the highly variable luminosity classes of BL Lac objects (blazars) and optically violent variables (OVVs), and narrow-line X-ray galaxies, which are Seyferts heavily reddened and extinguished by dust within the host.} Type 1 and 2 Seyferts typically occur in spiral galaxies, featuring broad and narrow emission lines, respectively. Broad-line radio galaxies (BLRGs) and narrow-line radio galaxies (NLRGs) are the elliptical analogues to Seyferts, but are additionally radio-loud.\cite{Peterson_1997}
 
-Some AGN are sufficiently have power outputs many times that of a typical host galaxy. In these objects, luminosity from the nucleus completely obscures the host galaxy. These are believed to be exceptionally rare, and as such are only detected at very high redshifts. At such distances, they appear point-like or  ``quasi-stellar,'' and are so dubbed quasars.\cite{Peterson_1997}
-
-In general, AGN exhibit several key characteristics:
+Some AGN are sufficiently have power outputs many times that of a typical host galaxy. In these objects, luminosity from the nucleus completely obscures the host galaxy. These are believed to be exceptionally rare, and as such are only detected at very high redshifts. At such distances, they appear point-like or  ``quasi-stellar,'' and are so dubbed quasars.\cite{Peterson_1997} In general, AGN exhibit several key characteristics:
 
 \begin{itemize}
     \item highly luminous and compact appearance
@@ -144,15 +152,27 @@ Emission from the central black hole is said to have different ``modes'' dependi
 
 \subsection{The Starburst-AGN Connection}\label{sec:starburst_agn_connection}
 
-A significant fraction (HOW MANY?) of AGN exhibit signatures of recent, large-scale star formation. These signatures include exceptionally blue photometric colours and strong \isotope{HII}-region-type emission lines, presumably gas ionised by hot, young O- and B-type stars. They also feature strong radio emissions, consistent with a high number of recent supernovae remnants.\cite{Peterson_1997}
+% Observations like radio emission and continuum spectra were sometimes blamed on large scale formation of O- and B- type stars, and the subsequent deaths. LINER and some Seyfert-II galaxies were briefly thought to really be starburst galaxies.\cite{Lawrence_1987}
+
+A significant fraction of AGN exhibit signatures of recent, large-scale star formation. These signatures include exceptionally blue photometric colours and strong \isotope{HII}-region-type emission lines, presumably gas ionised by hot, young O- and B-type stars. They also feature strong radio emissions, consistent with a high number of recent supernovae remnants.\cite{Peterson_1997}
+
+Early investigations found that both Seyfert and radio galaxy luminosity was commonly related to the luminosity of the host galaxy, or in other words, to total stellar mass formed in that galaxy. A relationship emerged between spheroid or bulge luminosity and the luminosity of the constituent AGN in Seyferts and radio galaxies.\cite{Lawrence_1987}. Large scale surveys subsequently find a strongly positive correlation between spheroid mass and central black hole masses in neighbouring galaxies.\cite{Veilleux_2008}
+
+% overview of evidence \cite{Veilleux_2008}
+
+The age of a stellar population can be characterised by several spectral indices. The $D_n(4000)$ index is defined as the ratio of flux from \SIrange{3850}{3950}{\angstrom} to that from \SIrange{4000}{4100}{\angstrom}. A high density of metal lines in this region means that young, hot stellar populations which ionise these metals will have a low $D_n$ with respect to older populations.\cite{Kauffmann_2003a} Studies by Kauffmann et al. 2003c found that the high luminosity AGN have substantially younger stellar populations (as characterised by $D_n$) than lower luminosity AGN, for fixed values of surface mass density. Quiescent galaxies do not exhibit this relationship, which suggests the most powerful AGN exist in galaxies which have recently undergone a short burst of star formation.\cite{Kauffmann_2003c}
+
+Is this phenomenon really the result of a starburst, though, or simply ongoing star formation in the host galaxy? Another spectral index, the $\mathrm{H\delta}$ absorption line, or $\mathrm{H\delta_A}$, increases strongly in galaxies where star formation ended \textless \SI{1}{\giga\year} ago. Galaxies with continuous formation occupy a narrow locus within the $D_n(4000)$/$\mathrm{H\delta_A}$ plane, so the distance from this locus can be used to determine the ``burstiness'' of recent SFH in an AGN host. Analyses from Kaufmann et al. 2013c also find AGN to indeed have a much wider spread about this locus---much more variability in their SFHs than normal galaxies.\cite{Kauffmann_2003c}
+
+% Feedback processes
 
 \begin{itemize}
-  \item andy review \cite{Lawrence_1987}
-  \item Boisson et al. 2001 \cite{Boisson_2001}
-  \item Seyfert/radio galaxy frequency comparison, Kauffmann et al. 2003 \cite{Kauffmann_2003}
+  \item AGN host phenomenology \cite{Lawrence_1987}
+  \item \SI{4000}{\angstrom} break strength and \isotope{OIII}, $\lambda=\SI{5007}{\angstrom}$ line as indicators of AGN strength\cite{Kauffmann_2003c}
+  \item transition from young to old stellar pops at surface mass density of $\mu_\star\approx\SI{3e8}{M_\odot\per\square\parsec}$\cite{Kauffmann_2003c}
   \item sf-black hole mass relation, Sylvain Veilleux 2008 \cite{Veilleux_2008}
+  \item feedback processes Veilleux \S 3 \cite{Veilleux_2008}
   \item Timing the AGN-Starburst Connection, Wild et al. 2010 \cite{Wild_2010}
-  \item Galaxy evolution compared to stellar evolution\cite{Mo_2010}
 \end{itemize}
 
 \subsection{Tidal Disruption Events}\label{sec:tidal_disruption_events}
@@ -163,7 +183,7 @@ If a star approaches a black hole of mass $>10^6M_\odot$ with a pericentre suffi
 
 The radiative (and therefore observational) result of this event depends on the fate of the resulting stellar debris. Approximately half of the stellar material escapes unbound on various hyperbolic orbits, but more tightly bound debris may later return within the tidal disruption radius of the black hole on elliptical orbits.\cite{Rees_1988} Over successive periods on bound orbits, this material gradually accretes on to the surface of the black hole, creating a short-lived (\textless\SI{1}{\year}) in nuclear luminosity as disk viscosity converts the material's potential energy to thermal radiation.\cite{Evans_1989}
 
-Observational data supports a slightly longer luminosity flare, with several distinct phases. For a 100-200 day period after peak bolometric luminosity, emission from the TDE flare is ``soft,'' or dominated by thermal emission in the UV/optical region, originating from the accretion disk and a short-lived corona of stellar ejecta. Approximately 500 days after peak UV/optical luminosity, this transitions to a phase of ``hard'' emission, which is dominated by higher energy photons, before finally returning to a quiescent mode.\cite{Wevers_2021} Observational data suggests that some accretion disks are stable for up to 5-10 years after peak luminosity.\cite{van_Velzen_2019}
+Observational data supports a slightly longer luminosity flare, with several distinct phases. For a 100-200 day period after peak bolometric luminosity, emission from the TDE flare is ``soft,'' or dominated by thermal emission in the UV/optical region, originating from the accretion disk and a short-lived corona of stellar ejecta. Approximately 500 days after peak UV/optical luminosity, this transitions to a phase of ``hard'' emission, which is dominated by a power-law spectrum of higher energy photons, before finally returning to a quiescent mode.\cite{Wevers_2021} Observational data suggests that some accretion disks are stable for up to 5-10 years after peak luminosity.\cite{van_Velzen_2019}
 
 For reasons similar to those reviewed in \S\ref{sec:starburst_agn_connection}, the precise dynamics of these phenomena are of particular relevance to galactic evolution models. Like steadily luminous Seyferts and radio galaxies, feedback from the accretion process may have consequences for the galactic star formation rate, or for AGN quenching. Analytical and numerical models predict the velocity of stellar ejecta to be of sufficient order to shock the interstellar medium (ISM) and inhibit steady accretion which would otherwise be inevitable in a galaxy hosting a SMBH.\cite{Evans_1989} As the ejecta are braked by the ISM, their kinetic energy is thermalized, heating the ISM, possibly enough to stop the collapse of molecular \isotope{H_2} clouds into star forming nurseries.\cite{Rees_1988}
 
@@ -329,9 +349,9 @@ Many of the challenges in fitting spectra to SFHs are due to the limitations of 
   T_{MS} \propto \left(\frac{M}{M_\odot}\right)^{-2}
 \end{equation}
 
-\noindent From this we obtain the typical main-sequence lifetimes for stars of different Harvard spectral classifications, given in Table \ref{tab:star_lifetimes_densities}. From this data, the limitations of stellar population fitting are immediately apparent. Due to the inverse power law relationship between mass and main-sequence lifetime, small reductions in the initial mass (and therefore, main-sequence temperature) of stars result in dramatic increases in main-sequence lifetime. While on the main-sequence, the luminosity and colour of these long-lived stars varies little.\cite{Prialnik_2010} If, for example, the hottest stars in a stellar population are G-type stars, then stellar population fitting may reasonably find that population to be anywhere between \SI{3}{Gyr} and \SI{11}{Gyr} old. This kind of temporal resolution is comparable to the age of the universe, but star formation rates are believed to vary on much smaller timescales.\textbf{CITATION NEEDED} If star forming processes create new stars with initial masses according to some initial mass function (IMF), then star formation of sufficient total mass formed will always create some stars of each spectral type. But once the population of A-type stars, with lifetimes on the order of \SI{100}{Myr}, die out completely, it becomes increasingly difficult to pinpoint the precise age of that formation.
+\noindent From this we obtain the typical main-sequence lifetimes for stars of different Harvard spectral classifications, given in Table \ref{tab:star_lifetimes_densities}. From this data, the limitations of stellar population fitting are immediately apparent. Due to the inverse power law relationship between mass and main-sequence lifetime, small reductions in the initial mass (and therefore, main-sequence temperature) of stars result in dramatic increases in main-sequence lifetime. While on the main-sequence, the luminosity and colour of these long-lived stars varies little.\cite{Prialnik_2010} If, for example, the hottest stars in a stellar population are G-type stars, then stellar population fitting may reasonably find that population to be anywhere between \SI{3}{Gyr} and \SI{11}{Gyr} old. This kind of temporal resolution is comparable to the age of the universe, but star formation rates are believed to vary on much smaller timescales.\cite{Kauffmann_2003c} If star forming processes create new stars with initial masses according to some initial mass function (IMF), then star formation of sufficient total mass formed will always create some stars of each spectral type. But once the population of A-type stars, with lifetimes on the order of \SI{100}{Myr}, die out completely, it becomes increasingly difficult to pinpoint the precise age of that formation.
 
-Indeed, calculations by Glenn et al. 2001 reproduced in Table \ref{tab:star_lifetimes_densities} show that our own Milky Way, despite being a relatively young, blue galaxy, is nevertheless mostly populated by cool red dwarves, whose lifetimes are many times that of the current age of the universe.
+Indeed, observations by Glenn et al. 2001 reproduced in Table \ref{tab:star_lifetimes_densities} show that our own Milky Way, despite being a relatively young, blue galaxy, is nevertheless mostly populated by cool red dwarves, whose lifetimes are many times that of the current age of the universe.
 
 \section{Metal and Nebular Emission Lines}
 
