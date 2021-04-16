@@ -378,101 +378,106 @@ Indeed, observations by Glenn et al. 2001 reproduced in Table \ref{tab:star_life
 Astrophysics of gaseous nebulae
 
 \section{Blind Fitting with \textsc{Bagpipes}}\label{sec:blind_fitting}
+
+Because stellar population fitting is so sensitive to prior constraints, I first sought to determine what SFHs could reliably be fit by \textsc{Bagpipes} before turning it on the XSHOOTER data. To do this, I performed ``blind-fitting'' trials, whereby I simulated observed spectra from a known, prior SFH and then fit these mock spectra with \textsc{Bagpipes} to see what priors are necessary to reproduce the true SFH.
+
+
+Make a note of noise applied to the mock spectra!
+
 Emphasize importance of computational speed. Necessity of Chi-squared selection
+
+model bias --- what if the true SFH doesn't look like models?
+
 \subsection{R1: Wide Parameter Space with Two Components}\label{sec:r1}
+
+\begin{table}
+  \centering
+  \begin{tabular}{l l r r l}
+    Model       & Parameter            & Symbol/Unit                  & Range          & Prior   \\
+    \hline \hline
+    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (3.5, 10)      & Uniform \\
+    Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)       & Uniform \\
+    \hline
+    Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (3.5, 10.5)    & Uniform \\
+                & FWHM                 & $2\sigma/\mathrm{Gyr}$       & (0.1, 5)       & Uniform \\
+    \hline
+    Global      & Mass formed          & $M_\star/M_\odot$            & (0, 15)        & Uniform \\
+                & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)       & Uniform \\
+                & Birth cloud lifetime & $T_{BC}/\mathrm{Gyr}$        & (0.005, 0.015) & Uniform \\
+                & Velocity dispersion  & $\sigma_v/\mathrm{kms^{-1}}$ & (150, 200)     & Uniform \\
+                & Extinction           & $A_V$                        & (0, 1)         & Uniform \\
+                & Redshift             & $z$                          & (0, 0.1)       & Uniform \\
+    \hline
+  \end{tabular}
+  \caption{Prior parameters and their distributions, as applied in the R1 round of blind fits.}
+  \label{tab:r1_priors}
+\end{table}
+
+\begin{table}
+  \centering
+  \begin{tabular}{l l r r l}
+    Model & Parameter   & Symbol/Unit        & Range           & Prior   \\
+    \hline \hline
+    Burst & Start time  & $T_0/\mathrm{Gyr}$ & (0, $T_{low}$)  & Uniform \\
+          & Mass formed & $M_\star/M_\odot$  & (0, 15)         & Uniform \\
+    \hline
+  \end{tabular}
+  \caption{Prior parameters and their distributions, as applied in the R1 round of blind fits.}
+  \label{tab:r1_burst_priors}
+\end{table}
+
 For my first fitting run, I tried to first establish the functional form of the
 old, bulk star formation, and then determine whether or not a more recent burst
 improved the fit. I first fit each of the following functions:
 
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=e^{t/\tau}$} \\
-  \hline
-  $t$ & (3.5, 10.0) \\
-  $\tau$ & (0.1, 2.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (0.0, 15.0) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
-
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=te^{\sfrac{-t}{\tau}}$} \\
-  \hline
-  $t$ & (3.5, 10.0) \\
-  $\tau$ & (0.1, 2.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (0.0, 15.0) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
-
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=lognormal$} \\
-  \hline
-  $t_{max}$ & (3.5, 10.5) \\
-  $2\sigma$ & (0.1, 5.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (0.0, 15.0) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
-
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{Global Priors} \\
-  \hline
-  Dust Type & Calzetti \\
-  $A_V$ & (0.0, 1.0) \\
-  $z$ & (0.0, 0.1) \\
-  $T_{bc}$ & (0.005, 0.015) \\
-  $\sigma_{v}$ & (150.0, 200.0) \\
-  \hline
-\end{tabular}
-
 Once the best-fit functional form of the old, bulk star formation is determined, a new fit is run with that form in linear combination with a delta function, with priors:
 
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=\delta_a(t)$} \\
-  \hline
-  $a$ & (0.1, $a_{low}$) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (0.0, 15.0) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
 \subsection{R2 \& R3: Iterative Fitting}\label{sec:r2_and_r3}
-One of the three functional forms above \textit{or} the more versatile double power law function:
 
-\begin{equation}
-  \mathrm{SFR}(t) \propto \left[ \left(\frac{t}{\tau}\right)^{\alpha} + \left(\frac{t}{\tau}\right)^{-\beta} \right]^{-1}
-\end{equation}
+\begin{table}
+  \centering
+  \begin{tabular}{l l r r l}
+    Model       & Parameter            & Symbol/Unit                  & Range          & Prior   \\
+    \hline \hline
+    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (3.5, 10)      & Uniform \\
+    Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)       & Uniform \\
+    \hline
+    Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (3.5, 10.5)    & Uniform \\
+                & FWHM                 & $2\sigma/\mathrm{Gyr}$       & (0.1, 5)       & Uniform \\
+    \hline
+    DPL         & Rising slope         & $\alpha$                     & (0, 10)        & Uniform \\
+                & Falling slope        & $\beta$                      & (0, 10)        & Uniform \\
+                & Turnover             & $\tau$                       & (0, 15)        & Uniform \\
+    \hline
+    Global      & Mass formed          & $M_\star/M_\odot$            & (0, 15)        & Uniform \\
+                & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)       & Uniform \\
+                & Birth cloud lifetime & $T_{BC}/\mathrm{Gyr}$        & (0.005, 0.015) & Uniform \\
+                & Velocity dispersion  & $\sigma_v/\mathrm{kms^{-1}}$ & (150, 200)     & Uniform \\
+                & Extinction           & $A_V$                        & (0, 1)         & Uniform \\
+                & Redshift             & $z$                          & (0, 0.1)       & Uniform \\
+    \hline
+  \end{tabular}
+  \caption{Prior parameters and their distributions, as applied in the R2, and R3 round of blind fits.}
+  \label{tab:r2_r3_priors}
+\end{table}
 
-With priors:
-
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$\mathrm{SFR}(t)\propto\left[\left(\sfrac{t}{\tau}\right)^{\alpha}+\left(\sfrac{t}{\tau}\right)^{-\beta} \right]^{-1}$} \\
-  \hline
-  $\tau$ & (0.0, 15.0) \\
-  $\alpha$ & (0.0, 10.0) \\
-  $\beta$ & (0.0, 10.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (0.0, 15.0) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
-
+One of the three functional forms from R1 \textit{or} the more versatile double power law function.
 And with an exponentially decaying burst, the age of which is allowed to vary over a much larger parameter space:
 
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=e^{t/\tau}$} \\
-  \hline
-  $t$ & (0.0, 10.0) \\
-  $\tau$ & (0.1, 2.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (0.0, 15.0) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
+\begin{table}
+  \centering
+  \begin{tabular}{l l r r l}
+    Model       & Parameter   & Symbol/Unit         & Range    & Prior   \\
+    \hline \hline
+    Exponential & Start time  & $T_0/\mathrm{Gyr}$  & (0, 10)  & Uniform \\ % F-star lifetime
+                & Decay time  & $\tau/\mathrm{Gyr}$ & (0.1, 2) & Uniform \\
+                & Mass formed & $M_\star/M_\odot$   & (0, 15)  & Uniform \\
+                & Metallicity & $Z/Z_\odot$         & (0, 2.5) & Uniform \\
+  \end{tabular}
+  \caption{Prior parameters and their distributions for the burst component, as applied in the R2 and R3 round of blind fits.}
+  \label{tab:r2_r3_burst_priors}
+\end{table}
+
 \subsection{Selecting Physically Reasonable Priors}\label{sec:prior_selection}
 
 Velocity dispersion of constituent stars is allowed to vary between
@@ -480,78 +485,62 @@ Velocity dispersion of constituent stars is allowed to vary between
 The ionization parameter for nebular emission is allowed to vary between logU=-4 and logU=-2, a very low and very high rate of (molecular?) ionization.
 
 The lifetime of the stellar birth clouds was chosen to be a normal distribution about ${t_{BC}=17Myr}$ with ${\sigma=4Myr}$, consistent with typical cloud lifetimes in the Milky Way, as determined by Murray 2011\cite{Murray_2011}.
+
 \subsection{R4: Fixed Old Component, Free Burst Component}\label{sec:r4}
+
+\begin{table}
+  \centering
+  \begin{tabular}{l l r r l}
+    Model       & Parameter            & Symbol/Unit                  & Range             & Prior   \\
+    \hline \hline
+    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (7.5, 12.5)       & Uniform \\
+    Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.5, 2)          & Uniform \\
+    \hline
+    Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (1, 6)            & Uniform \\
+                & FWHM                 & $2\sigma/\mathrm{Gyr}$       & (0.1, 3)          & Uniform \\
+    \hline
+    DPL         & Rising slope         & $\alpha$                     & (5, 10)           & Uniform \\
+                & Falling slope        & $\beta$                      & (5, 10)           & Uniform \\
+                & Turnover             & $\tau$                       & (0, 4.5)          & Uniform \\
+    \hline
+    Global      & Mass formed          & $M_\star/M_\odot$            & (5, 12.5)         & Uniform \\
+                & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)          & Uniform \\
+                & Birth cloud lifetime & $T_{BC}/\mathrm{Gyr}$        & (0.013, 0.021)    & Uniform \\
+                & Nebular ionisation   & $\log{U}$                    & (-4, -2)          & Uniform \\
+                & Velocity dispersion  & $\sigma_v/\mathrm{kms^{-1}}$ & (50, 450)         & Uniform \\
+                & Extinction           & $A_V$                        & (0, 2)            & Uniform \\
+                & Redshift             & $z$                          & $z_{obs}\pm0.001$ & Uniform \\
+    \hline
+  \end{tabular}
+  \caption{Prior parameters and their distributions, as applied in the R4 round of blind fits.}
+  \label{tab:r4_priors}
+\end{table}
+
+\begin{table}
+  \centering
+  \begin{tabular}{l l r r l}
+    Model       & Parameter            & Symbol/Unit                  & Range           & Prior   \\
+    \hline \hline
+    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (0.0, 3.5)      & Uniform \\ % F-star lifetime
+    & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)        & Uniform \\
+    & Mass formed          & $M_\star/M_\odot$            & (0, 12.5)       & Uniform \\
+    & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)        & Uniform \\
+  \end{tabular}
+  \caption{Prior parameters and their distributions on the burst component, as applied in the R4 round of blind fits.}
+  \label{tab:r4_burst_priors}
+\end{table}
+
+Dust Type is Calzetti
+$z$ varies tightly around $z_obs$ such that $z_{obs}-0.001 \leq z \leq z_{obs}+0.001$.
+$\sigma_{v}$ is constrained by Faber-Jackson. TODO: Lookup Minkowski 1962!
+$T_{BC}$ is constrained from Murray 2011.
+
 Quenching at Cosmic Noon
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=e^{t/\tau}$} \\
-  \hline
-  $t$ & (7.5, 12.5) \\
-  $\tau$ & (0.5, 2.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (5.0, 12.5) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
 
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=te^{\sfrac{-t}{\tau}}$} \\
-  \hline
-  $t$ & (7.5, 12.5) \\
-  $\tau$ & (0.1, 2.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (5.0, 12.5) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
-
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=lognormal$} \\
-  \hline
-  $t_{max}$ & (1.0, 6.0) \\
-  $2\sigma$ & (0.1, 3.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (5.0, 12.5) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
-
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$\mathrm{SFR}(t)\propto\left[\left(\sfrac{t}{\tau}\right)^{\alpha}+\left(\sfrac{t}{\tau}\right)^{-\beta} \right]^{-1}$} \\
-  \hline
-  $\tau$ & (0.0, 4.5) \\
-  $\alpha$ & (5.0, 10.0) \\
-  $\beta$ & (5.0, 10.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (5.0, 12.5) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
+Note that the delayed form was actually run with   $0.1 < \tau < 2.0$
 
 And an exponentially declining burst with priors:
 
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{$SFR=e^{t/\tau}$} \\
-  \hline
-  $t$ & (0.0, 3.5) \\ %Gyr, lifetime of F type stars
-  $\tau$ & (0.1, 2.0) \\
-  $\log_{10}(\sfrac{M}{M_\odot})$ & (0.0, 12.5) \\
-  $\sfrac{Z}{Z_\odot}$ & (0.0, 2.5) \\
-  \hline
-\end{tabular}
-
-\begin{tabular}{| c | c |}
-  \hline
-  \multicolumn{2}{| c |}{Global Priors} \\
-  \hline
-  Dust Type & Calzetti \\
-  $z$ & ($z_{obs}-0.001$, $z_{obs}+0.001$) \\ % z varies tight_layout around z_obs.
-  $\sigma_{v}$ & (50.0, 450.0) \\ % Constrained by Faber-Jackson. TODO: Lookup Minkowski 1962!
-  $T_{bc}$ & (0.013, 0.021) \\  % Constraints from Murray 2011.
-  $A_V$ & (0.0, 2.0) \\
-  $\log{U}$ & (-4.0, -2.0) \\
-  \hline
-\end{tabular}
 \section{Application to XSHOOTER Data}\label{sec:tde_fitting}
 \section{Results \& Discussion}\label{sec:results_and_discussion}
 
