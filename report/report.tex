@@ -186,16 +186,7 @@ Like AGN, observed TDEs often appear in galaxies which bear the signatures of re
 
 \subsection{The XSHOOTER Data}\label{sec:xshooter_data}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.3\textwidth]{ASASSN-14li_host_red}
-  \includegraphics[width=0.3\textwidth]{AT2019qiz_host_red}
-  \includegraphics[width=0.3\textwidth]{iPTF16fnl_host_red}
-  \caption{ASASSN-14li, AT2019qiz, and iPTF16fnl host galaxies.}
-  \label{fig:xshooter_hosts}
-\end{figure}
-
-% Spare table with RAs and Decs included, although this is more information than needed.
+% Spare table with RAs and Decs included.
 % \begin{table}[H]
 %   \begin{tabular}{l c c}
 %     TDE         & $\alpha$     & $\delta$     \\
@@ -210,11 +201,22 @@ Like AGN, observed TDEs often appear in galaxies which bear the signatures of re
 %     iPTF16fnl   & 00:29:57.010 & +32:53:37.24 \\
 %     \hline
 %   \end{tabular}
-%   \caption{XSHOOTER targets and their host morphologies on the Very Large Telescope (VLT).\cite{Zwicky_1975, Jose_2014, Holoien_2016a, Arcavi_2015, Holoien_2016b, Wevers_2021, Cacella_2019, Holoien_2019, van_Velzen_2019, Perez_Torres_2019, Seibert_2019, Gezari_2016, Blagorodnova_2017}}
+%   \caption{
+%   XSHOOTER targets and their coordinates, in right ascension and declination.
+%   }
 %   \label{tab:xshooter_data}
 % \end{table}
 
-\lipsum[1]
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.3\textwidth]{ASASSN-14li_host_red}
+  \includegraphics[width=0.3\textwidth]{AT2019qiz_host_red}
+  \includegraphics[width=0.3\textwidth]{iPTF16fnl_host_red}
+  \caption{ASASSN-14li, AT2019qiz, and iPTF16fnl host galaxies.}
+  \label{fig:xshooter_hosts}
+\end{figure}
+
+To do this, I utilised spectroscopic and photometric data on eight galaxies which hosted a tidal disruption event between 2014 and 2020. Table \ref{tab:xshooter_data} lists the targets, which were observed between September and December of 2020, with the XSHOOTER instrument on the Very Large Telescope (VLT). They are all of similar magnitude and moderate redshift, all  being located at $z<0.1$. At such distances, they occupy little real estate on a CCD (see Fig. \ref{fig:xshooter_hosts}), but the XSHOOTER instrument provides detailed, ground-based spectroscopy of the TDE hosts, with flux bins of width $\Delta\lambda=\SI{0.2}{\angstrom}$ below \SI{10200}{\angstrom} and $\Delta\lambda=\SI{0.6}{\angstrom}$ above \SI{10200}{\angstrom}. Some of the spectra featured strong telluric lines from the Earth's atmosphere, but the errors on these fluxes can be exaggerated to ensure \textsc{Bagpipes} does not overfit them, as described in \S \ref{sec:bagpipes_module}.
 
 \begin{table}[H]
   \centering
@@ -231,11 +233,17 @@ Like AGN, observed TDEs often appear in galaxies which bear the signatures of re
     iPTF16fnl   & Markarian 950           & 16  & E+A        & 0.018    \\
     \hline
   \end{tabular}
-  \caption{XSHOOTER target TDEs, their host galaxies, magnitudes, host morphologies (if known), and redshifts, which were observed on the Very Large Telescope (VLT) between September and December 2020.\cite{Zwicky_1975, Jose_2014, Holoien_2016a, Arcavi_2015, Holoien_2016b, Wevers_2021, Cacella_2019, Holoien_2019, van_Velzen_2019, Perez_Torres_2019, Seibert_2019, Gezari_2016, Blagorodnova_2017}}
+  \caption{
+  XSHOOTER target TDEs, their host galaxies, magnitudes, host morphologies
+  (if known), and redshifts, which were observed on the Very Large Telescope
+  (VLT) between September and December 2020.\cite{Zwicky_1975, Jose_2014,
+  Holoien_2016a, Arcavi_2015, Holoien_2016b, Wevers_2021, Cacella_2019,
+  Holoien_2019, van_Velzen_2019, Perez_Torres_2019, Seibert_2019, Gezari_2016, Blagorodnova_2017}
+  }
   \label{tab:xshooter_data}
 \end{table}
 
-\subsection{The BAGPIPEs Module}\label{sec:bagpipes_module}
+\subsection{The Bagpipes Module}\label{sec:bagpipes_module}
 
 \begin{figure}[H]
   \includegraphics[width=\textwidth]{alex_model_20_sfh}
@@ -244,48 +252,58 @@ Like AGN, observed TDEs often appear in galaxies which bear the signatures of re
   \label{fig:bagpipes_example_simulation}
 \end{figure}
 
-The parameter space minimally covered is:
+\textsc{Bagpipes} is a module for Python 3, implemented by Carnall et al. 2018. Its moniker is an acronym for Bayesian Analyses of Galaxies for Physical Inference and Parameter EStimation. \textsc{Bagpipes} constructs model galaxies from a variety of parameters, such as the form of the SFH, observed redshift, dust attenuation, and nebular emission. From this model, \textsc{Bagpipes} generates model spectral energy distributions, as they would be observed if they were real galaxies. The luminosity per unit rest-frame wavelength $L_\lambda(\lambda)$, from sum of four ``ingredients'':
 
 \begin{itemize}
-  \item functional form of the SFH
-  \item host galaxy redshift
-  \item velocity dispersion
-  \item dust attenuation curve
+  \item The SFH, $\mathrm{SFR}(t)$, which is a linear combination of one or more of the functional forms described below.
+  \item Simple stellar population models, $\mathrm{SSP}(a,\lambda,Z)$ which give the spectral energy distribution for a total stellar mass of age $a$ given by the SFH, on the basis of an initial mass function (IMF) and the metallicity of stellar population or populations.
+  \item The transmission function of the ionised ISM, $T^+(a,\lambda)$ which determines how starlight is absorbed and re-emitted by hot gas regions.
+  \item Finally, the transmission function of the neutral ISM, $T^0(a,\lambda)$, which determines how starlight is absorbed and remitted by cold gas and dust regions.\cite{Carnall_2018}
 \end{itemize}
 
-\noindent For parameterising the SFH, \textsc{Bagpipes} allows a linear combination of one or more of several predefined functional forms. An exponentially decaying burst with form:
+\noindent These are combined to give the galactic rest-frame spectrum:
 
-\begin{equation}
+\begin{equation}\label{eq:luminosity_per_rframe_wavelength}
+  L_\lambda(\lambda) =
+  \sum_{j=1}^{N_c} \sum_{i=1}^{N_a}
+  \mathrm{SFR}_j(t_i)
+  \mathrm{SSP}(a_i,\lambda,Z_j)
+  T^+(a_i,\lambda)
+  T^0(a_i,\lambda)
+  \Delta a_i
+\end{equation}
+
+\noindent Where $i$ runs over the number of stellar age bins defined by \textsc{Bagpipes} and $j$ runs over the components of the SFH.\cite{Carnall_2018} An example spectrum from a parameterised SFH is given in Fig. \ref{fig:bagpipes_example_simulation}. The parameterised SFH, is a linear combination of one or more of the following functional forms. An exponentially decaying burst with form:
+
+\begin{equation}\label{eq:tau_model}
   \mathrm{SFR}(t) \propto
   \begin{cases}
-    0 & t < T_0, \\
-    e^{-\frac{t-T_0}{\tau}} & t > T_0
+    \exp\left({-\frac{t-T_0}{\tau}}\right) & t > T_0, \\
+    0 & t < T_0
   \end{cases}
 \end{equation}
 
-\noindent A delayed exponentially decaying component: \textbf{TODO: DESMOS THIS!}
+\noindent A delayed exponentially decaying component:
 
-\begin{equation}
+\begin{equation}\label{eq:delayed_model}
   \mathrm{SFR}(t) \propto
   \begin{cases}
-    0 & t < T_0, \\
-    (t-T_0)e^{-\frac{t-T_0}{\tau}} & t > T_0
+    (t-T_0)\exp\left({-\frac{t-T_0}{\tau}}\right) & t > T_0, \\
+    0 & t < T_0
   \end{cases}
 \end{equation}
 
 \noindent A lognormal form:
 
-\begin{equation}
+\begin{equation}\label{eq:lognormal_model}
   \mathrm{SFR}(t) \propto
   \frac{1}{t\sqrt{2\pi\tau^2}}
-  e^{-\frac{\left(\ln{t-t_0}\right)^2}{2\tau^2}}
+  \exp\left({-\frac{\left(\ln{t-t_0}\right)^2}{2\tau^2}}\right)
 \end{equation}
 
-\noindent Defined by Gladders et al. 2013, where $t$ is the elapsed time since the big bang, $t_0$ is the logarithmic decay time, and $\tau$ sets rise and decay timescale.\cite{Gladders_2013} \textsc{Bagpipes}, however, parameterises this as $t_{max}$, the time since the big bang at the peak rate of star formation and $2\sigma$, the full width at half maximum (FWHM) of the star formation rate.\cite{Carnall_2018}
+\noindent Defined by Gladders et al. 2013, where $t$ is the elapsed time since the big bang, $t_0$ is the logarithmic decay time, and $\tau$ sets rise and decay timescale.\cite{Gladders_2013} \textsc{Bagpipes}, however, parameterises this as $t_{max}$, the time since the big bang at the peak rate of star formation and $2\sigma$, the full width at half maximum (FWHM) of the star formation rate.\cite{Carnall_2019b} Finally, \textsc{Bagpipes} allows a more versatile double power law parameterisation:
 
-Finally, \textsc{Bagpipes} allows a more versatile double power law parameterisation:
-
-\begin{equation}
+\begin{equation}\label{eq:dblplaw_model}
   \mathrm{SFR}(t)\propto
   \left[
   \left(\frac{t}{\tau}\right)^{\alpha} +
@@ -294,22 +312,18 @@ Finally, \textsc{Bagpipes} allows a more versatile double power law parameterisa
   ^{-1}
 \end{equation}
 
-\noindent Which usefully decouples the rising and falling slopes of the star formation, at the expense of an additional parameter in a fit which is already of high dimensionality and of increased computational resources.\cite{Carnall_2018} Each of the above parameterisations include a parameter each for the total stellar mass $m_\star$ formed by the component and the metallicity $Z$ of the stars formed. It is possible to include ``bursts'' of fixed mass such that:
+\noindent Which usefully decouples the rising $\alpha$ and falling $\beta$ slopes of the star formation, at the expense of an additional parameter in a fit which is already of high dimensionality and of increased computational resources.\cite{Carnall_2018} Each of the above parameterisations include a parameter each for the total stellar mass $M_\star$ formed by the component and the metallicity $Z$ of the stars formed. It is possible to include ``bursts'' of fixed mass such that:
 
 \begin{equation}
   \mathrm{SFR}(t)\propto
-  m_\star \delta(t-t_0)
+  M_\star \delta(t-T_0)
 \end{equation}
 
 \noindent As a matter of semantics, such ``bursts'' are not necessarily synonymous with the type of ``starburst'' activity for which we are searching. The starburst component may take one of any of these forms.
 
-Nebular Component
+Global parameters for the entire model galaxy include the observed redshift $z_obs$, the velocity dispersion $\sigma_v$ of the stellar population,the logarithm of the nebular ionisation rate $\log{U}$, and the extinction $A_V$ in magnitudes due to dust in the galaxy, which contribute to the summation in Eq. \ref{eq:luminosity_per_rframe_wavelength}.
 
-Velocity dispersion
-
-Redshift
-
-Extinction
+\textbf{Mention dust extinction curve (type) here!}
 
 \begin{figure}
   \includegraphics[width=\textwidth]{host_hyz_specwerr_fit}
@@ -317,6 +331,17 @@ Extinction
   \caption{Observed (blue) spectrum, fitted (orange) spectrum, and inferred star formation history with \textsc{Bagpipes}.}
   \label{fig:bagpipes_example_fit}
 \end{figure}
+
+The real power of \textsc{Bagpipes}, however, is that it can also do the inverse: take in an observed spectrum and infer the most likely star formation history for that galaxy. By utilising Bayes' Theorem for some new data $\mathcal{D}$, a hypothesis $\mathcal{H}$ with parameter vector:
+
+\begin{equation}\label{eq:bayes_theorem}
+  P(\Theta|\mathcal{D},\mathcal{H}) =
+  \frac
+  {P(\mathcal{D}|\Theta,\mathcal{H})P(\Theta|\mathcal{H})}
+  {P(\mathcal{D}|\mathcal{H})}
+\end{equation}
+
+And the \textsc{LINEST} linear algebra sampling method to determine the probability that a model galaxy spectrum described by Eq. \ref{eq:luminosity_per_rframe_wavelength} is a fit for the observed spectrum, \textsc{Bagpipes} produces a posterior distribution of SFHs and their associated parameters.
 
 \subsection{Stellar Population Fitting}\label{sec:stellar_population_fitting}
 
