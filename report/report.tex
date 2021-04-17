@@ -314,7 +314,7 @@ To do this, I utilised spectroscopic and photometric data on eight galaxies whic
 
 \noindent Which usefully decouples the rising $\alpha$ and falling $\beta$ slopes of the star formation, at the expense of an additional parameter in a fit which is already of high dimensionality and of increased computational resources.\cite{Carnall_2018} Each of the above parameterisations include a parameter each for the total stellar mass $M_\star$ formed by the component and the metallicity $Z$ of the stars formed. It is possible to include ``bursts'' of fixed mass such that:
 
-\begin{equation}
+\begin{equation}\label{eq:burst_model}
   \mathrm{SFR}(t)\propto
   M_\star \delta(t-T_0)
 \end{equation}
@@ -373,24 +373,31 @@ Many of the challenges in fitting spectra to SFHs are due to the limitations of 
 
 Indeed, observations by Glenn et al. 2001 reproduced in Table \ref{tab:star_lifetimes_densities} show that our own Milky Way, despite being a relatively young, blue galaxy, is nevertheless mostly populated by cool red dwarves, whose lifetimes are many times that of the current age of the universe.
 
-\section{Metal and Nebular Emission Lines}
-
-Astrophysics of gaseous nebulae
+% \section{Metal and Nebular Emission Lines}
+%
+% Astrophysics of gaseous nebulae
 
 \section{Blind Fitting with \textsc{Bagpipes}}\label{sec:blind_fitting}
 
-Because stellar population fitting is so sensitive to prior constraints, I first sought to determine what SFHs could reliably be fit by \textsc{Bagpipes} before turning it on the XSHOOTER data. To do this, I performed ``blind-fitting'' trials, whereby I simulated observed spectra from a known, prior SFH and then fit these mock spectra with \textsc{Bagpipes} to see what priors are necessary to reproduce the true SFH.
+Because stellar population fitting is so sensitive to prior constraints, I first sought to determine what SFHs could reliably be fit by \textsc{Bagpipes} before turning it on the XSHOOTER data. To do this, I performed ``blind-fitting'' trials, whereby I simulated observed spectra from a known, priori SFH and then fit these mock spectra with \textsc{Bagpipes} to see what priors are necessary to reproduce the true SFH.\footnote{For clarity, I will hereafter use the dative ``priori'' to describe properties of the simulated galaxy, the nominative ``prior(s)'' to describe the parameters and parameter ranges used to blind-fit the simulated galaxy, and ``posterior'' to describe the fitted parameters.}
 
+Because model galaxy spectra are simulated, their flux values are ``exact'' and don't have associated uncertainties. So before they can be fit, they need to have noise added to them. The particular choice of uncertainty to add is somewhat arbitrary, but I tried to mimic the signal to noise ratio of the XSHOOTER data when doing this. At wavelengths below approximately \SI{3500}{\angstrom}, noise in the XSHOOTER data is on the same order of magnitude as the signal. Between approximately \SIrange{3500}{9000}{\angstrom}, noise is one or two orders of magnitude less than the signal, and at longer wavelengths, the $S/N$ ratio decreases considerably.
 
-Make a note of noise applied to the mock spectra!
+\begin{figure}
+  \includegraphics{ASASSN14li_SN_hist}
+  \caption{Histograms of the $S/N$ ratio of flux values for the eight XSHOOTER targets. Note that some very low $S/N$ ratios are due to deliberately exaggerated errors on Telluric lines, as described in \S \ref{sec:xshooter_data}.}
+  \label{fig:sig_to_noise_histograms}
+\end{figure}
 
-Emphasize importance of computational speed. Necessity of Chi-squared selection
+To produce similar uncertainties, I select a Monte Carlo error for each flux value $f$ from a Gaussian distribution with $\mu=f$ and $\sigma=0.1f$, and assign the error to that flux value. This doesn't perfectly reproduce the wavelength-dependent uncertainty of the XSHOOTER data, but errors sampled from the wings of the Gaussian reproduce some of the very high and very low $S/N$ ratios in the XSHOOTER data while maintaining the statistical behaviour illustrated in Fig. \ref{fig:sig_to_noise_histograms}: that most errors are one or two orders of magnitude less than their associated data points.
 
-model bias --- what if the true SFH doesn't look like models?
+The minimum parameter space covered by a \textsc{Bagpipes} fit includes a single function SFH and its associated parameters, a redshift, a velocity dispersion, and dust attenuation: a 7-dimensional parameter space. More nuanced models which account for nebular emission, birth cloud lifetimes, and multiple SFH components quickly grow to be very high-dimensional and therefore computationally expensive. My two component fits were 13- or 14-dimensional, depending on whether or not a double power-law function was included, and each run took many hours on the Cuillin computing cluster at the Royal Observatory Edinburgh. For these reasons, it's essential to fit in a way that is computationally efficient.
+
+As an aside, it's import to consider whether real star formation histories are really like this. As discussed in \S\S\ref{sec:active_galactic_nuclei} and \ref{sec:tidal_disruption_events}, star formation histories do not evolve on sufficiently short timescales to observe them directly, but we can measure trends in galactic star formation over varying redshifts. Stellar population dating of high redshift galaxies suggests that cosmic star formation peaks in most galaxies sometime around $1.5 < z < 3$, a period sometimes referred to as ``cosmic noon,'' and that star formation is ``quenched'' after this time.\cite{Feldmann_2016} So there are compelling reasons to believe that most of a galaxy's stellar mass should be formed in some bulk formation in the distant past, with possibly variable, low-level star formation since that epoch. The simulated spectra I produced for blind-fitting all conform to this paradigm, so the blind fits are a test how reliably this kind of SFH can be reconstructed from a spectrum. If, however, true SFHs do not follow this trend, fits performed with priors that reflect this paradigm will still tend to find star formation histories that tend to affirm that paradigm---a form of model bias. In the next four sections, I detail four ``runs'' or sets of priors and related algorithms, hereafter referred to as R1, R2, R3 and R4. In each run, I test different priors and fitting routines to reconstruct a known star formation history from its simulated spectrum, while balancing the need to minimise model bias with the need for computational austerity.
 
 \subsection{R1: Wide Parameter Space with Two Components}\label{sec:r1}
 
-\begin{table}
+\begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
     Model       & Parameter            & Symbol/Unit                  & Range          & Prior   \\
@@ -413,7 +420,7 @@ model bias --- what if the true SFH doesn't look like models?
   \label{tab:r1_priors}
 \end{table}
 
-\begin{table}
+\begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
     Model & Parameter   & Symbol/Unit        & Range           & Prior   \\
@@ -426,45 +433,50 @@ model bias --- what if the true SFH doesn't look like models?
   \label{tab:r1_burst_priors}
 \end{table}
 
-For my first fitting run, I tried to first establish the functional form of the
-old, bulk star formation, and then determine whether or not a more recent burst
-improved the fit. I first fit each of the following functions:
+As discussed in \S \ref{sec:bagpipes_module}, computational resources are a serious consideration when devising priors for a \textsc{Bagpipes} fit. So for my first fitting run, I tried to first establish the functional form of the old, bulk star formation, and then determine whether or not a more recent burst improved the fit. This advantageously limits the first three fits to only ten dimensions, and runs only one subsequent 12-dimensional fit.
 
-Once the best-fit functional form of the old, bulk star formation is determined, a new fit is run with that form in linear combination with a delta function, with priors:
+I first fit each of the functional forms given in Tab. \ref{tab:r1_priors}. To determine which of these best fits the spectral data, I calculate the reduced chi-squared value:
+
+\begin{equation}
+  \chi^2 = \sum_{i}\frac{(O_i - C_i)^2}{\sigma_i^2}
+\end{equation}
+
+\noindent For each fit using the simulated data $O_i$, their errors $\sigma_i$, and model spectrum $C_i$ fit by \textsc{Bagpipes}. I select the functional form with the best fit (lowest chi-squared value) and run a second fit with that functional form in linear combination with a delta function with priors given in Tab. \ref{tab:r1_burst_priors}. For this second component, I constrain the age of the burst to be less than $T_low$, which taken from the median posterior age of the bulk component, i.e. we are only interested in detecting bursts which occur \textit{after} the bulk star formation. I perform a final reduced chi-squared calculation for this fit, and compare it to the single component fit. If the old+burst form reduces the chi-squared statistic, then I consider this a positive burst detection. If not, I consider the single component fit to be the best, and take there to be no burst in the SFH.
+
+Unfortunately, this seldom detected priori bursts in the posterior. Upon inspection, I found that when fitting the bulk component without a burst, \textsc{Bagpipes} favours posterior parameters with a much younger bulk formation than the priori SFH in order to account for blue stars formed in the burst. Constraining the age of the burst to be younger than this biases the second fit towards lower burst masses and young bulk formation. Since the burst can not be sufficiently old to account for blue stars in the spectrum, the bulk formation can not be weighted back towards an older stellar population. It also dubiously assumes that the functional form with the best single component fit will also be the best fit in linear combination with a burst, which is not necessarily the case. For these reasons, I chose to abandon this approach.
 
 \subsection{R2 \& R3: Iterative Fitting}\label{sec:r2_and_r3}
 
-\begin{table}
+\begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
-    Model       & Parameter            & Symbol/Unit                  & Range          & Prior   \\
+    Model       & Parameter            & Symbol/Unit                  & Range          & Prior    \\
     \hline \hline
-    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (3.5, 10)      & Uniform \\
-    Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)       & Uniform \\
+    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (3.5, 10)      & Uniform  \\
+    Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)       & Uniform  \\
     \hline
-    Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (3.5, 10.5)    & Uniform \\
-                & FWHM                 & $2\sigma/\mathrm{Gyr}$       & (0.1, 5)       & Uniform \\
+    Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (3.5, 10.5)    & Uniform  \\
+                & FWHM                 & $2\sigma/\mathrm{Gyr}$       & (0.1, 5)       & Uniform  \\
     \hline
-    DPL         & Rising slope         & $\alpha$                     & (0, 10)        & Uniform \\
-                & Falling slope        & $\beta$                      & (0, 10)        & Uniform \\
-                & Turnover             & $\tau$                       & (0, 15)        & Uniform \\
+    DPL         & Rising slope         & $\alpha$                     & (0, 10)        & Uniform  \\
+                & Falling slope        & $\beta$                      & (0, 10)        & Uniform  \\
+                & Turnover             & $\tau$                       & (0, 15)        & Uniform  \\
     \hline
-    Global      & Mass formed          & $M_\star/M_\odot$            & (0, 15)        & Uniform \\
-                & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)       & Uniform \\
-                & Birth cloud lifetime & $T_{BC}/\mathrm{Gyr}$        & (0.005, 0.015) & Uniform \\
-                & Velocity dispersion  & $\sigma_v/\mathrm{kms^{-1}}$ & (150, 200)     & Uniform \\
-                & Extinction           & $A_V$                        & (0, 1)         & Uniform \\
-                & Redshift             & $z$                          & (0, 0.1)       & Uniform \\
+    Global      & Mass formed          & $M_\star/M_\odot$            & (0, 15)        & Uniform  \\
+                & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)       & Uniform  \\
+                & Birth cloud lifetime & $T_{BC}/\mathrm{Gyr}$        & (0.005, 0.015) & Gaussian \\
+                & Velocity dispersion  & $\sigma_v/\mathrm{kms^{-1}}$ & (150, 200)     & Uniform  \\
+                & Extinction           & $A_V$                        & (0, 1)         & Uniform  \\
+                & Redshift             & $z$                          & (0, 0.1)       & Uniform  \\
     \hline
   \end{tabular}
   \caption{Prior parameters and their distributions, as applied in the R2, and R3 round of blind fits.}
   \label{tab:r2_r3_priors}
 \end{table}
 
-One of the three functional forms from R1 \textit{or} the more versatile double power law function.
-And with an exponentially decaying burst, the age of which is allowed to vary over a much larger parameter space:
+I decided that in order to avoid suppressing the burst mass with young bulk formation, both the age of the burst and the bulk formation had to be allowed to vary over a wider prior parameter space. Without the need to constrain the burst by the median age of the bulk formation, I was able to fit the three functional forms from R1 \textit{or} the more versatile double power law function (which has no posterior age distribution). In these runs, I also utilised a more physically realistic, exponentially decaying burst function instead of the burst described by Eq. \ref{eq:burst_model}. This burst is allowed to vary over a much larger parameter space:
 
-\begin{table}
+\begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
     Model       & Parameter   & Symbol/Unit         & Range    & Prior   \\
@@ -478,7 +490,11 @@ And with an exponentially decaying burst, the age of which is allowed to vary ov
   \label{tab:r2_r3_burst_priors}
 \end{table}
 
+The only difference between R2 and R3 is that in R3, the prior redshift $z$ of the galaxy is constrained to be $z_{obs} - 0.001 \leq z \leq z_{obs} + 0.001$, where $z_{obs}$ is the observational redshift. (For blind-fitting, the ``observational'' redshift was simply taken to be the priori redshift). R2 simply let this prior vary between 0 and 0.1, a range which included all the priori galaxies and the XSHOOTER targets. R3 did produce marginally more accurate posterior redshifts, but both runs still failed to reliably detect the priori bursts. Rather, they continued to favour younger bulk formation than in the priori galaxy and suppressing high mass bursts in the posterior distribution.
+
 \subsection{Selecting Physically Reasonable Priors}\label{sec:prior_selection}
+
+I concluded from R2 and R3 that, actually, the age of the bulk formation had so be constrained to some range more consistent with observation.
 
 Velocity dispersion of constituent stars is allowed to vary between
 
@@ -486,7 +502,7 @@ The ionization parameter for nebular emission is allowed to vary between logU=-4
 
 The lifetime of the stellar birth clouds was chosen to be a normal distribution about ${t_{BC}=17Myr}$ with ${\sigma=4Myr}$, consistent with typical cloud lifetimes in the Milky Way, as determined by Murray 2011\cite{Murray_2011}.
 
-\subsection{R4: Fixed Old Component, Free Burst Component}\label{sec:r4}
+\subsection{R4: Constrained Old Component, Free Burst Component}\label{sec:r4}
 
 \begin{table}
   \centering
@@ -519,12 +535,12 @@ The lifetime of the stellar birth clouds was chosen to be a normal distribution 
 \begin{table}
   \centering
   \begin{tabular}{l l r r l}
-    Model       & Parameter            & Symbol/Unit                  & Range           & Prior   \\
+    Model       & Parameter   & Symbol/Unit         & Range      & Prior   \\
     \hline \hline
-    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (0.0, 3.5)      & Uniform \\ % F-star lifetime
-    & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)        & Uniform \\
-    & Mass formed          & $M_\star/M_\odot$            & (0, 12.5)       & Uniform \\
-    & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)        & Uniform \\
+    Exponential & Start time  & $T_0/\mathrm{Gyr}$  & (0.0, 3.5) & Uniform \\ % F-star lifetime
+                & Decay time  & $\tau/\mathrm{Gyr}$ & (0.1, 2)   & Uniform \\
+                & Mass formed & $M_\star/M_\odot$   & (0, 12.5)  & Uniform \\
+                & Metallicity & $Z/Z_\odot$         & (0, 2.5)   & Uniform \\
   \end{tabular}
   \caption{Prior parameters and their distributions on the burst component, as applied in the R4 round of blind fits.}
   \label{tab:r4_burst_priors}
