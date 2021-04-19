@@ -1,6 +1,7 @@
 import bagpipes as pipes
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.ndimage.filters import gaussian_filter
 
 def redden(redshift, spectrum):
     spectrum[:,0] *= (1.0 + redshift)
@@ -236,6 +237,32 @@ def plot_corner(fit, names=[], show=False, save=True, bins=25, type="fit_params"
 
     return fig
 
+def auto_x_ticks(ax, nticks=5.):
+
+        spacing = 1./nticks
+
+        width = ax.get_xlim()[1] - ax.get_xlim()[0]
+        tick_locs = np.arange(ax.get_xlim()[0] + spacing/2.*width,
+                              ax.get_xlim()[1], spacing*width)
+
+        if tick_locs.max() < 0:
+            n_decimals = 0
+
+        else:
+            n_decimals = -int(np.log10(tick_locs.max()))+1
+
+        for i in range(tick_locs.shape[0]):
+            tick_locs[i] = np.round(tick_locs[i], decimals=n_decimals)
+
+        while ((tick_locs[1:] - tick_locs[:-1])/width).min() < (1./(nticks+1)):
+            tick_locs = np.arange(ax.get_xlim()[0] + spacing/2.*width,
+                                  ax.get_xlim()[1], spacing*width)
+            n_decimals += 1
+            for i in range(tick_locs.shape[0]):
+                tick_locs[i] = np.round(tick_locs[i], decimals=n_decimals)
+
+        ax.set_xticks(tick_locs)
+
 def fix_param_names(fit_params):
 
     latex_names = {"redshift": "z",
@@ -279,7 +306,8 @@ def fix_param_names(fit_params):
     "t_bc": "t_{BC}",
     "B": "B",
     "delta": "\delta",
-    "fwhm": "\\mathrm{FWHM}"}
+    "fwhm": "\\mathrm{FWHM}",
+    "tmax": "\\mathrm{t_{max}}"}
 
     latex_units = {"metallicity": "Z_{\\odot}",
     "massformed": "M_{\\odot})}",
@@ -298,7 +326,8 @@ def fix_param_names(fit_params):
     "tau_q": "\\mathrm{Gyr}",
     "tquench": "\\mathrm{Gyr}",
     "t_bc": "\\mathrm{Gyr}",
-    "fwhm": "\\mathrm{Gyr}"}
+    "fwhm": "\\mathrm{Gyr}",
+    "tmax": "\\mathrm{Gyr}"}
 
     latex_comps = {"dblplaw": "dpl",
     "exponential1": "exp",
@@ -357,7 +386,7 @@ def update_rcParams():
 
     tex_on = True
 
-    mpl.rcParams["lines.linewidth"] = 2.
+    mpl.rcParams["lines.linewidth"] = 1.
     mpl.rcParams["axes.linewidth"] = 1.5
     mpl.rcParams["axes.labelsize"] = 18.
     mpl.rcParams["xtick.top"] = True
@@ -374,3 +403,72 @@ def update_rcParams():
 
     else:
         mpl.rcParams["text.usetex"] = False
+
+    mpl.rcParams["figure.autolayout"] = True
+
+def make_hist_arrays(x, y):
+    """ convert x and y arrays for a line plot to a histogram plot. """
+    hist_x = np.c_[x[:-1], x[1:]].flatten()
+    hist_y = np.c_[y, y].flatten()
+
+    return hist_x, hist_y
+
+def hist1d(samples, ax, smooth=False, label=None, color="orange",
+           percentiles=True, zorder=4, bins=50, lw=2):
+
+    if color == "orange":
+        color1 = "darkorange"
+        color2 = "navajowhite"
+        alpha = 0.7
+
+    if color == "purple":
+        color1 = "purple"
+        color2 = "purple"
+        alpha = 0.4
+
+    if color == "blue":
+        color1 = "blue"
+        color2 = "dodgerblue"
+        alpha = 0.6
+
+    if color == "gray":
+       color1 = "black"
+       color2 = "gray"
+       alpha = 0.7
+
+    if label is not None:
+        x_label = fix_param_names([label])
+        ax.set_xlabel(x_label)
+
+    width = samples.max() - np.max([samples.min(), -99.])
+    range = (np.max([samples.min(), -99.]) - width/10.,
+             samples.max() + width/10.)
+
+    y, x = np.histogram(samples, bins=bins, density=True, range=range)
+
+    y = gaussian_filter(y, 1.5)
+
+    if smooth:
+        x_midp = (x[:-1] + x[1:])/2.
+        ax.plot(x_midp, y, color=color1, zorder=zorder-1)
+        ax.fill_between(x_midp, np.zeros_like(y), y,
+                        color=color2, alpha=alpha, zorder=zorder-2)
+        ax.plot([x_midp[0], x_midp[0]], [0, y[0]],
+                color=color1, zorder=zorder-1, lw=lw)
+
+        ax.plot([x_midp[-1], x_midp[-1]], [0, y[-1]],
+                color=color1, zorder=zorder-1, lw=lw)
+
+    else:
+        x_hist, y_hist = make_hist_arrays(x, y)
+        ax.plot(x_hist, y_hist, color="black")
+
+    if percentiles:
+        for percentile in [16, 50, 84]:
+            ax.axvline(np.percentile(samples, percentile), linestyle="--",
+                       color="black", zorder=zorder, lw=3)
+
+    ax.set_ylim(bottom=0)
+    ax.set_xlim(range)
+    auto_x_ticks(ax, nticks=3.)
+    plt.setp(ax.get_yticklabels(), visible=False)
