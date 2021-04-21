@@ -6,10 +6,10 @@ import sys
 from pipes_utils import *
 
 # oldfiles = ["phil_model_01", "phil_model_02","phil_model_03", "phil_model_04","phil_model_05", "phil_model_06","phil_model_07", "phil_model_08","phil_model_09", "phil_model_10"]
-datafiles = ["phil_model_1", "phil_model_2", "phil_model_3", "phil_model_4", "phil_model_5", "phil_model_6", "phil_model_7", "phil_model_8", "phil_model_9", "phil_model_10"]
+# datafiles = ["phil_model_1", "phil_model_2", "phil_model_3", "phil_model_4", "phil_model_5", "phil_model_6", "phil_model_7", "phil_model_8", "phil_model_9", "phil_model_10"]
 
-# redshifts = [0.0206, 0.0484, 0.06, 0.026211, 0.022, 0.0512, 0.01513, 0.018]
-# datafiles = ["ASASSN14li","ASASSN15oi","AT2018fyk","AT2019ahk","AT2019azh","AT2019dsg", "AT2019qiz", "iPTF16fnl"]
+redshifts = [0.0206, 0.0484, 0.06, 0.026211, 0.022, 0.0512, 0.01513, 0.018]
+datafiles = ["ASASSN14li","ASASSN15oi","AT2018fyk","AT2019ahk","AT2019azh","AT2019dsg", "AT2019qiz", "iPTF16fnl"]
 
 # runs = ["r1_delayed_noburst","r1_exponential_noburst","r1_lognormal_noburst"]
 # runs = ["r1_delayed_burst","r1_exponential_burst","r1_lognormal_burst"]
@@ -187,7 +187,7 @@ def tde_histograms():
     # plt.savefig("report/img/tde_sn_hist.pdf", dpi=300)
     plt.show()
 
-def plot_posterior_quantities(filename):
+def plot_model_posterior_quantities(filename):
 
     fit_instructions = {}
     chi_squ_vals = {}
@@ -244,5 +244,121 @@ def plot_posterior_quantities(filename):
     fig.set_figwidth(6.75)
     plt.savefig("report/img/"+filename+"_posterior.pdf", bbox_inches = 'tight', pad_inches = 0)
 
-for filename in datafiles:
-    plot_posterior_quantities(filename)
+def plot_tde_posterior_quantities(filename, redshift):
+
+    fit_instructions = {}
+    chi_squ_vals = {}
+
+    # Get the galaxy object and a priori model compenents dictionary.
+    galaxy = pipes.galaxy(filename, load_xshooter, photometry_exists=False)
+    # Calculate redshift constraints.
+    z_low, z_high = redshift - 0.001,  redshift + 0.001
+
+    fit = pipes.fit(galaxy, fit_instructions, run="r4_exponential_burst")
+    fit.fit(verbose=False)
+    chi_squ_vals = {"r4_exponential_burst" : chi_squared(galaxy, fit)}
+
+    fit = pipes.fit(galaxy, fit_instructions, run="r4_dblplaw_burst")
+    fit.fit(verbose=True)
+    chi_squ_vals["r4_dblplaw_burst"] = chi_squared(galaxy, fit)
+
+    fit = pipes.fit(galaxy, fit_instructions, run="r4_delayed_burst")
+    fit.fit(verbose=False)
+    chi_squ_vals["r4_delayed_burst"] = chi_squared(galaxy, fit)
+
+    fit = pipes.fit(galaxy, fit_instructions, run="r4_lognormal_burst")
+    fit.fit(verbose=False)
+    chi_squ_vals["r4_lognormal_burst"] = chi_squared(galaxy, fit)
+
+    # Get the functional form with the lowest chi-squared value.
+    best_func = min(chi_squ_vals, key=lambda k: chi_squ_vals[k])
+    fit = pipes.fit(galaxy, fit_instructions, run=best_func)
+    # Select the fit with lowest chi-squared value and plot it.
+    print(filename)
+    print(best_func)
+    for key in chi_squ_vals.keys():
+        print(key, ": ", chi_squ_vals[key])
+
+    if best_func == "r4_exponential_burst":
+        labels = ["exponential2:age", "exponential2:massformed", "exponential1:age", "exponential1:massformed"]
+    if best_func == "r4_delayed_burst":
+        labels = ["exponential2:age", "exponential2:massformed", "delayed:age", "delayed:massformed"]
+    if best_func == "r4_lognormal_burst":
+        labels = ["exponential2:age", "exponential2:massformed", "lognormal:tmax", "lognormal:massformed"]
+    if best_func == "r4_dblplaw_burst":
+        labels = ["exponential2:age", "exponential2:massformed", "dblplaw:tau", "dblplaw:massformed"]
+
+    post_quantities = dict(zip(labels, [fit.posterior.samples[l] for l in labels]))
+
+    tex_on = True
+    update_rcParams()
+    fig, axes = plt.subplots(1, 4)
+    for i in range(4):
+        hist1d(post_quantities[labels[i]], axes[i], smooth=True, label=labels[i])
+        fixed_aspect_ratio(1,axes[i])
+    fig.set_figwidth(6.75)
+    plt.savefig("report/img/"+filename+"_posterior.pdf", bbox_inches = 'tight', pad_inches = 0)
+
+    plt.clf()
+    fig, ax = fit.plot_sfh_posterior(save=False, show=False)
+    # fig.set_figwidth(6.75)
+    plt.savefig("report/img/"+filename+"_sfh.pdf", bbox_inches = 'tight', pad_inches = 0)
+
+    plt.clf()
+    fig, ax = fit.plot_spectrum_posterior(save=False, show=False)
+    # fig.set_figwidth(6.75)
+    plt.savefig("report/img/"+filename+"_spec.pdf", bbox_inches = 'tight', pad_inches = 0)
+
+    print_posterior(fit)
+
+def fix_plots(filename):
+
+        fit_instructions = {}
+        galaxy, model_components = import_spectrum(filename)
+        # Calculate redshift constraints.
+        z_low, z_high = model_components["redshift"] - 0.001,  model_components["redshift"] + 0.001
+
+        fit = pipes.fit(galaxy, fit_instructions, run="r4_exponential_burst")
+        fit.fit(verbose=False)
+        fig, ax = fit.plot_sfh_posterior(save=False, show=False)
+        plt.savefig("pipes/plots/r4_exponential_burst/"+filename+"_sfh.pdf", bbox_inches = 'tight')
+
+        fit = pipes.fit(galaxy, fit_instructions, run="r4_dblplaw_burst")
+        fit.fit(verbose=True)
+        fig, ax = fit.plot_sfh_posterior(save=False, show=False)
+        plt.savefig("pipes/plots/r4_dblplaw_burst/"+filename+"_sfh.pdf", bbox_inches = 'tight')
+
+        fit = pipes.fit(galaxy, fit_instructions, run="r4_delayed_burst")
+        fit.fit(verbose=False)
+        fig, ax = fit.plot_sfh_posterior(save=False, show=False)
+        plt.savefig("pipes/plots/r4_delayed_burst/"+filename+"_sfh.pdf", bbox_inches = 'tight')
+
+        fit = pipes.fit(galaxy, fit_instructions, run="r4_lognormal_burst")
+        fit.fit(verbose=False)
+        fig, ax = fit.plot_sfh_posterior(save=False, show=False)
+        fig.set_size_inches(12,4)
+        plt.savefig("pipes/plots/r4_lognormal_burst/"+filename+"_sfh.pdf", bbox_inches = 'tight')
+
+def print_posterior_file(filename, run_name):
+
+    fit_instructions = {}
+    chi_squ_vals = {}
+
+    galaxy, model_components = import_spectrum(filename)
+    # Calculate redshift constraints.
+    z_low, z_high = model_components["redshift"] - 0.001,  model_components["redshift"] + 0.001
+
+    fit = pipes.fit(galaxy, fit_instructions, run=run_name)
+    fit.fit(verbose=False)
+    # chi_squ_vals = {"r4_exponential_burst" : chi_squared(galaxy, fit)}
+    print_posterior(fit)
+
+# fix_plots("phil_model_1")
+# for filename in datafiles:
+#     plot_model_posterior_quantities(filename)
+# for filename, redshift in zip(datafiles, redshifts):
+#     plot_tde_posterior_quantities(filename, redshift)
+# print_posterior_file("phil_model_2", "r4_exponential_burst")
+#
+# for filename, z in zip(datafiles, redshifts):
+#     plot_tde_posterior_quantities(filename, z)
