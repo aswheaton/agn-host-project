@@ -2,6 +2,7 @@ import bagpipes as pipes
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import gaussian_filter
+from astropy.cosmology import FlatLambdaCDM
 
 def redden(redshift, spectrum):
     spectrum[:,0] *= (1.0 + redshift)
@@ -390,10 +391,10 @@ def update_rcParams():
     mpl.rcParams["axes.linewidth"] = 1.5
     mpl.rcParams["axes.labelsize"] = 18.
     mpl.rcParams["xtick.top"] = True
-    mpl.rcParams["xtick.labelsize"] = 14
+    mpl.rcParams["xtick.labelsize"] = 12
     mpl.rcParams["xtick.direction"] = "in"
     mpl.rcParams["ytick.right"] = True
-    mpl.rcParams["ytick.labelsize"] = 14
+    mpl.rcParams["ytick.labelsize"] = 12
     mpl.rcParams["ytick.direction"] = "in"
 
     if tex_on:
@@ -413,8 +414,7 @@ def make_hist_arrays(x, y):
 
     return hist_x, hist_y
 
-def hist1d(samples, ax, smooth=False, label=None, color="orange",
-           percentiles=True, zorder=4, bins=50, lw=2):
+def hist1d(samples, ax, smooth=False, label=None, color="orange", percentiles=True, zorder=4, bins=50, lw=2):
 
     if color == "orange":
         color1 = "darkorange"
@@ -438,7 +438,7 @@ def hist1d(samples, ax, smooth=False, label=None, color="orange",
 
     if label is not None:
         x_label = fix_param_names([label])
-        ax.set_xlabel(x_label)
+        ax.set_xlabel(x_label, fontsize=12)
 
     width = samples.max() - np.max([samples.min(), -99.])
     range = (np.max([samples.min(), -99.]) - width/10.,
@@ -472,3 +472,10 @@ def hist1d(samples, ax, smooth=False, label=None, color="orange",
     ax.set_xlim(range)
     auto_x_ticks(ax, nticks=3.)
     plt.setp(ax.get_yticklabels(), visible=False)
+
+def age_at_redshift(redshift):
+    cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
+    z_array = np.arange(0., 100., 0.01)
+    age_at_z = cosmo.age(z_array).value
+    index = np.where(redshift == z_array)[0][0]
+    return(age_at_z[index])
