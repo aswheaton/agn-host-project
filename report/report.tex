@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper,12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel} % Adds processing for some simple special characters.
 
@@ -42,6 +42,7 @@
 \DeclareSIUnit\year{yr}
 \DeclareSIUnit\lightyear{ly}
 \DeclareSIUnit\erg{erg}
+\DeclareSIUnit\ago{a}
 
 % Utilities for manual kerning adjustment. %
 \newcommand\K{\kern.05em} % Small amount of kerning.
@@ -67,7 +68,7 @@
     \includegraphics[width=40mm]{crest.eps}}
 \end{minipage}
 \par\noindent                                           % Centre Title, and name
-\vspace*{2cm}
+% \vspace*{2cm}
 \begin{center}
     \Large\bf \Large\bf MPhys Project\\
     \Large\bf Astrophysics\\[10pt]                     % Change to MP/CP/Astro
@@ -78,22 +79,35 @@
     \bf Alexander S. Wheaton\\
     \today
 \end{center}
-\vspace*{5mm}
+% \vspace*{5mm}
 
 \begin{abstract}
-    \noindent In this paper I review some of the basic properties of active galactic nuclei (AGN) with emphasis on their tendency to be observed in host galaxies which are ``post-starburst.'' I discuss the physics of a second nuclear phenomenon, tidal disruption events (TDEs), in quiescent galaxies. I then present the spectra of eight such galaxies at $z < 0.1$ known to have recently hosted a tidal disruption event, observed with the XSHOOTER instrument on the Very Large Telescope (VLT). I use the \textsc{Bagpipes} Python module to explore the effects of different star formation history (SFH) parameterisations on observed host spectra. By ``blind-fitting'' simulated spectra with a known SFH, I identify assumptions about the form of SFH which must be made in order to reliably detect past starbust activity in a now quiescent galaxy. I apply these assumptions to the spectra of the aforementioned TDEs, and find that their SFHs share the statistical behaviour of AGN---that they tend to occur in host galaxies which are post-starburst.
+  \noindent In this paper I review some of the basic properties of active
+  galactic nuclei (AGN) with emphasis on their tendency to be observed in host
+  galaxies which are ``post-starburst.'' I discuss the physics of a second
+  nuclear phenomenon, tidal disruption events (TDEs), in quiescent galaxies. I
+  then present the spectra of eight such galaxies at $z < 0.1$ known to have
+  recently hosted a tidal disruption event, observed with the XSHOOTER
+  instrument on the Very Large Telescope (VLT). I use the \textsc{Bagpipes}
+  Python module to explore the effects of different star formation history
+  (SFH) parametrisations on observed host spectra. By ``blind-fitting''
+  simulated spectra with a known SFH, I identify assumptions about the form of
+  SFH which must be made in order to reliably detect past starbust activity in
+  a now quiescent galaxy. I apply these assumptions to the spectra of the
+  aforementioned TDEs, and find that their SFHs share the statistical behaviour
+  of AGN---that they occur preferentially post-starburst galaxies.
 \end{abstract}
 
 \vspace*{1cm}
 
 \subsubsection*{Declaration}
 \begin{quotation}
-  \noindent I declare that this project and report is my own work.
+  I declare that this project and report is my own work.
 \end{quotation}
 
 \hspace*{1cm}
-Signature:\hspace*{1cm}\includegraphics[width=6cm]{signature_repaired.eps}
-\hspace*{1cm}
+\noindent Signature:\hspace*{1cm}\includegraphics[width=6cm]{signature_repaired.eps}
+\hfill
 Date: \today
 
 \vfill
@@ -104,7 +118,56 @@ Date: \today
 \newpage
 \thispagestyle{empty}
 \section*{Personal Statement}\label{sec:personal_statement}
-\lipsum[1]
+
+The motivation for this project began when I was given access to the spectra and photometry for eight galaxies which recently hosted tidal disruption
+events, gathered using the XSHOOTER instrument on the Very Large Telescope.
+After early discussions with my supervisor, Andy Lawrence, we determined that
+the aim of my project would be to investigate the statistical behaviour of the
+star formation in the host galaxies of tidal disruption events. To do this, I
+would utilise the \textsc{Bagpipes} Python module, authored in 2018 by one of
+the Royal Observatory's very own, to infer the star formation histories of the
+TDE hosts from their spectra.
+
+I spent the first four weeks of semester one conducting a broad literature
+review on the the statistical properties of AGN, their relationship to
+starburst activity, and the proposed mechanisms for this relationship. I also
+spent time during this period researching the various spectral signatures of
+star formation. Research on these two topics has made up of the bulk of the
+theory section of this work.
+
+I spent the next four weeks learning to use the \textsc{Bagpipes} module to
+simulate galactic spectra for blind fitting. This was slow work, as the module
+is very much still in development, and its documentation remains sparse. I
+spent of lot of time just reading the \textsc{Bagpipes} source code to
+understand the fitting mechanisms it employs. During this period, I also spent
+some time reviewing Bayesian inference, and stellar population fitting.
+
+During the last three weeks of semester one, I simulated many model galaxies
+with star formation at various redshifts to investigate whether I could reduce
+the dimensionality of the fit based on some absorption/emission metric. This
+was ultimately unfruitful, and so the results have not been included in this
+report, but are still available at \url{github.com/aswheaton/agn-host-project}.
+During this period, I also generated and exchanged model galaxy spectra with
+Philip Short for blind fitting.
+
+Over the next six weeks of semester two, I devised various routines and priors
+for starburst detection, and blind tested them on the mock spectra generated by
+Philip. For enhanced computing power, I had to learn to utilise MPI
+parallelisation and the Slurm job scheduler on the Cuillin computing cluster at
+the Royal Observatory Edinburgh, although this sometimes proved more trouble
+than it was worth. During weekly meetings with Andy and occasionally Philip, we
+discussed blind fitting results (and failures). Each week, I returned to the
+fitting process with new ideas about how to constrain priors without
+overfitting.
+
+For two weeks, I broke from fitting briefly to return to the literature on
+various galactic properties. With these in mind, I began to successfully detect
+starbursts in the blind fitted spectra. By the end of this time Phil had
+received and reduced the last of the XSHOOTER targets, and I turned my blind
+fitting methods towards these data. The remaining weeks of semester two were
+spent doing brief analysis of the TDE fitting outcomes, some comparison with
+previous analyses of these targets, and the preparation of the presentation and
+report.
 
 \newpage
 \thispagestyle{empty}
@@ -114,31 +177,86 @@ Date: \today
 \setcounter{page}{1} % Set page number to 1
 \section{Introduction}\label{sec:introduction}
 
-% In this paper, I review the established literature on the phenomena of active
-% galactic nuclei (AGN), their observational signatures, and the interpreted
-% meaning of these signatures. I discuss the statistical properties of their host
-% galaxy morphologies, with particular emphasis on the evidence that AGN
-% preferentially occur in galaxies which are actively star forming
-% (``starbursts'') or which have recently experienced a high rate of star
-% formation (``post-starbursts''). I review the physics of a related phenomenon,
-% tidal disruption events and their statistical properties. I then present newly
-% gathered data on the Very Large Telescope.
-
-The apparent connection between active galactic nuclei and star formation has long been established, if not fully explained. Evidence continues to mount for some kind of causal link between these phenomena, be it galactic wind, heating of the interstellar medium, or some as of yet undiscovered mechanism. Enquiry on this front has been limited by cosmic timescales. Although we can observe whether galaxies are actively emitting from their nuclei, observation of the ``duty cycle'' switching are rare.\cite{Lawrence_1987} So too for star formation. Although we can observe trends in cosmic star formation by peering at galaxies of higher and higher redshift, we still only see each galaxy snapshot, and signatures of recent star formation fade in a few \SI{}{\mega\year}. A remedy for this limitation was developed by Carnall et al. 2018: the \textsc{Bagpipes} Python module, which employs Bayesian inference to parameterise the most probable star formation history of an \textit{individual} galaxy from its spectrum.\cite{Carnall_2018} \textsc{Bagpipes} gives us new tools to probe the relationships between nuclear activity and star formation---an essential component of our understanding of galaxy evolution. With this software, we turn to a related nuclear phenomena, the tidal disruption event. Using the \textsc{Bagpipes} module and new spectral data on eight TDEs from the Very Large Telescope to investigate what features of their star formation history can be reliably inferred and if they, too, tend to occur in galaxies with recent star formation epochs. In doing so, we create a more complete picture of nuclear processes, their dynamics, and their impact on their host galaxies, and in doing so take another step towards a more unified theory of AGN.
+The apparent connection between active galactic nuclei (AGN) and star formation
+has long been established, if not fully explained. Evidence continues to mount
+for some kind of causal link between these phenomena, be it galactic wind,
+heating of the interstellar medium, or some as of yet undiscovered mechanism.
+Enquiry on this front has been limited by cosmic timescales. Although we can
+observe whether galaxies are actively emitting from their nuclei, observations
+of the ``duty cycle'' switching are rare.\cite{Lawrence_1987} So too for star
+formation. Although we can observe trends in cosmic star formation rates (SFRs)
+by peering at galaxies of higher and higher redshift, we still only see each
+galaxy in snapshot, and the signatures of recent star formation fade in just a
+few \SI{}{\mega\year}. A remedy for this limitation was developed by Carnall et
+al. 2018: the \textsc{Bagpipes} Python module, which employs Bayesian inference
+to parametrise the most probable star formation history of an
+\textit{individual} galaxy from its spectrum.\cite{Carnall_2018}
+\textsc{Bagpipes} gives us new tools to probe the relationships between nuclear
+activity and star formation---an essential component in our understanding of
+galaxy evolution. With this software, I turn to a related nuclear phenomena,
+the tidal disruption event (TDE). Using the \textsc{Bagpipes} module and new
+spectral data on eight TDEs from the Very Large Telescope (VLT) to investigate
+what features of their star formation history can be reliably inferred and if
+they, too, tend to occur in galaxies with recent star formation epochs. By
+doing so, we create a more complete picture of nuclear processes, their
+dynamics and impacts on their host galaxies, and take a small step towards a
+more unified theory of AGN, TDEs, and galactic evolution.
 
 \section{Theory \& Motivation}\label{sec:theory_and_motivation}
 \subsection{Active Galactic Nuclei}\label{sec:active_galactic_nuclei}
-The luminosity of most galaxies is dominated by stellar, gas, and dust emission. The stellar component is the aggregate of many stars at different temperatures emitting thermally as near-perfect blackbodies.\cite{Peterson_1997} The medium of interstellar gas emits thermally when heated by the host galaxy's constituent stars, and creates both absorption and emission features at the particular energies of common interstellar gases and metals. Larger grains of interstellar dust absorb and re-emit stellar light in the infrared region of the spectrum.\cite{Dyson_1997}
 
-Differences between the spectra of elliptical and disk galaxies hinge mostly upon the age of their constituent stars. Ellipticals or ``early-types'' are characterised by red photometric colours associated with an older stellar population. The emit very little light at wavelengths less than \SI{4000}{\angstrom} and because their interstellar mediums are mostly comprised of hot ionised gas, their spectra feature mostly absorption lines typical of G- and K-type stars, with no emission lines.\cite{Mo_2010}
+The luminosity of most galaxies is dominated by stellar, gas, and dust
+emission. The stellar component is the aggregate of many stars at different
+temperatures emitting thermally as near-perfect
+blackbodies.\cite{Peterson_1997} The medium of interstellar gas emits thermally
+when heated by the host galaxy's constituent stars, and creates both absorption
+and emission features at the particular ionisation energies of common
+interstellar gases and metals. Larger grains of interstellar dust absorb and re-
+emit stellar light in the infrared region of the spectrum.\cite{Dyson_1997}
 
-Disk or ``late-type'' galaxies are characterised by younger, bluer stars, neutral \isotope{HI} and molecular \isotope{H_2} hydrogen regions.Their spiral arms are defined by \isotope{HII} regions and dust features. The emit considerably more light at wavelengths below the \SI{4000}{\angstrom} break, in the blue and near-UV. Interstellar gas ionised by hot, young stars in these galaxies produces strong emission lines, such as the Balmer-series ($\mathrm{H\alpha}$, $\mathrm{H\beta}$, $\mathrm{H\gamma}$, and $\mathrm{H\delta}$), \isotope{OII} and \isotope{OIII} lines.\cite{Mo_2010}
 
-A fraction ($\approx \sfrac{1}{3}$) of galaxies, however, feature tightly confined (\SI{10}{\kilo\parsec}) ``weak'' nuclear luminosity which is \textit{not} consistent with this model.\cite{McClure_2019} A smaller fraction ($\approx \sfrac{1}{100}$) exhibit nuclear luminosity which is a significant fraction of the host's stellar luminosity ($\approx 10\%$).\cite{Sparke_2000} These galaxies are said to have nuclei which are ``active'' and are referred to as active galactic nuclei (AGN).\cite{Peterson_1997}
+Differences between the spectra of elliptical and disk galaxies hinge mostly
+upon the age of their constituent stars. Ellipticals or ``early-types'' are
+characterised by red photometric colours associated with an older stellar
+population. They emit very little light at wavelengths less than
+\SI{4000}{\angstrom}, and because their interstellar mediums are mostly
+comprised of hot ionised gas, their spectra feature mostly absorption lines
+typical of G- and K-type stars, with no emission lines.\cite{Mo_2010}
 
-Lower luminosity AGN fall into the broad categories of ``Seyferts'' and radio galaxies.\footnote{Additionally, a common and very low luminosity class of galaxies featuring low-ionisation nuclear emission regions (LINERs), the highly variable luminosity classes of BL Lac objects (blazars) and optically violent variables (OVVs), and narrow-line X-ray galaxies, which are Seyferts heavily reddened and extinguished by dust within the host.} Type 1 and 2 Seyferts typically occur in spiral galaxies, featuring broad and narrow emission lines, respectively. Broad-line radio galaxies (BLRGs) and narrow-line radio galaxies (NLRGs) are the elliptical analogues to Seyferts, but are additionally radio-loud.\cite{Peterson_1997}
+Disk or ``late-type'' galaxies are characterised by younger, bluer stars,
+neutral \isotope{HI} and molecular \isotope{H_2} hydrogen regions.Their spiral
+arms are defined by \isotope{HII} regions and dust features. The emit
+considerably more light at wavelengths below the \SI{4000}{\angstrom} break, in
+the blue and near-UV. Interstellar gas ionised by hot, young stars in these
+galaxies produces strong emission lines, such as the Balmer-series
+($\mathrm{H\alpha}$, $\mathrm{H\beta}$, $\mathrm{H\gamma}$, and
+$\mathrm{H\delta}$), \isotope{OII} and \isotope{OIII} lines.\cite{Mo_2010}
 
-Some AGN are sufficiently have power outputs many times that of a typical host galaxy. In these objects, luminosity from the nucleus completely obscures the host galaxy. These are believed to be exceptionally rare, and as such are only detected at very high redshifts. At such distances, they appear point-like or  ``quasi-stellar,'' and are so dubbed quasars.\cite{Peterson_1997} In general, AGN exhibit several key characteristics:
+A fraction ($\approx \sfrac{1}{3}$) of galaxies, however, feature tightly
+confined (\SI{10}{\kilo\parsec}) ``weak'' nuclear luminosity which is
+\textit{not} consistent with this model.\cite{McClure_2019} A smaller fraction
+($\approx \sfrac{1}{100}$) exhibit nuclear luminosity which is a significant
+fraction of the host's stellar luminosity ($\approx 10\%$).\cite{Sparke_2000}
+These galaxies are said to have nuclei which are ``active'' and are referred to
+as active galactic nuclei (AGN).\cite{Peterson_1997}
+
+Lower luminosity AGN fall into the broad categories of ``Seyferts'' and radio
+galaxies.\footnote{Additionally, a common and very low luminosity class of
+galaxies featuring low-ionisation nuclear emission regions (LINERs), the highly
+variable luminosity classes of BL Lac objects (blazars) and optically violent
+variables (OVVs), and narrow-line X-ray galaxies, which are Seyferts heavily
+reddened and extinguished by dust within the host.} Type 1 and 2 Seyferts
+typically occur in spiral galaxies, featuring broad and narrow emission lines,
+respectively. Broad-line radio galaxies (BLRGs) and narrow-line radio galaxies
+(NLRGs) are the elliptical analogues to Seyferts, but are additionally radio-
+loud.\cite{Peterson_1997}
+
+Some AGN have power outputs many times that of a typical host galaxy. In these
+objects, luminosity from the nucleus completely obscures the host. These are
+believed to be exceptionally rare, and as such are only detected at very high
+redshifts. At such distances, they appear point-like or  ``quasi-stellar,'' and
+are so dubbed quasars.\cite{Peterson_1997} In general, AGN exhibit several key
+characteristics:
 
 \begin{itemize}
     \item highly luminous and compact appearance
@@ -146,59 +264,167 @@ Some AGN are sufficiently have power outputs many times that of a typical host g
     \item variable luminosity over short timescales of days to months
 \end{itemize}
 
-Unlike the peaked blackbody emission from stars, AGN radiate across the entire electromagnetic spectrum, with a peak in the UV and secondary peaks in the near infrared and X-ray. The generally accepted explanation for continuum spectral emission of this magnitude is a hot accretion disk surrounding a supermassive black hole (SMBH).\cite{Sparke_2000} As matter falls into the black hole, its potential energy is converted to kinetic, which is dissipated by viscosity in the accretion disk to thermal energy, which is then radiated. In this model, material in the disc at a range of different temperatures accounts for continuum emission, while Doppler shifting of light emitted by disc material travelling at a range of velocities creates broad emission lines.\cite{Peterson_1997}
+Unlike the peaked blackbody emission from stars, AGN radiate across the entire
+electromagnetic spectrum, with a peak in the UV and secondary peaks in the near
+infrared and X-ray. The generally accepted explanation for continuum spectral
+emission of this magnitude is a hot accretion disk surrounding a supermassive
+black hole (SMBH).\cite{Sparke_2000} As matter falls into the black hole, its
+potential energy is converted to kinetic, dissipated by viscosity in the
+accretion disk to thermal energy, and radiated. In this model, material in the
+disc at a range of different temperatures accounts for continuum emission,
+while Doppler shifting of light emitted by disc material travelling at a range
+of velocities creates broad emission lines.\cite{Peterson_1997}
 
-Emission from the central black hole is said to have different ``modes'' depending on its rate of mass accretion. In a ``steady'' mode, the SMBH is constantly fed by an infall of matter.\cite{Romero_Canizales_2016, Shields_1978} This infall is believed to be fueled by stellar wind driving matter from the halo of the host galaxy into the nucleus, where it is accreted and consumed. When accreting, these SMBHs can be as luminous as an entire galaxy (\textgreater\SI{e45}{\erg\per\second}), and it is this type of accretion which fuels Seyferts, radio galaxies, and their more luminous cousins, quasars.\cite{Kormendy_2013, Peterson_1997}
+Emission from the central black hole is said to have different ``modes''
+depending on its rate of mass accretion. In a ``steady'' mode, the SMBH is
+constantly fed by an infall of matter.\cite{Romero_Canizales_2016} This infall
+is believed to be fueled by stellar wind driving matter from the halo of the
+host galaxy into the nucleus, where it is accreted and consumed. When
+accreting, these SMBHs can be as luminous as an entire galaxy
+(\textgreater\SI{e45}{\erg\per\second}), and it is this type of accretion which
+fuels Seyferts, radio galaxies, and their more luminous cousins,
+quasars.\cite{Kormendy_2013, Peterson_1997}
 
 \subsection{The Starburst-AGN Connection}\label{sec:starburst_agn_connection}
 
-% Observations like radio emission and continuum spectra were sometimes blamed on large scale formation of O- and B- type stars, and the subsequent deaths. LINER and some Seyfert-II galaxies were briefly thought to really be starburst galaxies.\cite{Lawrence_1987}
+A significant fraction of AGN exhibit signatures of recent, large-scale star
+formation. These signatures include exceptionally blue photometric colours and
+strong \isotope{HII}-region-type emission lines, presumably gas ionised by hot,
+young O- and B-type stars. They also feature strong radio emissions, consistent
+with a high number of recent supernovae remnants.\cite{Peterson_1997}
 
-A significant fraction of AGN exhibit signatures of recent, large-scale star formation. These signatures include exceptionally blue photometric colours and strong \isotope{HII}-region-type emission lines, presumably gas ionised by hot, young O- and B-type stars. They also feature strong radio emissions, consistent with a high number of recent supernovae remnants.\cite{Peterson_1997}
+Early investigations found that both Seyfert and radio galaxy luminosity was
+commonly related to the luminosity of the host galaxy, or in other words, to
+total stellar mass formed in that galaxy. In the late 20th century, a
+relationship emerged between spheroid or bulge luminosity and the luminosity of
+the constituent AGN in Seyferts and radio galaxies.\cite{Lawrence_1987}. Large
+scale surveys subsequently find a strongly positive correlation between the
+central black hole masses (formed by accretion) and the bulge luminosity and
+the stellar velocity dispersion (driven by star formation) in neighbouring
+galaxies.\cite{Veilleux_2008}
 
-Early investigations found that both Seyfert and radio galaxy luminosity was commonly related to the luminosity of the host galaxy, or in other words, to total stellar mass formed in that galaxy. A relationship emerged between spheroid or bulge luminosity and the luminosity of the constituent AGN in Seyferts and radio galaxies.\cite{Lawrence_1987}. Large scale surveys subsequently find a strongly positive correlation between the central black hole masses (formed by accretion) and the bulge luminosity and the stellar velocity dispersion (driven by star formation) in neighbouring galaxies.\cite{Veilleux_2008}
+Other indicators of this relationship abound: Seyferts have intermediate age
+stars and red giants in their nuclei contributing to continuum luminosity---a
+strong signature of recent star formation. Additionally, more luminous Seyferts
+are found to have much younger stellar populations than less luminous
+Seyferts.\cite{Veilleux_2008}
 
-Other indicators of this relationship abound: Seyferts have intermediate age stars and red giants in their nuclei contributing to continuum luminosity---a strong signature of recent star formation. Additionally, more luminous Seyferts are found to have much younger stellar populations than less luminous Seyferts.\cite{Veilleux_2008}
+The age of a stellar population can be characterised by several spectral
+indices. The $D_n(4000)$ index is defined as the ratio of flux from
+\SIrange{3850}{3950}{\angstrom} to that from \SIrange{4000}{4100}{\angstrom}. A
+high density of metal lines in this region means that young, hot stellar
+populations which ionise these metals will have a low $D_n$ with respect to
+older populations.\cite{Kauffmann_2003a} Studies by Kauffmann et al. 2003c
+found that the high luminosity AGN have substantially younger stellar
+populations (as characterised by $D_n$) than lower luminosity AGN, for fixed
+values of surface mass density. Quiescent galaxies do not exhibit this
+relationship, which suggests the most powerful AGN exist in galaxies which have
+recently undergone a short burst of star formation.\cite{Kauffmann_2003c}
 
-The age of a stellar population can be characterised by several spectral indices. The $D_n(4000)$ index is defined as the ratio of flux from \SIrange{3850}{3950}{\angstrom} to that from \SIrange{4000}{4100}{\angstrom}. A high density of metal lines in this region means that young, hot stellar populations which ionise these metals will have a low $D_n$ with respect to older populations.\cite{Kauffmann_2003a} Studies by Kauffmann et al. 2003c found that the high luminosity AGN have substantially younger stellar populations (as characterised by $D_n$) than lower luminosity AGN, for fixed values of surface mass density. Quiescent galaxies do not exhibit this relationship, which suggests the most powerful AGN exist in galaxies which have recently undergone a short burst of star formation.\cite{Kauffmann_2003c}
+Is this phenomenon really the result of a starburst, though, or simply ongoing
+star formation in the host galaxy? Another spectral index, the
+$\mathrm{H\delta}$ absorption line, or $\mathrm{H\delta_A}$, increases strongly
+in galaxies where star formation ended \textless \SI{1}{\giga\year} ago.
+Galaxies with continuous formation occupy a narrow locus within the $D_n(4000)$/
+$\mathrm{H\delta_A}$ plane, so the distance from this locus can be used to
+determine the ``burstiness'' of recent star formation history (SFH) in an AGN
+host. Analyses from Kaufmann et al. 2013c find AGN to indeed have a much wider
+spread about this locus---indicating greater variability in their SFHs than
+normal galaxies.\cite{Kauffmann_2003c}
 
-Is this phenomenon really the result of a starburst, though, or simply ongoing star formation in the host galaxy? Another spectral index, the $\mathrm{H\delta}$ absorption line, or $\mathrm{H\delta_A}$, increases strongly in galaxies where star formation ended \textless \SI{1}{\giga\year} ago. Galaxies with continuous formation occupy a narrow locus within the $D_n(4000)$/$\mathrm{H\delta_A}$ plane, so the distance from this locus can be used to determine the ``burstiness'' of recent SFH in an AGN host. Analyses from Kaufmann et al. 2013c also find AGN to indeed have a much wider spread about this locus---much more variability in their SFHs than normal galaxies.\cite{Kauffmann_2003c}
-
-All of these point to some causal relationship between these phenomena. Proposed mechanisms vary, but involve mechanical and/or radiative feedback from the starburst/AGN, which shuts off the fuel supply to the AGN or quenches star formation in the host galaxy. Mechanical energy from starbursts is provided by wind from O- and B- type stars for approximately the first \SI{6}{\mega\year}, and is then dominated by supernovae for approximately \SI{34}{\mega\year}. AGN may supply mechanical energy as high velocity gas outflow, which may be ejecta from the accretion disk or collimated jets accelerated by magnetic fields emanating from the accretion disk. Radiation pressure from very luminous starbursts or AGN may create Compton-heated wind or ionise hydrogen in the interstellar medium. All of the effect may inhibit the collapse of molecular clouds to form stars, or may shut off the supply of fuel to the central black hole.\cite{Veilleux_2008}
-
-% \begin{itemize}
-%   \item Timing the AGN-Starburst Connection, Wild et al. 2010 \cite{Wild_2010}
-% \end{itemize}
+All of these point to some causal relationship between these phenomena.
+Proposed mechanisms vary, but most involve mechanical and/or radiative feedback
+from the starburst/AGN, which shuts off the fuel supply to the AGN or quenches
+star formation in the host galaxy. Mechanical energy from starbursts is
+provided by wind from O- and B- type stars for approximately the first
+\SI{6}{\mega\year}, and is then dominated by supernovae for approximately
+\SI{34}{\mega\year}. AGN may supply mechanical energy as high velocity gas
+outflow, which may be ejecta from the accretion disk or collimated jets
+accelerated by magnetic fields emanating from the accretion disk. Radiation
+pressure from very luminous starbursts or AGN may create Compton-heated wind or
+ionise hydrogen in the interstellar medium. All of above may inhibit the
+collapse of molecular clouds to form stars, or may shut off the supply of fuel
+to the central black hole.\cite{Veilleux_2008}
 
 \subsection{Tidal Disruption Events}\label{sec:tidal_disruption_events}
 
-A different type of nuclear phenomena are tidal disruption events (TDEs). In otherwise quiescent galaxies with low-level to no nuclear emission, spectra are dominated by stellar emission, as described in \S \ref{sec:active_galactic_nuclei}. Most galaxies, including quiescent ones, however, are still believed to host one or more SMBHs at their centres.\cite{Rees_1988} In these quiescent galaxies, it is possible for the central SMBH to be in an ``intermittent'' mode, wherein it is mostly starved of fuel, but occasionally consumes cold dust clouds or individual stars.\cite{Holoien_2016a, Rees_1988, Evans_1989}
+A different type of nuclear phenomena are tidal disruption events (TDEs). In
+otherwise quiescent galaxies with low-level to no nuclear emission, spectra are
+dominated by stellar emission, as described in
+\S\ref{sec:active_galactic_nuclei}. Most galaxies, including quiescent ones,
+are still believed to host one or more SMBHs at their centres.\cite{Rees_1988}
+In these quiescent galaxies, it is possible for the central SMBH to be in an
+``intermittent'' mode, wherein it is mostly starved of fuel, but occasionally
+consumes cold dust clouds or individual stars.\cite{Holoien_2016a, Rees_1988,
+Evans_1989}
 
-If a star approaches a black hole of mass $>10^6M_\odot$ with a pericentre sufficiently close to be subject to tidal forces, the two can not simply be treated as point masses. Inside the tidal disruption radius $r_T$, orbital kinetic energy is greater than the gravitational binding energy of the star. A tidal bulge forms on the surface of the star, which rotates to face the black hole, but out of phase with its procession around the centre of gravity. A tidal torque acts on the star, and the distribution of velocities applied by this torque to different regions of the now elongated star tear it apart in a ``tidal disruption event.''\cite{Rees_1988, Evans_1989}
+If a star approaches a black hole of mass $>10^6M_\odot$ with a pericentre
+sufficiently close to be subject to tidal forces, the two can not simply be
+treated as point masses. Inside the tidal disruption radius $r_T$, orbital
+kinetic energy is greater than the gravitational binding energy of the star. A
+tidal bulge forms on the surface of the star, which rotates to face the black
+hole, but out of phase with its procession around the centre of gravity. A
+tidal torque acts on the star, and the distribution of velocities applied by
+this torque to different regions of the now elongated star tear it apart in a
+``tidal disruption event.''\cite{Rees_1988, Evans_1989}
 
-The radiative (and therefore observational) result of this event depends on the fate of the resulting stellar debris. Approximately half of the stellar material escapes unbound on various hyperbolic orbits, but more tightly bound debris may later return within the tidal disruption radius of the black hole on elliptical orbits.\cite{Rees_1988} Over successive periods on bound orbits, this material gradually accretes on to the surface of the black hole, creating a short-lived (\textless\SI{1}{\year}) in nuclear luminosity as disk viscosity converts the material's potential energy to thermal radiation.\cite{Evans_1989}
+The radiative (and therefore observational) result of this event depends on the
+fate of the resulting stellar debris. Approximately half of the stellar
+material escapes unbound on various hyperbolic orbits, but more tightly bound
+debris may later return within the tidal disruption radius of the black hole on
+elliptical orbits.\cite{Rees_1988} Over successive periods on bound orbits,
+this material gradually accretes on to the surface of the black hole, creating
+a short-lived ($<\SI{1}{\year}$) increase in nuclear luminosity as disk
+viscosity converts the material's potential energy to thermal
+radiation.\cite{Evans_1989}
 
-Observational data supports a slightly longer luminosity flare, with several distinct phases. For a 100-200 day period after peak bolometric luminosity, emission from the TDE flare is ``soft,'' or dominated by thermal emission in the UV/optical region, originating from the accretion disk and a short-lived corona of stellar ejecta. Approximately 500 days after peak UV/optical luminosity, this transitions to a phase of ``hard'' emission, which is dominated by a power-law spectrum of higher energy photons, before finally returning to a quiescent mode.\cite{Wevers_2021} Observational data suggests that some accretion disks are stable for up to 5-10 years after peak luminosity.\cite{van_Velzen_2019}
+Observational data supports a slightly longer luminosity flare, with several
+distinct phases. For a 100-200 day period after peak bolometric luminosity,
+emission from the TDE flare is ``soft,'' or dominated by thermal emission in
+the UV/optical region, which originates from the accretion disk and a short-
+lived corona of stellar ejecta. Approximately 500 days after peak UV/optical
+luminosity, this transitions to a phase of ``hard'' emission, which is
+dominated by a power-law spectrum of higher energy photons, before finally
+returning to a quiescent mode.\cite{Wevers_2021} Observational data suggests
+that some accretion disks are stable for up to 5-10 years after peak
+luminosity.\cite{van_Velzen_2019}
 
-For reasons similar to those reviewed in \S\ref{sec:starburst_agn_connection}, the precise dynamics of these phenomena are of particular relevance to galactic evolution models. Like steadily luminous Seyferts and radio galaxies, feedback from the accretion process may have consequences for the galactic star formation rate, or for AGN quenching. Analytical and numerical models predict the velocity of stellar ejecta to be of sufficient order to shock the interstellar medium (ISM) and inhibit steady accretion which would otherwise be inevitable in a galaxy hosting a SMBH.\cite{Evans_1989} As the ejecta are braked by the ISM, their kinetic energy is thermalized, heating the ISM, possibly enough to stop the collapse of molecular \isotope{H_2} clouds into star forming nurseries.\cite{Rees_1988}
+For reasons similar to those reviewed in \S\ref{sec:starburst_agn_connection},
+the precise dynamics of these phenomena are of particular relevance to galactic
+evolution models. Like steadily luminous Seyferts and radio galaxies, feedback
+from the accretion process may have consequences for the galactic star
+formation rate, or for AGN quenching. Analytical and numerical models predict
+the velocity of stellar ejecta to be of sufficient order to shock the
+interstellar medium (ISM) and inhibit steady accretion which would otherwise be
+inevitable in a galaxy hosting a SMBH.\cite{Evans_1989} As the ejecta are
+braked by the ISM, their kinetic energy is thermalised, heating the ISM,
+possibly enough to stop the collapse of molecular \isotope{H_2} clouds into
+star forming nurseries.\cite{Rees_1988}
 
-Like AGN, observed TDEs often appear in galaxies which bear the signatures of recent star formation, but our ability to investigate the particular dynamics between the related processes of AGN, TDEs, and star formation is limited by the timescales on which these processes occur. Although we can peer at high redshift galaxies to determine \textit{trends} in galactic evolution, we can not observe the evolution of \textit{individual} galaxies in real time. In this project, I develop methods for quantifying the star formation histories of individual galaxies, and apply them to the host galaxies of eight TDEs.
+Like AGN, observed TDEs often appear in galaxies which bear the signatures of
+recent star formation, but our ability to investigate the particular dynamics
+between the related processes of AGN, TDEs, and star formation is limited by
+the timescales on which these processes occur. Although we can peer at high
+redshift galaxies to determine \textit{trends} in galactic evolution, we can
+not observe the evolution of \textit{individual} galaxies in real time. In this
+project, I develop methods for quantifying the star formation histories of
+individual galaxies, and apply them to the host galaxies of eight TDEs.
 
 \subsection{The XSHOOTER Data}\label{sec:xshooter_data}
 
 % Spare table with RAs and Decs included.
 % \begin{table}[H]
 %   \begin{tabular}{l c c}
-%     TDE         & $\alpha$     & $\delta$     \\
+%     TDE         & $\alpha$     & $\delta$     & Morphology \\
 %     \hline \hline
-%     ASASSN-14li & 12:48:15.23  & +17:46:26.44 \\
-%     ASASSN-15oi & 20:39:09.18  & -30:45:20.10 \\
-%     AT2018fyk   & 22:50:16.090 & -44:51:53.50 \\
-%     AT2019ahk   & 07:00:11.546 & -66:02:24.14 \\
-%     AT2019azh   & 08:13:16.945 & +22:38:54.03 \\
-%     AT2019dsg   & 20:57:02.974 & +14:12:15.86 \\
-%     AT2019qiz   & 04:46:37.880 & -10:13:34.90 \\
-%     iPTF16fnl   & 00:29:57.010 & +32:53:37.24 \\
+%     ASASSN-14li & 12:48:15.23  & +17:46:26.44 & Compact    \\
+%     ASASSN-15oi & 20:39:09.18  & -30:45:20.10 & Unresolved \\
+%     AT2018fyk   & 22:50:16.090 & -44:51:53.50 & Unresolved \\
+%     AT2019ahk   & 07:00:11.546 & -66:02:24.14 & E+A        \\
+%     AT2019azh   & 08:13:16.945 & +22:38:54.03 & E+A        \\
+%     AT2019dsg   & 20:57:02.974 & +14:12:15.86 & Unresolved \\
+%     AT2019qiz   & 04:46:37.880 & -10:13:34.90 & Unresolved \\
+%     iPTF16fnl   & 00:29:57.010 & +32:53:37.24 & E+A        \\
 %     \hline
 %   \end{tabular}
 %   \caption{
@@ -212,33 +438,45 @@ Like AGN, observed TDEs often appear in galaxies which bear the signatures of re
   \includegraphics[width=0.3\textwidth]{ASASSN-14li_host_red}
   \includegraphics[width=0.3\textwidth]{AT2019qiz_host_red}
   \includegraphics[width=0.3\textwidth]{iPTF16fnl_host_red}
-  \caption{ASASSN-14li, AT2019qiz, and iPTF16fnl host galaxies.}
+  \caption{ASASSN-14li, AT2019qiz, and iPTF16fnl host galaxies, NED.\cite{NED_1990}}
   \label{fig:xshooter_hosts}
 \end{figure}
 
-To do this, I utilised spectroscopic and photometric data on eight galaxies which hosted a tidal disruption event between 2014 and 2020. Table \ref{tab:xshooter_data} lists the targets, which were observed between September and December of 2020, with the XSHOOTER instrument on the Very Large Telescope (VLT). They are all of similar magnitude and moderate redshift, all  being located at $z<0.1$. At such distances, they occupy little real estate on a CCD (see Fig. \ref{fig:xshooter_hosts}), but the XSHOOTER instrument provides detailed, ground-based spectroscopy of the TDE hosts, with flux bins of width $\Delta\lambda=\SI{0.2}{\angstrom}$ below \SI{10200}{\angstrom} and $\Delta\lambda=\SI{0.6}{\angstrom}$ above \SI{10200}{\angstrom}. Some of the spectra featured strong telluric lines from the Earth's atmosphere, but the errors on these fluxes can be exaggerated to ensure \textsc{Bagpipes} does not overfit them, as described in \S \ref{sec:bagpipes_module}.
+To do this, I utilised spectroscopic and photometric data on eight galaxies
+which hosted a tidal disruption event between 2014 and 2020. Table
+\ref{tab:xshooter_data} lists the targets, which were observed between
+September and December of 2020, with the XSHOOTER instrument on the Very Large
+Telescope (VLT). They are all of similar magnitude and moderate redshift, all
+being located at $z<0.1$. At such distances, they occupy little real estate on
+a CCD (see Fig. \ref{fig:xshooter_hosts}), but the XSHOOTER instrument provides
+detailed, ground-based spectroscopy of the TDE hosts, with flux bins of width
+$\Delta\lambda=\SI{0.2}{\angstrom}$ below \SI{10200}{\angstrom} and
+$\Delta\lambda=\SI{0.6}{\angstrom}$ above \SI{10200}{\angstrom}. Some of the
+spectra featured strong Telluric lines from the Earth's atmosphere, but the
+errors on these fluxes can be exaggerated to ensure \textsc{Bagpipes} does not
+overfit them, as described in \S\ref{sec:bagpipes_module}.
 
 \begin{table}[H]
   \centering
-  \begin{tabular}{l l c c r}
-    TDE         & Host Galaxy             & $m$ & Morphology & $z$      \\
+  \begin{tabular}{l l c r}
+    TDE         & Host Galaxy             & $m$ & $z$      \\
     \hline \hline
-    ASASSN-14li & PGC 043234              & 15  & Compact    & 0.0206   \\
-    ASASSN-15oi & 2MASX J20390918-3045201 & 16  & Unresolved & 0.0484   \\
-    AT2018fyk   & LCRS B224721.6-450748   & 17  & Unresolved & 0.06     \\
-    AT2019ahk   & 2MASX J07001137-6602251 & 17  & E+A        & 0.026211 \\
-    AT2019azh   & KUG 0810+227            & 15  & E+A        & 0.022    \\
-    AT2019dsg   & 2MASX J20570298+1412165 & 15  & Unresolved & 0.0512   \\
-    AT2019qiz   & 2MASX J04463790-1013349 & 15  & Unresolved & 0.01513  \\
-    iPTF16fnl   & Markarian 950           & 16  & E+A        & 0.018    \\
+    ASASSN-14li & PGC 043234              & 15  & 0.0206   \\
+    ASASSN-15oi & 2MASX J20390918-3045201 & 16  & 0.0484   \\
+    AT2018fyk   & LCRS B224721.6-450748   & 17  & 0.06     \\
+    AT2019ahk   & 2MASX J07001137-6602251 & 17  & 0.026211 \\
+    AT2019azh   & KUG 0810+227            & 15  & 0.022    \\
+    AT2019dsg   & 2MASX J20570298+1412165 & 15  & 0.0512   \\
+    AT2019qiz   & 2MASX J04463790-1013349 & 15  & 0.01513  \\
+    iPTF16fnl   & Markarian 950           & 16  & 0.018    \\
     \hline
   \end{tabular}
   \caption{
-  XSHOOTER target TDEs, their host galaxies, magnitudes, host morphologies
-  (if known), and redshifts, which were observed on the Very Large Telescope
-  (VLT) between September and December 2020.\cite{Zwicky_1975, Jose_2014,
-  Holoien_2016a, Arcavi_2015, Holoien_2016b, Wevers_2021, Cacella_2019,
-  Holoien_2019, van_Velzen_2019, Perez_Torres_2019, Seibert_2019, Gezari_2016, Blagorodnova_2017}
+  XSHOOTER target TDEs, their host galaxies, magnitudes, and redshifts, which
+  were observed on the Very Large Telescope (VLT) between September and
+  December 2020.\cite{Zwicky_1975, Jose_2014, Holoien_2016a, Arcavi_2015,
+  Holoien_2016b, Wevers_2021, Cacella_2019, Holoien_2019, van_Velzen_2019,
+  Perez_Torres_2019, Seibert_2019, Gezari_2016, Blagorodnova_2017}
   }
   \label{tab:xshooter_data}
 \end{table}
@@ -252,13 +490,27 @@ To do this, I utilised spectroscopic and photometric data on eight galaxies whic
   \label{fig:bagpipes_example_simulation}
 \end{figure}
 
-\textsc{Bagpipes} is a module for Python 3, implemented by Carnall et al. 2018. Its moniker is an acronym for Bayesian Analyses of Galaxies for Physical Inference and Parameter EStimation. \textsc{Bagpipes} constructs model galaxies from a variety of parameters, such as the form of the SFH, observed redshift, dust attenuation, and nebular emission. From this model, \textsc{Bagpipes} generates model spectral energy distributions, as they would be observed if they were real galaxies. The luminosity per unit rest-frame wavelength $L_\lambda(\lambda)$, from sum of four ``ingredients'':
+\textsc{Bagpipes} is a module for Python 3, implemented by Carnall et al.
+2018.\cite{Carnall_2018} Its moniker is an acronym for Bayesian Analyses of
+Galaxies for Physical Inference and Parameter EStimation. \textsc{Bagpipes}
+constructs model galaxies from a variety of parameters, such as the form of the
+SFH, observed redshift, dust attenuation, and nebular emission. From this
+model, \textsc{Bagpipes} generates model spectral energy distributions, as they
+would be observed if they were real galaxies. The luminosity per unit rest-
+frame wavelength $L_\lambda(\lambda)$, from sum of four ``ingredients'':
 
 \begin{itemize}
-  \item The SFH, $\mathrm{SFR}(t)$, which is a linear combination of one or more of the functional forms described below.
-  \item Simple stellar population models, $\mathrm{SSP}(a,\lambda,Z)$ which give the spectral energy distribution for a total stellar mass of age $a$ given by the SFH, on the basis of an initial mass function (IMF) and the metallicity of stellar population or populations.
-  \item The transmission function of the ionised ISM, $T^+(a,\lambda)$ which determines how starlight is absorbed and re-emitted by hot gas regions.
-  \item Finally, the transmission function of the neutral ISM, $T^0(a,\lambda)$, which determines how starlight is absorbed and remitted by cold gas and dust regions.\cite{Carnall_2018}
+  \item The SFH, $\mathrm{SFR}(t)$, which is a linear combination of one or
+  more of the functional forms described below.
+  \item Simple stellar population models, $\mathrm{SSP}(a,\lambda,Z)$ which
+  give the spectral energy distribution for a total stellar mass of age $a$
+  given by the SFH, on the basis of an initial mass function (IMF) and the
+  metallicity of the stellar population or populations.
+  \item The transmission function of the ionised ISM, $T^+(a,\lambda)$ which
+  determines how starlight is absorbed and re-emitted by hot gas regions.
+  \item Finally, the transmission function of the neutral ISM,
+  $T^0(a,\lambda)$, which determines how starlight is absorbed and remitted by
+  cold gas and dust regions.\cite{Carnall_2018}
 \end{itemize}
 
 \noindent These are combined to give the galactic rest-frame spectrum:
@@ -273,7 +525,12 @@ To do this, I utilised spectroscopic and photometric data on eight galaxies whic
   \Delta a_i
 \end{equation}
 
-\noindent Where $i$ runs over the number of stellar age bins defined by \textsc{Bagpipes} and $j$ runs over the components of the SFH.\cite{Carnall_2018} An example spectrum from a parameterised SFH is given in Fig. \ref{fig:bagpipes_example_simulation}. The parameterised SFH, is a linear combination of one or more of the following functional forms. An exponentially decaying burst with form:
+\noindent Where $i$ runs over the number of stellar age bins defined by
+\textsc{Bagpipes} and $j$ runs over the components of the
+SFH.\cite{Carnall_2018} An example spectrum from a parametrised SFH is given in
+Fig. \ref{fig:bagpipes_example_simulation}. The parametrised SFH, is a linear
+combination of one or more of the following functional forms. An exponentially
+decaying burst with form:
 
 \begin{equation}\label{eq:tau_model}
   \mathrm{SFR}(t) \propto
@@ -283,7 +540,8 @@ To do this, I utilised spectroscopic and photometric data on eight galaxies whic
   \end{cases}
 \end{equation}
 
-\noindent A delayed exponentially decaying component:
+\noindent To which I will refer as the tau model. A delayed exponentially
+decaying component:
 
 \begin{equation}\label{eq:delayed_model}
   \mathrm{SFR}(t) \propto
@@ -293,15 +551,21 @@ To do this, I utilised spectroscopic and photometric data on eight galaxies whic
   \end{cases}
 \end{equation}
 
-\noindent A lognormal form:
+\noindent To which I will refer as the delayed model. A lognormal form:
 
 \begin{equation}\label{eq:lognormal_model}
   \mathrm{SFR}(t) \propto
   \frac{1}{t\sqrt{2\pi\tau^2}}
-  \exp\left({-\frac{\left(\ln{t-t_0}\right)^2}{2\tau^2}}\right)
+  \exp\left({-\frac{\left(\ln{t-T_0}\right)^2}{2\tau^2}}\right)
 \end{equation}
 
-\noindent Defined by Gladders et al. 2013, where $t$ is the elapsed time since the big bang, $t_0$ is the logarithmic decay time, and $\tau$ sets rise and decay timescale.\cite{Gladders_2013} \textsc{Bagpipes}, however, parameterises this as $t_{max}$, the time since the big bang at the peak rate of star formation and $2\sigma$, the full width at half maximum (FWHM) of the star formation rate.\cite{Carnall_2019b} Finally, \textsc{Bagpipes} allows a more versatile double power law parameterisation:
+\noindent Defined by Gladders et al. 2013, where $t$ is the elapsed time since
+the Big Bang, $T_0$ is the logarithmic decay time, and $\tau$ sets rise and
+decay timescale.\cite{Gladders_2013} \textsc{Bagpipes}, however, parametrises
+this as $t_{max}$, the time since the big bang at the peak rate of star
+formation and the full width at half maximum (FWHM) of the star formation
+rate.\cite{Carnall_2019b} Finally, \textsc{Bagpipes} allows a more versatile
+double power law parametrisation:
 
 \begin{equation}\label{eq:dblplaw_model}
   \mathrm{SFR}(t)\propto
@@ -312,18 +576,30 @@ To do this, I utilised spectroscopic and photometric data on eight galaxies whic
   ^{-1}
 \end{equation}
 
-\noindent Which usefully decouples the rising $\alpha$ and falling $\beta$ slopes of the star formation, at the expense of an additional parameter in a fit which is already of high dimensionality and of increased computational resources.\cite{Carnall_2018} Each of the above parameterisations include a parameter each for the total stellar mass $M_\star$ formed by the component and the metallicity $Z$ of the stars formed. It is possible to include ``bursts'' of fixed mass such that:
+\noindent Which usefully decouples the rising $\alpha$ and falling $\beta$
+slopes of the star formation, at the expense of an additional parameter in a
+fit which is already of high dimensionality and of increased computational
+resources.\cite{Carnall_2018} Each of the above parametrisations include a
+parameter each for the total stellar mass $M_\star$ formed by the component and
+the metallicity $Z$ of the stars formed. It is also possible to include
+``bursts'' of fixed mass $M_\star$ such that:
 
 \begin{equation}\label{eq:burst_model}
   \mathrm{SFR}(t)\propto
   M_\star \delta(t-T_0)
 \end{equation}
 
-\noindent As a matter of semantics, such ``bursts'' are not necessarily synonymous with the type of ``starburst'' activity for which we are searching. The starburst component may take one of any of these forms.
+\noindent As a matter of semantics, such ``bursts'' are not necessarily
+synonymous with the type of ``starburst'' activity for which we are searching.
+The starburst component may take one of any of these forms.
 
-Global parameters for the entire model galaxy include the observed redshift $z_obs$, the velocity dispersion $\sigma_v$ of the stellar population,the logarithm of the nebular ionisation rate $\log{U}$, and the extinction $A_V$ in magnitudes due to dust in the galaxy, which contribute to the summation in Eq. \ref{eq:luminosity_per_rframe_wavelength}.
-
-\textbf{Mention dust extinction curve (type) here!}
+Global parameters for the entire model galaxy include the observed redshift
+$z$, the velocity dispersion $\sigma_v$ of the stellar population,the logarithm
+of the nebular ionisation rate $\log{U}$, and the extinction $A_V$ in
+magnitudes due to dust in the galaxy, which contribute to the summation in Eq.
+\ref{eq:luminosity_per_rframe_wavelength}. \textsc{Bagpipes} allow several
+different dust attenuation curves, but for all fits in this project I have
+utilised the curve defined by Calzetti et al. 2000.\cite{Calzetti_2000}
 
 \begin{figure}
   \includegraphics[width=\textwidth]{host_hyz_specwerr_fit}
@@ -332,7 +608,13 @@ Global parameters for the entire model galaxy include the observed redshift $z_o
   \label{fig:bagpipes_example_fit}
 \end{figure}
 
-The real power of \textsc{Bagpipes}, however, is that it can also do the inverse: take in an observed spectrum and infer the most likely star formation history for that galaxy. By utilising Bayes' Theorem for some new data $\mathcal{D}$, a hypothesis $\mathcal{H}$ with parameter vector:
+The real power of \textsc{Bagpipes}, however, is that it can also do the
+inverse: take in an observed spectrum and infer the most likely star formation
+history for that galaxy. Fig. \ref{fig:bagpipes_example_fit} shows an example
+of one such fit, with standard deviations from the median posterior SFH shown
+in grey. Bayes' Theorem for some new data $\mathcal{D}$ and hypothesis
+$\mathcal{H}$ gives that the posterior probability that the model parameters
+$\Theta$ describe the data according to the hypothesis is:
 
 \begin{equation}\label{eq:bayes_theorem}
   P(\Theta|\mathcal{D},\mathcal{H}) =
@@ -341,7 +623,14 @@ The real power of \textsc{Bagpipes}, however, is that it can also do the inverse
   {P(\mathcal{D}|\mathcal{H})}
 \end{equation}
 
-\noindent And the \textsc{MultiNest} linear algebra sampling method implemented by Buchner et al. 2014 in \textsc{PyMultiNest} to determine the probability that a model galaxy spectrum (the hypothesis) described by Eq. \ref{eq:luminosity_per_rframe_wavelength} is a fit for the observed spectrum (the data), \textsc{Bagpipes} produces a posterior distribution of SFHs and their associated parameters.\cite{Carnall_2018, Buchner_2014}
+\noindent Where $P(\Theta|\mathcal{H})$ is the prior probability distribution
+of parameters in the model. In combination with the \textsc{MultiNest} linear
+algebra sampling method implemented by Buchner et al. 2014 in
+\textsc{PyMultiNest}, \textsc{Bagpipes} uses this method of inference
+to determine the probability that a model galaxy spectrum (the hypothesis)
+described by Eq. \ref{eq:luminosity_per_rframe_wavelength} is a fit for the
+observed spectrum (the data), and produce a posterior distribution of SFHs and
+their associated parameters.\cite{Carnall_2018, Buchner_2014}
 
 \subsection{Stellar Population Fitting}\label{sec:stellar_population_fitting}
 
@@ -359,54 +648,137 @@ The real power of \textsc{Bagpipes}, however, is that it can also do the inverse
     M0            &	0.5         & \SI{8280}{\angstrom} & \SI{56}{Gyr}  & 800         \\
     \hline
   \end{tabular}
-  \caption{Typical masses, temperatures, and main-sequence lifetimes for seven Harvard spectral subtypes. Number densities per \SI{10000}{\cubic\parsec} for each subtype's respective super-type are adapted from Glenn et al. 2001.\cite{Glenn_2001}}
+  \caption{
+  Typical masses, temperatures, and main-sequence lifetimes for seven Harvard
+  spectral subtypes. Number densities per \SI{10000}{\cubic\parsec} for each
+  subtype's respective super-type are adapted from Glenn et al.
+  2001.\cite{Glenn_2001}
+  }
   \label{tab:star_lifetimes_densities}
 \end{table}
 
-Many of the challenges in fitting spectra to SFHs are due to the limitations of stellar population fitting, whereby the total luminosity and the ratio of blue to red stars constituent in a host galaxy is used to infer the age of stellar formation components. The main sequence lifetime of a star is given by\cite{Prialnik_2010}:
+Many of the challenges in fitting spectra to SFHs are due to the limitations of
+stellar population fitting, whereby the total luminosity and the ratio of blue
+to red stars constituent in a host galaxy is used to infer the age of stellar
+formation components. The main sequence lifetime of a star is given
+by\cite{Prialnik_2010}:
 
 \begin{equation}
   T_{MS} \propto \left(\frac{M}{M_\odot}\right)^{-2}
 \end{equation}
 
-\noindent From this we obtain the typical main-sequence lifetimes for stars of different Harvard spectral classifications, given in Table \ref{tab:star_lifetimes_densities}. From this data, the limitations of stellar population fitting are immediately apparent. Due to the inverse power law relationship between mass and main-sequence lifetime, small reductions in the initial mass (and therefore, main-sequence temperature) of stars result in dramatic increases in main-sequence lifetime. While on the main-sequence, the luminosity and colour of these long-lived stars varies little.\cite{Prialnik_2010} If, for example, the hottest stars in a stellar population are G-type stars, then stellar population fitting may reasonably find that population to be anywhere between \SI{3}{Gyr} and \SI{11}{Gyr} old. This kind of temporal resolution is comparable to the age of the universe, but star formation rates are believed to vary on much smaller timescales.\cite{Kauffmann_2003c} If star forming processes create new stars with initial masses according to some initial mass function (IMF), then star formation of sufficient total mass formed will always create some stars of each spectral type. But once the population of A-type stars, with lifetimes on the order of \SI{100}{Myr}, die out completely, it becomes increasingly difficult to pinpoint the precise age of that formation.
+\noindent From this we obtain the typical main-sequence lifetimes for stars of
+different Harvard spectral classifications, given in Table
+\ref{tab:star_lifetimes_densities}. From this data, the limitations of stellar
+population fitting are immediately apparent. Due to the inverse power law
+relationship between mass and main-sequence lifetime, small reductions in the
+initial mass (and therefore, main-sequence temperature) of stars result in
+dramatic increases in main-sequence lifetime. While on the main-sequence, the
+luminosity and colour of these long-lived stars varies
+little.\cite{Prialnik_2010} If, for example, the hottest stars in a stellar
+population are G-type stars, then stellar population fitting may reasonably
+find that population to be anywhere between \SI{3}{\giga\year} and
+\SI{11}{\giga\year} old. This kind of temporal resolution is comparable to the
+age of the universe, but star formation rates are believed to vary on much
+smaller timescales.\cite{Kauffmann_2003c} If star forming processes create new
+stars with initial masses according to some initial mass function (IMF), then
+star formation of sufficient total mass formed will always create some stars of
+each spectral type. But once the population of A-type stars, with lifetimes on
+the order of \SI{100}{\mega\year}, die out completely, it becomes increasingly
+difficult to pinpoint the precise age of that formation epoch.
 
-Indeed, observations by Glenn et al. 2001 reproduced in Table \ref{tab:star_lifetimes_densities} show that our own Milky Way, despite being a relatively young, blue galaxy, is nevertheless mostly populated by cool red dwarves, whose lifetimes are many times that of the current age of the universe.
+Indeed, observations by Glenn et al. 2001 reproduced in Table
+\ref{tab:star_lifetimes_densities} show that our own Milky Way, despite being a
+relatively young, blue galaxy, is nevertheless mostly populated by cool red
+dwarves, whose lifetimes are many times that of the current age of the universe.
 
-% \section{Metal and Nebular Emission Lines}
-%
-% Astrophysics of gaseous nebulae
+\section{Methods: Blind Fitting with \textsc{Bagpipes}}\label{sec:blind_fitting}
 
-\section{Blind Fitting with \textsc{Bagpipes}}\label{sec:blind_fitting}
+Because stellar population fitting is so sensitive to specified priors, I first
+sought to determine what SFHs could reliably be fit by \textsc{Bagpipes} before
+turning it on the XSHOOTER data. To do this, I performed ``blind-fitting''
+trials, whereby I simulated observed spectra from a known, priori SFH and then
+fit these mock spectra with \textsc{Bagpipes} to see what priors are necessary
+to reproduce the true SFH.\footnote{For clarity, I will hereafter use the
+dative ``priori'' to describe properties of the simulated galaxy, the
+nominative ``prior(s)'' to describe the parameters and parameter ranges used to
+blind-fit the simulated galaxy, and ``posterior'' to describe the fitted
+parameters.}
 
-Because stellar population fitting is so sensitive to prior constraints, I first sought to determine what SFHs could reliably be fit by \textsc{Bagpipes} before turning it on the XSHOOTER data. To do this, I performed ``blind-fitting'' trials, whereby I simulated observed spectra from a known, priori SFH and then fit these mock spectra with \textsc{Bagpipes} to see what priors are necessary to reproduce the true SFH.\footnote{For clarity, I will hereafter use the dative ``priori'' to describe properties of the simulated galaxy, the nominative ``prior(s)'' to describe the parameters and parameter ranges used to blind-fit the simulated galaxy, and ``posterior'' to describe the fitted parameters.}
+Because model galaxy spectra are simulated, their flux values are exact and
 
-Because model galaxy spectra are simulated, their flux values are ``exact'' and don't have associated uncertainties. So before they can be fit, they need to have noise added to them. The particular choice of uncertainty to add is somewhat arbitrary, but I tried to mimic the signal to noise ratio of the XSHOOTER data when doing this. At wavelengths below approximately \SI{3500}{\angstrom}, noise in the XSHOOTER data is on the same order of magnitude as the signal. Between approximately \SIrange{3500}{9000}{\angstrom}, noise is one or two orders of magnitude less than the signal, and at longer wavelengths, the $S/N$ ratio decreases considerably.
+don't have associated uncertainties. So before they can be fit, they need to
+
+have noise added to them. The particular choice of uncertainty to add is
+somewhat arbitrary, but I tried to mimic the signal to noise ratio $S/N$ of the
+XSHOOTER data when doing this. At wavelengths below approximately
+\SI{3500}{\angstrom}, noise in the XSHOOTER data is on the same order of
+magnitude as the signal. Between approximately \SIrange{3500}{9000}{\angstrom},
+noise is one or two orders of magnitude less than the signal, and at longer
+wavelengths, the $S/N$ decreases considerably.
 
 \begin{figure}
-  \includegraphics{ASASSN14li_SN_hist}
-  \caption{Histograms of the $S/N$ ratio of flux values for the eight XSHOOTER targets. Note that some very low $S/N$ ratios are due to deliberately exaggerated errors on Telluric lines, as described in \S \ref{sec:xshooter_data}.}
+  \includegraphics[width=\textwidth]{tde_sn_hist}
+  \caption{Histograms of the $S/N$ ratio of flux values for the eight XSHOOTER
+  targets. Note that some very low $S/N$ ratios are due to deliberately
+  exaggerated errors on Telluric lines, as described in \S\ref{sec:xshooter_data}.}
   \label{fig:sig_to_noise_histograms}
 \end{figure}
 
-To produce similar uncertainties, I select a Monte Carlo error for each flux value $f$ from a Gaussian distribution with $\mu=f$ and $\sigma=0.1f$, and assign the error to that flux value. This doesn't perfectly reproduce the wavelength-dependent uncertainty of the XSHOOTER data, but errors sampled from the wings of the Gaussian reproduce some of the very high and very low $S/N$ ratios in the XSHOOTER data while maintaining the statistical behaviour illustrated in Fig. \ref{fig:sig_to_noise_histograms}: that most errors are one or two orders of magnitude less than their associated data points.
+To produce similar uncertainties, I simulate an error for each flux value $f$
+from a Gaussian distribution with $\mu=f$ and $\sigma=0.1f$. This doesn't
+perfectly reproduce the wavelength-dependent uncertainty of the XSHOOTER data,
+but errors sampled from the wings of the Gaussian reproduce some of the very
+high and very low $S/N$ in the XSHOOTER data while maintaining the statistical
+behaviour illustrated in Fig. \ref{fig:sig_to_noise_histograms}: that most
+errors are one or two orders of magnitude less than their associated data
+points.
 
-The minimum parameter space covered by a \textsc{Bagpipes} fit includes a single function SFH and its associated parameters, a redshift, a velocity dispersion, and dust attenuation: a 7-dimensional parameter space. More nuanced models which account for nebular emission, birth cloud lifetimes, and multiple SFH components quickly grow to be very high-dimensional and therefore computationally expensive. My two component fits were 13- or 14-dimensional, depending on whether or not a double power-law function was included, and each run took many hours on the Cuillin computing cluster at the Royal Observatory Edinburgh. For these reasons, it's essential to fit in a way that is computationally efficient.
+The minimum parameter space covered by a \textsc{Bagpipes} fit includes a
+single function SFH and its associated parameters, a redshift, a velocity
+dispersion, and dust attenuation: a 7-dimensional parameter space. More nuanced
+models which account for nebular emission, birth cloud lifetimes, and multiple
+SFH components quickly grow to be very high-dimensional and therefore
+computationally expensive. My two component fits were 13- or 14-dimensional,
+depending on whether or not a double power-law function was included, and each
+run took many hours on the Cuillin computing cluster at the Royal Observatory
+Edinburgh. For these reasons, it's essential to fit in a way that is
+computationally efficient.
 
-As an aside, it's import to consider whether real star formation histories are really like this. As discussed in \S\S\ref{sec:active_galactic_nuclei} and \ref{sec:tidal_disruption_events}, star formation histories do not evolve on sufficiently short timescales to observe them directly, but we can measure trends in galactic star formation over varying redshifts. Stellar population dating of high redshift galaxies suggests that cosmic star formation peaks in most galaxies sometime around $1.5 < z < 3$, a period sometimes referred to as ``cosmic noon,'' and that star formation is ``quenched'' after this time.\cite{Feldmann_2016} So there are compelling reasons to believe that most of a galaxy's stellar mass should be formed in some bulk formation in the distant past, with possibly variable, low-level star formation since that epoch. The simulated spectra I produced for blind-fitting all conform to this paradigm, so the blind fits are a test how reliably this kind of SFH can be reconstructed from a spectrum. If, however, true SFHs do not follow this trend, fits performed with priors that reflect this paradigm will still tend to find star formation histories that tend to affirm that paradigm---a form of model bias. In the next four sections, I detail four ``runs'' or sets of priors and related algorithms, hereafter referred to as R1, R2, R3 and R4. In each run, I test different priors and fitting routines to reconstruct a known star formation history from its simulated spectrum, while balancing the need to minimise model bias with the need for computational austerity.
+As an aside, it's import to consider whether real star formation histories are
+really like this. As discussed in \S\ref{sec:active_galactic_nuclei} and
+\S\ref{sec:tidal_disruption_events}, star formation histories do not evolve on
+sufficiently short timescales to observe them directly, but we can measure
+trends in galactic star formation over varying redshifts. Stellar population
+dating of high redshift galaxies suggests that cosmic star formation peaks in
+most galaxies sometime around $1.5 < z < 3$, a period sometimes referred to as
+``cosmic noon,'' and that star formation is ``quenched'' after this
+time.\cite{Feldmann_2016} So there are compelling reasons to believe that most
+of a galaxy's stellar mass should be formed in some bulk formation in the
+distant past, with possibly variable, low-level star formation since that
+epoch. The simulated spectra I produced for blind-fitting all conform to this
+paradigm, so the blind fits are really a test of how reliably this kind of SFH
+can be reconstructed from a spectrum. If, however, true SFHs do not follow this
+trend, fits performed with priors that reflect this paradigm will still tend to
+find star formation histories that affirm it---a form of model bias. In the
+next four sections, I detail four ``runs'' or sets of priors and related
+algorithms, hereafter referred to as R1, R2, R3 and R4. In each run, I test
+different priors and fitting routines to reconstruct a known star formation
+history from its simulated spectrum, while balancing the need to minimise model
+bias with computational austerity.
 
-\subsection{R1: Wide Parameter Space with Two Components}\label{sec:r1}
+\subsection{R1: Iterative Fitting}\label{sec:r1}
 
 \begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
     Model       & Parameter            & Symbol/Unit                  & Range          & Prior   \\
     \hline \hline
-    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (3.5, 10)      & Uniform \\
+    Exponential & Age                  & $t(z)-T_0/\mathrm{Gyr}$      & (3.5, 10)      & Uniform \\
     Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)       & Uniform \\
     \hline
     Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (3.5, 10.5)    & Uniform \\
-                & FWHM                 & $2\sigma/\mathrm{Gyr}$       & (0.1, 5)       & Uniform \\
+                & FWHM                 & $\mathrm{FWHM/Gyr}$          & (0.1, 5)       & Uniform \\
     \hline
     Global      & Mass formed          & $M_\star/M_\odot$            & (0, 15)        & Uniform \\
                 & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)       & Uniform \\
@@ -423,93 +795,128 @@ As an aside, it's import to consider whether real star formation histories are r
 \begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
-    Model & Parameter   & Symbol/Unit        & Range           & Prior   \\
+    Model & Parameter   & Symbol/Unit             & Range           & Prior   \\
     \hline \hline
-    Burst & Start time  & $T_0/\mathrm{Gyr}$ & (0, $T_{low}$)  & Uniform \\
-          & Mass formed & $M_\star/M_\odot$  & (0, 15)         & Uniform \\
+    Burst & Age         & $t(z)-T_0/\mathrm{Gyr}$ & (0, $t_{low}$)  & Uniform \\
+          & Mass formed & $M_\star/M_\odot$       & (0, 15)         & Uniform \\
     \hline
   \end{tabular}
   \caption{Prior parameters and their distributions, as applied in the R1 round of blind fits.}
   \label{tab:r1_burst_priors}
 \end{table}
 
-As discussed in \S \ref{sec:bagpipes_module}, computational resources are a serious consideration when devising priors for a \textsc{Bagpipes} fit. So for my first fitting run, I tried to first establish the functional form of the old, bulk star formation, and then determine whether or not a more recent burst improved the fit. This advantageously limits the first three fits to only ten dimensions, and runs only one subsequent 12-dimensional fit.
+As discussed in \S\ref{sec:bagpipes_module}, computational resources are a
+serious consideration when devising priors for a \textsc{Bagpipes} fit. So for
+my first fitting run, I tried to first establish the functional form of the
+old, bulk star formation, and then determine whether or not a more recent burst
+improved the fit. This advantageously limits the first three fits to only ten
+dimensions, and runs only one subsequent 13-dimensional fit.
 
-I first fit each of the functional forms given in Tab. \ref{tab:r1_priors}. To determine which of these best fits the spectral data, I calculate the reduced chi-squared value:
+I first fit each of the functional forms given in Tab. \ref{tab:r1_priors}. To
+determine which of these best fits the spectral data, I calculate the chi-
+squared, goodness of fit value:
 
 \begin{equation}
   \chi^2 = \sum_{i}\frac{(O_i - C_i)^2}{\sigma_i^2}
 \end{equation}
 
-\noindent For each fit using the simulated data $O_i$, their errors $\sigma_i$, and model spectrum $C_i$ fit by \textsc{Bagpipes}. I select the functional form with the best fit (lowest chi-squared value) and run a second fit with that functional form in linear combination with a delta function with priors given in Tab. \ref{tab:r1_burst_priors}. For this second component, I constrain the age of the burst to be less than $T_low$, which taken from the median posterior age of the bulk component, i.e. we are only interested in detecting bursts which occur \textit{after} the bulk star formation. I perform a final reduced chi-squared calculation for this fit, and compare it to the single component fit. If the old+burst form reduces the chi-squared statistic, then I consider this a positive burst detection. If not, I consider the single component fit to be the best, and take there to be no burst in the SFH.
+\noindent For each fit using the simulated data $O_i$, their errors $\sigma_i$,
+and model spectrum $C_i$ fit by \textsc{Bagpipes}. I select the functional form
+with the best fit (lowest chi-squared value) and run a second fit with that
+functional form in linear combination with a delta function with priors given
+in Tab. \ref{tab:r1_burst_priors}. For this second component, I constrain the
+age of the burst to be less than $t_{low}$, which is taken from the median
+posterior age of the bulk component, i.e. we are only interested in detecting
+bursts which occur \textit{after} the bulk star formation. I perform a final
+chi-squared calculation for this fit, and compare it to the single component
+fit. If the old+burst form reduces the chi-squared statistic, then I consider
+this a positive burst detection. If not, I consider the single component fit to
+be the best, and take there to be no burst in the SFH.
 
-Unfortunately, this seldom detected priori bursts in the posterior. Upon inspection, I found that when fitting the bulk component without a burst, \textsc{Bagpipes} favours posterior parameters with a much younger bulk formation than the priori SFH in order to account for blue stars formed in the burst. Constraining the age of the burst to be younger than this biases the second fit towards lower burst masses and young bulk formation. Since the burst can not be sufficiently old to account for blue stars in the spectrum, the bulk formation can not be weighted back towards an older stellar population. It also dubiously assumes that the functional form with the best single component fit will also be the best fit in linear combination with a burst, which is not necessarily the case. For these reasons, I chose to abandon this approach.
+Unfortunately, this seldom detected priori bursts in the posterior. Upon
+inspection, I found that when fitting the bulk component without a burst,
+\textsc{Bagpipes} favours posterior parameters with a much younger bulk
+formation than the priori SFH in order to account for blue stars formed in the
+burst. Constraining the age of the burst to be younger than this biases the
+second fit towards lower burst masses and young bulk formation. Since the burst
+can not be sufficiently old to account for blue stars in the spectrum, the bulk
+formation can not be weighted back towards an older stellar population. It also
+dubiously assumes that the functional form with the best single component fit
+will also be the best fit in linear combination with a burst, which is not
+necessarily the case. For these reasons, I chose to abandon this approach.
 
-\subsection{R2 \& R3: Iterative Fitting}\label{sec:r2_and_r3}
+\subsection{R2 \& R3: Wide Parameter Space with Two Components}\label{sec:r2_and_r3}
 
 \begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
     Model       & Parameter            & Symbol/Unit                  & Range          & Prior    \\
     \hline \hline
-    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (3.5, 10)      & Uniform  \\
-    Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)       & Uniform  \\
+    Exponential & Age                  & $t(z)-T_0/\mathrm{Gyr}$      & (3.5, 10)      & Uniform \\
+    Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.1, 2)       & Uniform \\
     \hline
-    Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (3.5, 10.5)    & Uniform  \\
-                & FWHM                 & $2\sigma/\mathrm{Gyr}$       & (0.1, 5)       & Uniform  \\
+    Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (3.5, 10.5)    & Uniform \\
+                & FWHM                 & $\mathrm{FWHM/Gyr}$          & (0.1, 5)       & Uniform \\
     \hline
-    DPL         & Rising slope         & $\alpha$                     & (0, 10)        & Uniform  \\
-                & Falling slope        & $\beta$                      & (0, 10)        & Uniform  \\
-                & Turnover             & $\tau$                       & (0, 15)        & Uniform  \\
+    DPL         & Rising slope         & $\alpha$                     & (0, 10)        & Uniform \\
+                & Falling slope        & $\beta$                      & (0, 10)        & Uniform \\
+                & Turnover             & $\tau$                       & (0, 15)        & Uniform \\
     \hline
-    Global      & Mass formed          & $M_\star/M_\odot$            & (0, 15)        & Uniform  \\
-                & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)       & Uniform  \\
-                & Birth cloud lifetime & $T_{BC}/\mathrm{Gyr}$        & (0.005, 0.015) & Gaussian \\
-                & Velocity dispersion  & $\sigma_v/\mathrm{kms^{-1}}$ & (150, 200)     & Uniform  \\
-                & Extinction           & $A_V$                        & (0, 1)         & Uniform  \\
-                & Redshift             & $z$                          & (0, 0.1)       & Uniform  \\
+    Global      & Mass formed          & $M_\star/M_\odot$            & (0, 15)        & Uniform \\
+                & Metallicity          & $Z/Z_\odot$                  & (0, 2.5)       & Uniform \\
+                & Birth cloud lifetime & $T_{BC}/\mathrm{Gyr}$        & (0.005, 0.015) & Uniform \\
+                & Velocity dispersion  & $\sigma_v/\mathrm{kms^{-1}}$ & (150, 200)     & Uniform \\
+                & Extinction           & $A_V$                        & (0, 1)         & Uniform \\
+                & Redshift             & $z$                          & (0, 0.1)       & Uniform \\
     \hline
   \end{tabular}
   \caption{Prior parameters and their distributions, as applied in the R2, and R3 round of blind fits.}
   \label{tab:r2_r3_priors}
 \end{table}
 
-I decided that in order to avoid suppressing the burst mass with young bulk formation, both the age of the burst and the bulk formation had to be allowed to vary over a wider prior parameter space. Without the need to constrain the burst by the median age of the bulk formation, I was able to fit the three functional forms from R1 \textit{or} the more versatile double power law function (which has no posterior age distribution). In these runs, I also utilised a more physically realistic, exponentially decaying burst function instead of the burst described by Eq. \ref{eq:burst_model}. This burst is allowed to vary over a much larger parameter space:
+I decided that in order to avoid suppressing the burst mass with young bulk
+formation, both the age of the burst and the bulk formation should be allowed
+to vary over a wider prior parameter space. Without the need to constrain the
+burst by the median age of the bulk formation, I was able to fit the three
+functional forms from R1 \textit{or} the more versatile double power law
+function (which has no posterior age distribution). In these runs, I also
+utilised a more physically realistic, exponentially decaying burst function
+instead of the burst described by Eq. \ref{eq:burst_model}. This burst is
+allowed to vary over a much larger parameter space:
 
-\begin{table}[h]
+\begin{table}[h!]
   \centering
   \begin{tabular}{l l r r l}
-    Model       & Parameter   & Symbol/Unit         & Range    & Prior   \\
+    Model       & Parameter   & Symbol/Unit              & Range    & Prior   \\
     \hline \hline
-    Exponential & Start time  & $T_0/\mathrm{Gyr}$  & (0, 10)  & Uniform \\ % F-star lifetime
-                & Decay time  & $\tau/\mathrm{Gyr}$ & (0.1, 2) & Uniform \\
-                & Mass formed & $M_\star/M_\odot$   & (0, 15)  & Uniform \\
-                & Metallicity & $Z/Z_\odot$         & (0, 2.5) & Uniform \\
+    Exponential & Age         & $t(z)-T_0/\mathrm{Gyr}$  & (0, 10)  & Uniform \\ % F-star lifetime
+                & Decay time  & $\tau/\mathrm{Gyr}$      & (0.1, 2) & Uniform \\
+                & Mass formed & $M_\star/M_\odot$        & (0, 15)  & Uniform \\
+                & Metallicity & $Z/Z_\odot$              & (0, 2.5) & Uniform \\
   \end{tabular}
   \caption{Prior parameters and their distributions for the burst component, as applied in the R2 and R3 round of blind fits.}
   \label{tab:r2_r3_burst_priors}
 \end{table}
 
-The only difference between R2 and R3 is that in R3, the prior redshift $z$ of the galaxy is constrained to be $z_{obs} - 0.001 \leq z \leq z_{obs} + 0.001$, where $z_{obs}$ is the observational redshift. (For blind-fitting, the ``observational'' redshift was simply taken to be the priori redshift). R2 simply let this prior vary between 0 and 0.1, a range which included all the priori galaxies and the XSHOOTER targets. R3 did produce marginally more accurate posterior redshifts, but both runs still failed to reliably detect the priori bursts. Rather, they continued to favour younger bulk formation than in the priori galaxy and suppressing high mass bursts in the posterior distribution.
+The only difference between R2 and R3 is that in R3, the prior redshift $z$ of
+the galaxy is constrained to be in the range of $z_{obs}\pm 0.001$, where
+$z_{obs}$ is the observational redshift. (For blind-fitting, the
+``observational'' redshift was simply taken to be the priori redshift). R2
+simply let this prior vary between 0 and 0.1, a range which included all the
+priori galaxies and the XSHOOTER targets. R3 did produce marginally more
+accurate posterior redshifts, but both runs still failed to reliably detect the
+priori bursts. Rather, they continued to favour younger bulk formation than in
+the priori galaxy and suppressed the mass of bursts in the posterior
+distribution.
 
-\subsection{Selecting Physically Reasonable Priors}\label{sec:prior_selection}
+\subsection{R4: Selecting Physically Reasonable Priors}\label{sec:r4}
 
-I concluded from R2 and R3 that, actually, the age of the bulk formation had so be constrained to some range more consistent with observation.
-
-Velocity dispersion of constituent stars is allowed to vary between
-
-The ionization parameter for nebular emission is allowed to vary between logU=-4 and logU=-2, a very low and very high rate of (molecular?) ionization.
-
-The lifetime of the stellar birth clouds was chosen to be a normal distribution about ${t_{BC}=17Myr}$ with ${\sigma=4Myr}$, consistent with typical cloud lifetimes in the Milky Way, as determined by Murray 2011\cite{Murray_2011}.
-
-\subsection{R4: Constrained Old Component, Free Burst Component}\label{sec:r4}
-
-\begin{table}
+\begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
     Model       & Parameter            & Symbol/Unit                  & Range             & Prior   \\
     \hline \hline
-    Exponential & Start time           & $T_0/\mathrm{Gyr}$           & (7.5, 12.5)       & Uniform \\
+    Exponential & Age                  & $t(z)-T_0/\mathrm{Gyr}$      & (7.5, 12.5)       & Uniform \\
     Delayed     & Decay time           & $\tau/\mathrm{Gyr}$          & (0.5, 2)          & Uniform \\
     \hline
     Lognormal   & Peak time            & $t_{max}/\mathrm{Gyr}$       & (1, 6)            & Uniform \\
@@ -532,234 +939,893 @@ The lifetime of the stellar birth clouds was chosen to be a normal distribution 
   \label{tab:r4_priors}
 \end{table}
 
-\begin{table}
+\begin{table}[h]
   \centering
   \begin{tabular}{l l r r l}
-    Model       & Parameter   & Symbol/Unit         & Range      & Prior   \\
+    Model       & Parameter   & Symbol/Unit             & Range      & Prior   \\
     \hline \hline
-    Exponential & Start time  & $T_0/\mathrm{Gyr}$  & (0.0, 3.5) & Uniform \\ % F-star lifetime
-                & Decay time  & $\tau/\mathrm{Gyr}$ & (0.1, 2)   & Uniform \\
-                & Mass formed & $M_\star/M_\odot$   & (0, 12.5)  & Uniform \\
-                & Metallicity & $Z/Z_\odot$         & (0, 2.5)   & Uniform \\
+    Exponential & Age         & $t(z)-T_0/\mathrm{Gyr}$ & (0.0, 3.5) & Uniform \\ % F-star lifetime
+                & Decay time  & $\tau/\mathrm{Gyr}$     & (0.1, 2)   & Uniform \\
+                & Mass formed & $M_\star/M_\odot$       & (0, 12.5)  & Uniform \\
+                & Metallicity & $Z/Z_\odot$             & (0, 2.5)   & Uniform \\
+    \hline
   \end{tabular}
   \caption{Prior parameters and their distributions on the burst component, as applied in the R4 round of blind fits.}
   \label{tab:r4_burst_priors}
 \end{table}
 
-Dust Type is Calzetti
-$z$ varies tightly around $z_obs$ such that $z_{obs}-0.001 \leq z \leq z_{obs}+0.001$.
-$\sigma_{v}$ is constrained by Faber-Jackson. TODO: Lookup Minkowski 1962!
-$T_{BC}$ is constrained from Murray 2011.
+I concluded from R2 and R3 that, actually, the age of the bulk formation had to
+be constrained to some range more consistent with observation in order to
+detect recent bursts, otherwise the burst will be ``smeared out'' and lost in
+some middle aged star formation component. Most galaxies undergo quenching
+sometime after cosmic noon.\cite{Tomczak_2014, Feldmann_2016} To reflect this
+in my priors, I constrained the peak rate of bulk star formation to occur no
+later than \SI{6.5}{\giga\year} after the Big Bang, and put a lower bound on
+the stellar mass formed by this component. The reasoning for this boils down to
+a few basic ideas:
 
-Quenching at Cosmic Noon
+\begin{itemize}
+  \item The precise functional form of the old star formation is hard to pin
+  down, due to the limits of stellar population fitting. As discussed in
+  \S\ref{sec:stellar_population_fitting}, temporal resolution of a population
+  decreases dramatically after its O- and B-type star die out.
+  \item For the same reason, though, the particular form of the old component
+  is perhaps unimportant for the purpose of starburst detection, for which one
+  simply needs to establish whether or not there are two different stellar
+  populations. For this purpose, the various functional forms of star formation
+  will produce very similar stellar populations in the present if they are of
+  similar mass and sufficient age, and whichever one gives the better spectrum
+  fit is fine.
+  \item This is physically reasonable and consistent with observation---high
+  redshift observations find peak star formation around cosmic noon, and we do
+  not observe newly formed galaxies at low redshifts, so most of a galaxy's
+  mass should be formed in some older event, not in subsequent starbursts.
+\end{itemize}
 
-Note that the delayed form was actually run with   $0.1 < \tau < 2.0$
+\noindent For the lower and upper mass bounds on this formation, I used the
+standard deviations of the mean galactic mass for galaxies with $z \leq 0.1$,
+which are $10^{5}M_\odot$ and $10^{12.5}M_\odot$.\cite{Baldry_2012,
+Wright_2017} The burst component is constrained to occur no earlier than
+\SI{3.5}{\giga\year} ago---slightly more than the typical main-sequence
+lifetime for an F-type star. The mass formed in the burst is allowed to be as
+large or larger than the old component, but \textit{there is no lower mass
+limit for the burst.} The reasoning for this prior constraint is that, bursts
+older than lifetime of these stars will probably be difficult to distinguish
+from the low-level of star formation in quiescent galaxies, which for the Milky
+Way is approximately $0.68-1.45M_\odot\mathrm{yr}^{-1}$, so there may be little
+use in trying to fit them.\cite{Robitaille_2010} If the priori SFH does not
+contain a burst, then the posterior mass of the burst should favour zero mass
+formed. This gives a mechanism for a null result, while still exploring a wide
+parameter space in a single run.
 
-And an exponentially declining burst with priors:
+If the median posterior burst mass and decay time create a burst which exceeds
+the quiescent star formation rate (or decaying rate from the old formation
+component), I consider this a positive burst detection. If the median posterior
+burst mass approaches or exceeds the total mass formed by the old component, it
+is worth considering whether over fitting is at play, and the fit is trying to
+compensate for an epoch of star formation between
+\SIrange{6.5}{10.25}{\giga\year} after the Big Bang. This should be accountable
+by the old component; although the \textit{peak} SFR of the old component is
+constrained to be no later than \SI{6.5}{\giga\year}, the prior decay times/
+falling slopes of these components allow star formation to continue well up
+until the burst prior, even though they are quenching during this period.
 
-\section{Application to XSHOOTER Data}\label{sec:tde_fitting}
-\section{Results \& Discussion}\label{sec:results_and_discussion}
+During this time, I also went to the literature to constrain other parameters
+to be consistent with observational values. The redshift $z$ varies tightly
+around the observational redshift $z_{obs}$ within the range of $z_{obs} \pm
+0.001$. Velocity dispersion $\sigma_{v}$ of constituent stars is limited by the
+Faber-Jackson relation, and is therefore constrained to be
+\SIrange{50}{450}{\kilo\meter\per\second}.\cite{Minkowski_1962} The prior on
+the lifetime of the stellar birth clouds was chosen to be a normal distribution
+about ${t_{BC}=17Myr}$ with ${\sigma=4Myr}$, consistent with typical cloud
+lifetimes in the Milky Way, as determined by Murray 2011.\cite{Murray_2011} The
+ionization parameter for nebular emission is allowed to vary between $\log{U}=-
+4$ and $\log{U}=-2$, a very low and very high rate of gas ionization. The prior
+dust component uses a Calzetti extinction curve, with $A_V$ allowed to vary
+between one and two magnitudes (which may be on the optimistic side).
 
-Here follows a discussion of the R4 priors applied to the eight XSHOOTER targets, their inferred star formation histories for the $\mathrm{reduced-}\chi^2$ best fit spectra, and the posterior distributions of their parameters, with comparison to established literature on the targets.
+% \footnote{Note that the delayed form was actually run with $0.1 < \tau <
+% 2.0$. This was in error, but doesn't seem to have seriously affected the
+% posterior results.}
 
-\subsection{ASASSN-14li, $z=0.0206$}\label{sec:ASASSN-14li}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/ASASSN14li_sfh.pdf}
-  \caption{Observed and fitted spectrum for the host of ASASSN-14li, and posterior SFH.}
-  \label{}
+\section{Blind Fitting Results}\label{sec:blind_fitting_results}
+
+With these priors, I ran a final round of blind fits, and finally began to
+detect starbursts in the posterior. Each run has two components: one of the
+four functional forms from Tab. \ref{tab:r4_priors} and the burst component
+from Tab. \ref{tab:r4_burst_priors}. Of the four runs, I select the one with
+the best chi-squared statistic, and investigate its posterior values to
+determine whether a burst has been positively detected. Several blind fit
+results are given below, each of which illustrates a different priori case or
+posterior outcome, and the usefulness/limitations of this set of
+priors.\footnote{A complete inventory of blind fitting results including model
+spectra, fit priors, and posterior samples
+in \texttt{.h5} format for all runs R1-R4 is available at \url{github.com/
+aswheaton/agn-host-project/pipes}.}
+
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_4_sfh}
+  \includegraphics[width=\textwidth]{../pipes/plots/r4_lognormal_burst/phil_model_4_sfh}
+  \caption{
+  Blind fit model No. 4, priori SFH (top) and median posterior SFH (bottom)
+  with $\chi^2=28.517106832593093$. Standard deviations of the posterior SFH
+  are given in grey.
+  }
+  \label{fig:phil_model_4_sfhs}
 \end{figure}
 
-A very important discovery was made with ASASSN-14li.Initially identified in the optical, this is one of the few TDEs toshow evidence of both thermal and non-thermal components.ASASSN-14li was discovered by the All-Sky AutomatedSurvey for Supernovae(ASAS-SN; Shappee et al.2014)on2014 November 22 at the center of the nearby(z=0.0206,D=90.3 Mpc)post-starburst galaxy PGC 043234(Holoien et al.2016). PGC 043234 appears to be the remnant of a recentmerger that likely hosted a low-luminosity Type II AGN priorto the TDE(Prieto et al.2016). Holoien et al.(2016)present theoptical, UV, and X-ray properties of the event, followed byadditional X-ray(Miller et al.2015; Brown et al.2016),UV(Cenko et al.2016), radio(Alexander et al.2016; van Velzenet al.2016, and this work), and mid-IR(Jiang et al.2016)studies.\cite{Romero_Canizales_2016}
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{phil_model_4_posterior}
+  \caption{
+  Posterior distributions for fitted parameters on model No. 4. From left to
+  right, the age of the burst, the mass formed by the burst, the peak of the
+  old component, and the mass formed by the old component. Median and standard
+  deviations of the distributions are shown by the dashed lines.
+  }
+  \label{fig:phil_model_4_posterior}
+\end{figure}
 
+Model No. 4 is an example case of a positive burst detection. Fig.
+\ref{fig:phil_model_4_sfhs} shows the priori and posterior SFH for this model
+galaxy. The posterior SFH contains a lognormal old component and a clear burst
+component with median posterior age \SI{0.78}{\giga\year}. \textsc{Bagpipes}
+assumes a flat $\lambda$-CDM cosmology such that the universe's present age is
+\SI{13.467}{\giga\year}. At the median posterior redshift $z=0.069$ then, the
+model galaxy's age is \SI{12.54}{\giga\year} and from Eq. \ref{eq:tau_model},
+we have that $T_0 = \SI{11.78}{\giga\year}$. This is very close to the priori
+$T_0=\SI{11.54}{\giga\year}$.
+
+The stellar mass formed in the posterior burst is $M=10^{7.99}M_\odot$,
+slightly less than the priori mass of $10^{8.3}M_\odot$. To understand why this
+is the case, we consider also the posterior mass of the old component, which is
+$10^{9.49}M_\odot$, compared to the priori mass (a double power law model) of
+$10^{9.5}M_\odot$. These are very similar, so it is unlikely that mass has been
+shifted from the burst to the old component. The time distribution of mass, on
+the other hand, has shifted significantly, with the posterior old component peak
+$t_{max} = \SI{5.55}{\giga\year}$ occurring much later than the priori turnover
+time $\tau = \SI{4}{\giga\year}$. Additionally, the FWHM of the posterior old
+component is much wider (\SI{2.81}{\giga\year}) than the width of the priori
+double power law component, allowing star formation to continue long after its
+peak. So stellar mass from old components can be smeared towards younger ages,
+affecting the shape of the old components---the posterior SFR in Fig.
+\ref{fig:phil_model_4_sfhs} peaks much lower than its priori counterpart. A
+secondary effect of this is that some fraction of blue stars created in the
+priori burst are still being accounted for by the decaying old component.
+Clearly, even with this set of constraints on the priors, some mass of the
+burst can be lost in the fit. Fig. \ref{fig:phil_model_4_posterior} shows the
+1-dimensional posterior distributions of these key parameters. The distributions
+are sharply peaked with small standard deviations, so the fit gives a high
+level of confidence in these values, even though they are not consistent with
+the priori model. In the future, this might be solved by further constraining
+the decay times of the old component to quench more rapidly.
+
+% parameter     median     16th percentile     84th percentile
+% dust:Av:  0.3917662287774708 0.38746926954634064 0.3956273540796493
+% exponential2:age:  0.7798201255389867 0.755404691819801 0.800713066123444
+% exponential2:massformed:  7.991977877526011 7.965030650848698 8.01724122467827
+% exponential2:metallicity:  0.7950959975147073 0.7625852511324137 0.8216850961450373
+% exponential2:tau:  0.18720279306834686 0.18164479536176947 0.19150189919719407
+% lognormal:fwhm:  2.9180226797288973 2.8074751974002363 2.973671600851894
+% lognormal:massformed:  9.494357283541525 9.490189012780103 9.498529225209797
+% lognormal:metallicity:  0.539496784813187 0.5322367259651692 0.5471412283318265
+% lognormal:tmax:  5.655128142220473 5.55493652207212 5.768589713612181
+% nebular:logU:  -2.1275395742143166 -2.1999086015424067 -2.05412149157361
+% redshift:  0.06899591065475572 0.0689895023123985 0.06900265218471469
+
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_2_sfh}
+  \includegraphics[width=\textwidth]{../pipes/plots/r4_exponential_burst/phil_model_2_sfh}
+  \caption{
+  Blind fit model No. 2, priori SFH (top) and median posterior SFH (bottom)
+  with $\chi^2=1.6250106349682143$. Standard deviations of the posterior SFH
+  are given in grey.
+  }
+  \label{fig:phil_model_2_sfhs}
+\end{figure}
+
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{phil_model_2_posterior}
+  \caption{Posterior distributions for fitted parameters on model No. 2.}
+  \label{fig:phil_model_2_posterior}
+\end{figure}
+
+Model No. 2 is an example case of a negative burst detection. This is an
+important result to verify; in order for the fit results to be reliable when
+fitting real data, it is essential that the chosen priors do not give false
+positives. Fig. \ref{fig:phil_model_2_sfhs} shows the priori and posterior SFH
+for this model galaxy. Both SFHs feature an old, tau model component, with
+excellent agreement on the age and mass formed by the component. The priori
+component has $T_0=\SI{5.41}{\giga\year}$, $M=10^{10.2}M_\odot$, and
+$\tau=1.5$, while the posterior component has $T_0=\SI{4.51}{\giga\year}$,
+$M=10^{10.24}M_\odot$, and $\tau=1.71$. The small discrepancies in age and
+decay time of this component can be explained by their flatter posterior
+distributions (see below).
+
+Perhaps more importantly, though, is that the priori SFH does not feature a
+burst, and consequently, the posterior burst mass is very low, a mere
+$10^{1.27}M_\odot$. What is more, the burst component is distributed over a
+long period of time, with a relatively long decay time of $\tau =
+\SI{1.71}{\giga\year}$, such that its contribution the SFR is negligible,
+regardless of its age. This is the condition for a negative burst detection.
+
+The posterior distribution of these key parameters (given in Fig.
+\ref{fig:phil_model_2_posterior}) are not as tightly peaked, but this is not
+completely unexpected. As discussed in \S\ref{sec:stellar_population_fitting},
+the temporal resolution on stellar ages from old components is poor, so the
+older component can vary somewhat in time and still produce a very similar
+stellar population in the present day. Similarly, the burst is of sufficiently
+low mass that it can vary freely across the parameter space with negligible
+impact on the stellar population.
+
+% parameter     median     16th percentile     84th percentile
+% dust:Av:  0.8792126644473133 0.8703367567342202 0.8876472731201768
+% exponential1:age:  7.908389955568364 7.603070847623988 8.457634683635277
+% exponential1:massformed:  10.237047704928862 10.226823593039494 10.249145008568764
+% exponential1:metallicity:  0.00919945903316217 0.008598217781738802 0.00975688301601339
+% exponential1:tau:  1.709323179375498 1.63457413276435 1.852904109971942
+% exponential2:age:  1.7778673467922534 0.6212267395127304 2.922064662802084
+% exponential2:massformed:  3.4562035783022034 1.2727179039301946 5.805111536696616
+% exponential2:metallicity:  1.3205964706480928 0.5124411732750468 2.086675458569264
+% exponential2:tau:  1.0464626635822452 0.44128531892414374 1.6892799958378664
+% nebular:logU:  -2.3065723113618564 -2.564054488793322 -2.093119902676116
+% redshift:  0.08000488688448999 0.0799522285838497 0.08005315348948328
+
+The fit on model No. 5 is an example case of how these priors still miss low
+mass priori bursts. The priori model in Fig. \ref{fig:phil_model_5_sfhs}
+features a double power law old component and young burst component of mass
+$M=10^{7.7}M_\odot$ at $T_0=\SI{12.26}{\giga\year}$, but the corresponding
+posterior component forms just $10^{3.32}M\odot$---not enough to affect the SFR
+when distributed over a long period of time. The posterior distribution of the
+mass formed by the burst, given in Fig. \ref{fig:phil_model_5_posterior}, is
+wide and flat. In the wings of this distribution, there are some values which
+approach the priori value, but at very low frequency. The fit, therefore,
+doesn't find these values to be very likely. Additionally, the chi-squared
+statistic for the posterior spectrum is quite good with respect to many of the
+fitted results, with $\chi^2 \approx 0.306$, so despite the burst being several
+orders of magnitude smaller in the posterior, this is still an very plausible
+way to reconstruct the stellar population.
+
+In summary, R4 set of priors reliably detects bursts of moderate to high mass,
+as long as they occur in the most recent \SI{3.5}{\giga\year} of the model
+galaxy's history. Crucially, the priors are not so tightly constrained that
+they force false positives in the posterior distribution. The trade off for
+this requirement is that sometimes the misses bursts of moderate age
+(\SIrange{3.5}{7.5}{\giga\year} or low mass. The stellar population necessary
+to account for stars produced in these bursts tend to be smeared into the
+decaying old component. Even in fits which do positively detect bursts, the
+mass of the burst tends to be underestimated, so this is clearly a limitation
+of fitting with these priors. Again, this might be fixed by more tightly
+constraining the age and decay times of the old component, but at the risk of
+over fitting.
+
+The chi-squared values for the posterior spectra are generally bad, with a few
+exceptions. This is commonly the case even when the posterior SFH accurately
+recreates the shape of the priori one. I hypothesize that this is due to a
+systematic underestimation of the \textit{total} stellar mass formed, i.e. the
+shape of the posterior SFH and spectrum is good, but total mass and flux values
+are systematically lower than the priori galaxy. Further investigation is
+needed to determine whether this is the case, but since the blue end of the
+spectrum is more dramatically affected by this when you consider the age-
+weighted mass formed, it might also explain why small mass bursts are missed.
+
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{phil_model_5_posterior}
+  \caption{Posterior distributions for fitted parameters on model No. 5.}
+  \label{fig:phil_model_5_posterior}
+\end{figure}
+
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_5_sfh}
+  \includegraphics[width=\textwidth]{../pipes/plots/r4_delayed_burst/phil_model_5_sfh}
+  \caption{
+  Blind fit model No. 5, priori SFH (top) and median posterior SFH (bottom)
+  with $\chi^2=0.30643246331094176$. Standard deviations of the posterior SFH
+  are given in grey.
+  }
+  \label{fig:phil_model_5_sfhs}
+\end{figure}
+
+% parameter     median     16th percentile     84th percentile
+% delayed:age:  8.83501662832162 8.519820505033731 9.168968916353453
+% delayed:massformed:  10.397956599938258 10.391339420235703 10.405133311180329
+% delayed:metallicity:  0.3132807043896933 0.30771134504388914 0.31873504377393214
+% delayed:tau:  0.9949668644739154 0.9563350860520694 1.0356189144811663
+% dust:Av:  0.392099804098769 0.3839782551743006 0.39866729226807895
+% exponential2:age:  1.822742887145689 0.6174900074042676 2.9370305006919284
+% exponential2:massformed:  3.3223708535326084 1.2262215632311155 5.754874771543047
+% exponential2:metallicity:  1.249151161876338 0.4039612072741856 2.0513635481916204
+% exponential2:tau:  0.9937853304518411 0.4295827267748906 1.6693788024708547
+% nebular:logU:  -2.192720747989025 -2.2997584449121176 -2.092070491669038
+% redshift:  0.030002834938625843 0.029983698303874765 0.030019661000926533
+
+% \newpage
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_10_sfh}
+%   \includegraphics[width=\textwidth]{../pipes/plots/r4_lognormal_burst/phil_model_10_sfh}
+%   \caption{Blind fit model No. 10, priori SFH (top) and median posterior SFH (bottom) with $\chi^2=15.943261900215944$. Standard deviations of the posterior SFH are given in grey.}
+%   \label{fig:phil_model_10_sfhs}
+% \end{figure}
+%
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{phil_model_10_posterior}
+%   \caption{}
+%   \label{fig:phil_model_10_posterior}
+% \end{figure}
+
+% \newpage
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_1_sfh}
+%   \includegraphics[width=\textwidth]{../pipes/plots/r4_lognormal_burst/phil_model_1_sfh}
+%   \caption{Blind fit model No. 1, priori SFH (top) and median posterior SFH (bottom) with $\chi^2=0.16108464297132902$.}
+%   \label{}
+% \end{figure}
+% \lipsum[1]
+% \begin{figure}[t]
+%   \includegraphics{phil_model_1_posterior}
+%   \caption{}
+%   \label{}
+% \end{figure}
+%
+% \newpage
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_3_sfh}
+%   \includegraphics[width=\textwidth]{../pipes/plots/r4_lognormal_burst/phil_model_3_sfh}
+%   \caption{Blind fit model No. 3, priori SFH (top) and median posterior SFH (bottom) with $\chi^2=17250.67010982654$.}
+%   \label{}
+% \end{figure}
+% \lipsum[1]
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{phil_model_3_posterior}
+%   \caption{}
+%   \label{}
+% \end{figure}
+%
+% \newpage
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_6_sfh}
+%   \includegraphics[width=\textwidth]{../pipes/plots/r4_lognormal_burst/phil_model_6_sfh}
+%   \caption{Blind fit model No. 6, priori SFH (top) and median posterior SFH (bottom) with $\chi^2=1502.0759895971512$.}
+%   \label{}
+% \end{figure}
+% \lipsum[1]
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{phil_model_6_posterior}
+%   \caption{}
+%   \label{}
+% \end{figure}
+%
+% \newpage
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_7_sfh}
+%   \includegraphics[width=\textwidth]{../pipes/plots/r4_lognormal_burst/phil_model_7_sfh}
+%   \caption{Blind fit model No. 7, priori SFH (top) and median posterior SFH (bottom) with $\chi^2=1.0572371706120804$.}
+%   \label{}
+% \end{figure}
+% \lipsum[1]
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{phil_model_7_posterior}
+%   \caption{}
+%   \label{}
+% \end{figure}
+%
+% \newpage
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_8_sfh}
+%   \includegraphics[width=\textwidth]{../pipes/plots/r4_dblplaw_burst/phil_model_8_sfh}
+%   \caption{Blind fit model No. 8, priori SFH (top) and median posterior SFH (bottom) with $\chi^2=4.205928604767932$.}
+%   \label{}
+% \end{figure}
+% \begin{figure}[t]
+%   \lipsum[1]
+%   \includegraphics[width=\textwidth]{phil_model_8_posterior}
+%   \caption{}
+%   \label{}
+% \end{figure}
+%
+% \newpage
+% \begin{figure}[t]
+%   \includegraphics[width=\textwidth]{../pipes/plots/r0_priors/phil_model_9_sfh}
+%   \includegraphics[width=\textwidth]{../pipes/plots/r4_lognormal_burst/phil_model_9_sfh}
+%   \caption{Blind fit model No. 9, priori SFH (top) and median posterior SFH (bottom) with $\chi^2=98.48856771268424$.}
+%   \label{}
+% \end{figure}
+% \begin{figure}[t]
+%   \lipsum[1]
+%   \includegraphics[width=\textwidth]{phil_model_9_posterior}
+%   \caption{}
+%   \label{}
+% \end{figure}
+
+\newpage
+\section{TDE Fitting Results}\label{sec:tde_fitting}
+
+Having established some confidence in the reliability of fitting with the R4
+priors, I then turned \textsc{Bagpipes} on the eight TDE-host spectra obtained
+from the XSHOOTER instrument. Here follows a discussion of the R4 priors
+applied to these targets, their inferred star formation histories for the chi-
+squared best fit spectra, and the posterior distributions of their parameters,
+with comparison to established literature on the targets.
+
+Since there are no a priori values for the posterior SFHs and spectra, we can
+not know for certain whether each fit represents the ``true'' values. As such,
+the essential results of these fits are somewhat qualitative---does the fit
+detect a burst or not? Analysis will be limited to whether the fitted SFH is
+physically reasonable and/or consistent with observation.
+
+\newpage
+\subsection{ASASSN-14li, $z=0.0206$}\label{sec:ASASSN-14li}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{ASASSN14li_spec}
+  \includegraphics[width=\textwidth]{ASASSN14li_sfh}
+  \caption{
+  Observed (blue) and fitted (orange) spectrum for the host of ASASSN-14li, and
+  posterior SFH, with fitted spectrum $\chi^2=74130.89457269038$.
+  }
+  \label{fig:ASASSN14li_sfh}
+\end{figure}
+
+ASASSN-14li is perhaps one of the best known and studied tidal disruption
+events. The best-fit posterior SFH for this TDE host features a lognormal old
+component of mass $10^{9.51}M_\odot$ and $t_{max}=\SI{5.98}{\giga\year}$. The
+burst component in this fit has mass $10^{8.91}M_\odot$ and
+$T_0=\SI{12.43}{\giga\year}$. This gives a peak burst SFR much higher than any
+of the blind fit results. These rates of star formation are actually more
+consistent with observed, actively starburst galaxies, where star formation
+rates commonly reach $10^2M_\odot\mathrm{yr}^{-1}$.\cite{Veilleux_2008} In
+combination with the much longer, low level formation from the old component,
+this is a strongly positive result. This is consistent with the findings of
+Holoien et al. 2016a that PGC 043234 is  post-starburst
+galaxy.\cite{Holoien_2016a}. There is also evidence that PGC 043234 is remnant
+of a recent merger of two galaxies, which at some time prior to the tidal
+disruption event hosted a type-II Seyfert.\cite{Prieto_2016} So while the host
+is squarely post-starburst, it is worth noting that PGC 043234 is not
+necessarily morphologically representative of all TDE hosts.
+
+% r4_lognormal_burst \\
+% r4_exponential_burst :  74287.13491573761 \\
+% r4_dblplaw_burst :  74351.92695430398 \\
+% r4_delayed_burst :  75626.48765873472 \\
+% r4_lognormal_burst :  74130.89457269038 \\
+
+% parameter     median     16th percentile     84th percentile
+% dust:Av:  0.05098263083545196 0.04813568471489504 0.054433754544529554
+% exponential2:age:  0.7656130076255705 0.7638063004738741 0.768246242489601
+% exponential2:massformed:  8.905383130429595 8.89423045801556 8.917198002263056
+% exponential2:metallicity:  1.4578520911723836 1.4447910938033477 1.4687321246075862
+% exponential2:tau:  0.11722684527694574 0.11674721121378671 0.11778854880903881
+% lognormal:fwhm:  2.9730405593202853 2.9415978145157866 2.991284482286685
+% lognormal:massformed:  9.50522537973984 9.496666457963427 9.516922814281564
+% lognormal:metallicity:  1.0003549300272776 0.9993051456778591 1.0017089522979168
+% lognormal:tmax:  5.980146193951674 5.952834565182948 5.9940612348657005
+% nebular:logU:  -2.0027322007706 -2.006068949885689 -2.000740615457861
+% redshift:  0.02054054646568449 0.02053818187474229 0.020542639808073374
 
 \newpage
 \subsection{ASASSN-15oi, $z=0.0484$}\label{sec:ASASSN-15oi}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/ASASSN15oi_sfh.pdf}
-  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
-  \label{}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{ASASSN15oi_spec}
+  \includegraphics[width=\textwidth]{ASASSN15oi_sfh}
+  \caption{
+  Observed (blue) and fitted (orange) spectrum for the host of ASASSN-15oi, and
+  posterior SFH, with fitted spectrum $\chi^2=44017.90295163308$.
+  }
+  \label{fig:ASASSN15oi_sfh}
 \end{figure}
 
-Although the redshift was originally reported as $z=0.02$, later spectra showed that the redshift of the host galaxy is $z=0.0484$, which was used in this fit.\cite{Arcavi_2015, Holoien_2016b}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{ASASSN15oi_posterior}
+  \caption{
+  Posterior distributions for fitted parameters on the host of ASASSN-15oi.
+  }
+  \label{fig:ASASSN15oi_posterior}
+\end{figure}
+
+The posterior SFH for the host of ASASSN-15oi features a lognormal old
+component of mass $10^{6.38}M_\odot$ and $t_{max}=\SI{3.31}{\giga\year}$. The
+burst component in this fit has mass $10^{9.76}M_\odot$ and
+$T_0=\SI{10.86}{\giga\year}$. In this fit, it would seems that the old
+component actually has the negligible stellar mass, such that it is hardly
+visible in Fig. \ref{fig:ASASSN15oi_sfh}. Although the old stellar mass is
+within the lower range of galactic masses at $z<0.1$ catalogued by Baldry et
+al. 2012 and Wright et al. 2017, it would imply that \textgreater 95\% of the
+galaxy's mass was formed in the last \SI{3}{\giga\year}. This might be
+plausible given the observed rates of star formation in active starbursts, and
+that the total stellar mass of the galaxy is relatively small, but still seems
+less physically reasonable.
+
+What seems more plausible is that the exaggerated errors (light blue in Fig.
+\ref{fig:ASASSN14li_sfh}--\ref{fig:iPTF16fnl_sfh}) on Telluric lines in the
+spectrum, which occur primarily in the red and near-IR, are actually forcing
+\textsc{Bagpipes} to discount the need for an older stellar population in the
+fit. Indeed, we see from the posterior distributions of the component masses
+and ages in Fig. \ref{fig:ASASSN15oi_posterior} that although the burst
+parameters are tightly peaked, the mass formed in the old component could
+plausibly be off by up to two orders of magnitude.
+
+% r4_lognormal_burst \\
+% r4_exponential_burst :  44187.55786809588 \\
+% r4_dblplaw_burst :  44017.974181013255 \\
+% r4_delayed_burst :  44019.20014908343 \\
+% r4_lognormal_burst :  44017.90295163308 \\
+
+% parameter     median     16th percentile     84th percentile
+% dust:Av:  0.07640810516199385 0.0711248303132836 0.08223583948312649
+% exponential2:age:  1.9305243305555009 1.9129861339724492 1.9461095547783132
+% exponential2:massformed:  9.757288894215353 9.727731902627404 9.793858136851625
+% exponential2:metallicity:  1.8276790321305791 1.8098831699330342 1.8468612686322659
+% exponential2:tau:  0.28529021116961406 0.2823482650365451 0.28833227015962626
+% lognormal:fwhm:  1.5321069676177346 0.6619235371269788 2.368997828914443
+% lognormal:massformed:  6.383038494077901 5.478305437041224 7.418689818759305
+% lognormal:metallicity:  1.4283668132122467 0.6625154248720727 2.105054197765897
+% lognormal:tmax:  3.311013973502932 1.92846099345681 4.948748802286782
+% nebular:logU:  -2.0038949924434957 -2.009254540499334 -2.0012725298682756
+% redshift:  0.048413855141233045 0.04840937704606611 0.048418249388757696
+
+% Although the redshift was originally reported as $z=0.02$, later spectra showed that the redshift of the host galaxy is $z=0.0484$, which was used in this fit.\cite{Arcavi_2015, Holoien_2016b}
 
 \newpage
 \subsection{AT2018fyk, $z=0.06$}\label{sec:AT2018fyk}
 \begin{figure}[h!]
-\centering
-  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2018fyk_sfh.pdf}
-  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
-  \label{}
+  \centering
+  \includegraphics[width=\textwidth]{AT2018fyk_spec}
+  \includegraphics[width=\textwidth]{AT2018fyk_sfh}
+  \caption{
+  Observed (blue) and fitted (orange) spectrum for the host of AT2018fyk, and
+  posterior SFH, with fitted spectrum $\chi^2=49140.629786828795$.
+  }
+  \label{fig:AT2018fyk_sfh}
 \end{figure}
 
+The posterior SFH for the host of AT2018fyk features a lognormal old component
+of mass $10^{10.25}M_\odot$ and $t_{max}=\SI{2.63}{\giga\year}$. The burst
+component has mass $10^{8.66}M_\odot$ and $T_0=\SI{11.61}{\giga\year}$. This is
+a slightly weak burst detection. The burst parameters do little to raise the
+SFR above the quiescent rate, so this result is not exactly a starburst, but
+still indicative of some recent, low-level star forming in the host. It is
+worth noting that other R4 fits on this host all found bursts with SFRs as high
+as $10M_\odot\mathrm{yr}^{-1}$, and only marginally worse chi-squared values of
+49299, 49431, and 49443. With closer inspection, this could still be a post-
+starburst candidate.
 
-Note that Wevers et al. 2021 gives this redshift as 0.059
+% r4_lognormal_burst \\
+% r4_exponential_burst :  49299.44176377121 \\
+% r4_dblplaw_burst :  49431.22634286046 \\
+% r4_delayed_burst :  49443.68985368903 \\
+% r4_lognormal_burst :  49140.629786828795 \\
+
+% parameter     median     16th percentile     84th percentile
+% dust:Av:  0.05753374521223291 0.05332317005875875 0.06144948174691915
+% exponential2:age:  1.054821856385797 1.0153159033125843 1.0948487619419625
+% exponential2:massformed:  8.61543829238758 8.581153794313689 8.646416920233435
+% exponential2:metallicity:  1.7185623146070892 1.6779751817490571 1.7618610170697333
+% exponential2:tau:  0.21902110439298791 0.2119953786303253 0.22596620482374816
+% lognormal:fwhm:  0.3950463960209462 0.1870792062649676 0.6143836926002431
+% lognormal:massformed:  10.246996416055287 10.244427485669771 10.249581873125544
+% lognormal:metallicity:  0.9185127466881238 0.9130106591648134 0.923834975274212
+% lognormal:tmax:  2.6311248957266256 2.1829082591358238 3.039662863486083
+% nebular:logU:  -2.5953817431009893 -2.620943303129826 -2.56954606943412
+% redshift:  0.059796780748178326 0.0597929546859466 0.059801428833008166
 
 \newpage
 \subsection{AT2019ahk, $z=0.026211$}\label{sec:AT2019ahk}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019ahk_sfh.pdf}
-  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
-  \label{}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{AT2019ahk_spec}
+  \includegraphics[width=\textwidth]{AT2019ahk_sfh}
+  \caption{
+  Observed (blue) and fitted (orange) spectrum for the host of AT2019ahk, and
+  posterior SFH, with fitted spectrum $\chi^2=528057.3656910276$.
+  }
+  \label{fig:AT2019ahk_sfh}
 \end{figure}
 
+The posterior SFH for the host of AT2019ahk is another positive starburst
+detection, featuring a delayed model old component of mass of
+$10^{9.94}M_\odot$ and $T_0=\SI{5.54}{\giga\year}$. The burst component in this
+fit has mass $10^{9.62}M_\odot$ and $T_0=\SI{12.42}{\giga\year}$, with peak
+star formation of almost $25M_\odot\mathrm{yr}^{-1}$, as show in Fig.
+\ref{fig:AT2019ahk_sfh}. This is a very similar result to that of ASASSN-14li,
+with low-level star formation throughout the galaxy's life, and recent burst
+which far exceeds the quiescent rate.
+
+% r4_delayed_burst \\
+% r4_exponential_burst :  528418.8168629913 \\
+% r4_dblplaw_burst :  528786.5108022485 \\
+% r4_delayed_burst :  528057.3656910276 \\
+% r4_lognormal_burst :  528718.3921879242 \\
+
+% parameter     median     16th percentile     84th percentile
+% delayed:age:  7.5201250540978695 7.50836026038715 7.541352486105134
+% delayed:massformed:  9.94474314208303 9.942468624134674 9.946724383919934
+% delayed:metallicity:  0.7861243947678844 0.779596629211021 0.7922840791311964
+% delayed:tau:  1.5444576470759133 1.5345051045915186 1.5548671136349284
+% dust:Av:  0.8003814075932016 0.7988843668262824 0.8022380119127801
+% exponential2:age:  0.6296672082410848 0.6287181578091492 0.6306634349078205
+% exponential2:massformed:  9.618503174344696 9.61719115383671 9.619933982077773
+% exponential2:metallicity:  2.2154203790790055 2.205791379473096 2.222772985192332
+% exponential2:tau:  0.1849201168438975 0.18436480208511624 0.18556498257450266
+% nebular:logU:  -2.7486451799452487 -2.7504461419737396 -2.7470480931311716
+% redshift:  0.0263449902681042 0.02634440532841207 0.02634546636075307
 
 \newpage
 \subsection{AT2019azh, $z=0.022$}\label{sec:AT2019azh}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019azh_sfh.pdf}
-  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
-  \label{}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{AT2019azh_spec}
+  \includegraphics[width=\textwidth]{AT2019azh_sfh}
+  \caption{
+  Observed (blue) and fitted (orange) spectrum for the host of AT2019azh, and
+  posterior SFH, with fitted spectrum $\chi^2=100932.18767646234$.
+  }
+  \label{fig:AT2019azh_sfh}
 \end{figure}
 
+The posterior SFH for the host of AT2019azh features a delayed model old
+component of mass $10^{9.06}M_\odot$ and $T_0=\SI{4.83}{\giga\year}$. The burst
+component in this fit has mass $10^{9.55}M_\odot$ and
+$T_0=\SI{12.57}{\giga\year}$. This result is superficially similar to that for
+ASASSN-15oi, but the old component mass is much more substantial with respect
+to the burst mass, in this fit. The very small decay time
+($\tau=\SI{0.1}{\giga\year}$) on the burst component compresses the formation
+of its stellar mass into a very short period with a high rate of star
+formation, while the long decay time ($\tau=\SI{1.95}{\giga\year}$) on the old
+component spreads it over over a long period of time. As such, its contribution
+to the SFR is not visible in Fig. \ref{fig:AT2019azh_sfh}, even though its
+contribution to the total mass formed is nearly equivalent.
+
+% r4_delayed_burst \\
+% r4_exponential_burst :  101469.19197835973 \\
+% r4_dblplaw_burst :  101465.11902798309 \\
+% r4_delayed_burst :  100932.18767646234 \\
+% r4_lognormal_burst :  101454.60689188624 \\
+
+% parameter     median     16th percentile     84th percentile
+% delayed:age:  8.365288720823267 8.146628631509092 8.504078840994238
+% delayed:massformed:  9.062312571171674 9.04899142203608 9.07402608902414
+% delayed:metallicity:  0.9059826139899827 0.8964075740642858 0.9153502909178379
+% delayed:tau:  1.9461848760247946 1.8906559665304545 1.9792001939045862
+% dust:Av:  0.0002085667113198859 8.141090037844153e-05 0.00042491806204481545
+% exponential2:age:  0.6256410303486765 0.6246372639317016 0.6264560330756612
+% exponential2:massformed:  9.552269664694704 9.54738161216225 9.556321936697792
+% exponential2:metallicity:  1.831238276352788 1.8248298461608183 1.837958151275079
+% exponential2:tau:  0.10012124111600171 0.10004557455174809 0.1002435560350593
+% nebular:logU:  -2.0010545825330666 -2.0019392006418717 -2.000405568756773
+% redshift:  0.02214114933980705 0.022139743885776265 0.02214243001024535
 
 \newpage
 \subsection{AT2019dsg, $z=0.0512$}\label{sec:AT2019dsg}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019dsg_sfh.pdf}
-  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
-  \label{}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{AT2019dsg_spec}
+  \includegraphics[width=\textwidth]{AT2019dsg_sfh}
+  \caption{
+  Observed (blue) and fitted (orange) spectrum for the host of AT2019dsg, and
+  posterior SFH, with fitted spectrum $\chi^2=80006.09829536812$.
+  }
+  \label{fig:AT2019dsg_sfh}
 \end{figure}
 
+The posterior SFH for the host of AT2019dsg features a delayed model old
+component of mass $10^{9.88}M_\odot$ and $T_0=\SI{5.26}{\giga\year}$. The burst
+component in this fit has mass $10^{10.58}M_\odot$ and
+$T_0=\SI{9.40}{\giga\year}$. This is yet another positive starburst detection,
+which again distinguishes itself from a component of intransient, low-level
+star formation, and which is rapidly quenched before the present day.
+
+% r4_delayed_burst \\
+% r4_exponential_burst :  82563.8151623096 \\
+% r4_dblplaw_burst :  81848.69517784887 \\
+% r4_delayed_burst :  80006.09829536812 \\
+% r4_lognormal_burst :  82054.99541292594 \\
+
+% parameter     median     16th percentile     84th percentile
+% delayed:age:  7.523514666251668 7.5113513446542175 7.534214285466046
+% delayed:massformed:  9.88164797207937 9.880029925315881 9.88298310254143
+% delayed:metallicity:  0.019165091355210325 0.018987494981708777 0.019331738087476853
+% delayed:tau:  1.941765119373449 1.9407908045348816 1.9429934376101752
+% dust:Av:  0.954656899419104 0.9534572275913585 0.9562581655632909
+% exponential2:age:  3.38949788139676 3.3890417331325615 3.3898940343969777
+% exponential2:massformed:  10.580578332707972 10.580451738854553 10.580725954133566
+% exponential2:metallicity:  2.3739030389391 2.3705711264768565 2.377041711794388
+% exponential2:tau:  1.0735214808813265 1.072732769776482 1.0742792612701677
+% nebular:logU:  -3.036106338905969 -3.0377177095105017 -3.0340971042670386
+% redshift:  0.05027470126334388 0.050271774603406934 0.05027685854725509
 
 \newpage
 \subsection{AT2019qiz, $z=0.01513$}\label{sec:AT2019qiz}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/AT2019qiz_sfh.pdf}
-  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
-  \label{}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{AT2019qiz_spec}
+  \includegraphics[width=\textwidth]{AT2019qiz_sfh}
+  \caption{
+  Observed (blue) and fitted (orange) spectrum for the host of AT2019qiz, and
+  posterior SFH, with fitted spectrum $\chi^2=87438.51785338041$.
+  }
+  \label{fig:AT2019qiz_sfh}
 \end{figure}
 
+The posterior SFH for the host of AT2019qiz features a delayed model old
+component of mass $10^{9.07}M_\odot$ and $T_0=\SI{5.66}{\giga\year}$. The burst
+component in this fit has mass $10^{9.98}M_\odot$ and
+$T_0=\SI{12.24}{\giga\year}$. This is a very similar result to that of
+AT2019azh, in which two components of nearly equal stellar mass form that mass
+on very different timescales. In this case, burst component has decay time
+$\tau=\SI{0.21}{\giga\year}$ while the old component has
+$\tau=\SI{1.99}{\giga\year}$. Again, we find that this galaxy had rates of star
+formation comparable to observed starburst galaxies as recently as
+\SI{1}{\giga\year} ago, and that this period of formation was rapidly quenched,
+making it categorically post-starburst.
+
+% r4_delayed_burst \\
+% r4_exponential_burst :  88338.7683232356 \\
+% r4_dblplaw_burst :  88346.50883758818 \\
+% r4_delayed_burst :  87438.51785338041 \\
+% r4_lognormal_burst :  90793.43597018946 \\
+
+% parameter     median     16th percentile     84th percentile
+% delayed:age:  7.527944307544574 7.517450323388695 7.536757664276217
+% delayed:massformed:  9.067008182869145 9.059883655433673 9.074125746411527
+% delayed:metallicity:  0.20540796042726123 0.20250312107485774 0.21008123964348271
+% delayed:tau:  1.987200311366002 1.9816271669088061 1.992818805542456
+% dust:Av:  1.0516156351780843 1.0480391424492903 1.0556850610038455
+% exponential2:age:  0.9477035624254169 0.9466150964478025 0.948795028192377
+% exponential2:massformed:  9.984776656965815 9.984275923477085 9.985499168966193
+% exponential2:metallicity:  2.498898855293873 2.498122318184857 2.499344707090905
+% exponential2:tau:  0.20636035995101426 0.20484693213247868 0.20749545015779258
+% nebular:logU:  -2.7181110224531704 -2.7297916442935475 -2.7051244640475733
+% redshift:  0.015299738365046962 0.015296524619805317 0.015302877316981591
 
 \newpage
 \subsection{iPTF16fnl, $z=0.018$}\label{sec:iPTF16fnl}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=0.9\textwidth]{../pipes/plots/r4_dblplaw_burst/iPTF16fnl_sfh.pdf}
-  \caption{Observed and fitted spectrum for the host of ASASSN-15oi, and posterior SFH.}
-  \label{}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{iPTF16fnl_spec}
+  \includegraphics[width=\textwidth]{iPTF16fnl_sfh}
+  \caption{
+  Observed (blue) and fitted (orange) spectrum for the host of iPTF16fnl, and
+  posterior SFH, with fitted spectrum $\chi^2=122797.56521477805$.
+  }
+  \label{fig:iPTF16fnl_sfh}
 \end{figure}
 
-Important to note that Blagorodnova et al. 2017 estimates this redshift to be $z=0.016328$, although this fit was run with $z=0.018$.\cite{Blagorodnova_2017}
+The posterior SFH for the host of iPTF16fnl features a tau model old component
+of mass $10^{9.71}M_\odot$ and $T_0=\SI{3.42}{\giga\year}$. The burst component
+in this fit has mass $10^{9.22}M_\odot$ and $T_0=\SI{12.51}{\giga\year}$. This
+is another fit which is categorically post-starburst, with an old component of
+low-level star formation and recent, rapidly quenched burst
+component.\footnote{Important to note that Blagorodnova et al. 2017 estimates
+this redshift to be $z=0.016328$, although this fit was run with
+$z=0.018$.\cite{Blagorodnova_2017} This should not adversely affect the fit,
+except perhaps to shift the model components slightly further back in time.}
+
+% r4_exponential_burst \\
+% r4_exponential_burst :  122797.56521477805 \\
+% r4_dblplaw_burst :  122891.9232224498 \\
+% r4_delayed_burst :  122831.05847432956 \\
+% r4_lognormal_burst :  122800.99023633232 \\
+
+% parameter     median     16th percentile     84th percentile
+% dust:Av:  0.034241149477772584 0.029573525977327077 0.038386279250728496
+% exponential1:age:  9.770783291093373 9.529239664622446 10.228223801519178
+% exponential1:massformed:  9.710565031627318 9.700276348271476 9.720388214344052
+% exponential1:metallicity:  1.0018237209344536 1.0001394870964546 1.005150328379511
+% exponential1:tau:  0.6944782374064762 0.595701355181577 0.8160523434150315
+% exponential2:age:  0.6716612949999092 0.6692064240461999 0.6750821430183963
+% exponential2:massformed:  9.22085393371363 9.21752857794731 9.224259391914437
+% exponential2:metallicity:  1.4813260403932302 1.4646165241912175 1.498049325537425
+% exponential2:tau:  0.10004451800343839 0.10001137263891743 0.10010273358171788
+% nebular:logU:  -2.0662154496360143 -2.1025206939240184 -2.035347433513074
+% redshift:  0.01700003500026237 0.01700001110653572 0.017000088645588392
+
+\newpage
+Considering the concerns raised in \S\ref{sec:blind_fitting_results} regarding
+a bias for diminished burst masses and the smearing of burst populations into
+the old component, it is striking that all the TDE host galaxies exhibit such
+strong signatures of recent, rapidly quenched, star forming activity. We might
+hypothesize that if these biases are at play, then the ``true'' SFR peaks of
+the TDE hosts were on the order of $10^2$ to $10^3M_\odot\mathrm{yr}^{-1}$, as
+are observed in present day starburst galaxies. What is more, their posterior
+SFHs are even more consistent than the blind fits with the paradigm that galaxy
+formation occurs around cosmic noon, and that galaxies with nuclear activity
+have variable SFRs after that epoch. This seems to corroborate the hypothesis
+the TDEs, like AGN, preferentially occur in galaxies which are post-starburst,
+and the photometric studies to that effect.
+
+This result comes with some caveats, however. The posterior distributions of
+key parameters (component age and mass) are tightly peaked for all eight fits,
+with the exception of ASASSN-15oi, but the chi-squared values for the fitted
+spectra are clearly abysmal. This does not necessarily invalidate the fits, as
+the blind fitted spectra featured very poor chi-squared statistics even when
+their posterior parameters accurately reproduced the priori SFH. Although the
+posterior distributions for the nebular ionisation parameter all strongly
+favour the high rates of ionisation associated with recent star formation,
+\textsc{Bagpipes} does not seem to try very hard to fit the nebular emission
+lines discussed in \S\ref{sec:starburst_agn_connection}, as is evident from
+Figs. \ref{fig:ASASSN14li_sfh}--\ref{fig:iPTF16fnl_sfh}. \textsc{Bagpipes} does
+not fit the observational spectrum with a high order polynomial as might be
+assumed, but with the summation of emission and absorption functions given by
+Eq. \ref{eq:luminosity_per_rframe_wavelength}, so it is had to understand why
+this should be the case. Possibly the prior distribution needs to permit even
+higher rates of ionisation, allowing $\log U \to 0$, in order to fit these
+lines. The posterior distributions on this parameter are also tightly peaked,
+though, suggesting this is not the case unless another maximum exists outside
+the prior. The alternative interpretation would seem to be that galactic
+spectra, being the composite of so many sources, are simply so noisy that we
+must tolerate bad fits in order to understand the mechanisms underlying their
+statistical behaviour.
 
 \section{Conclusion}\label{sec:conclusion}
-\begin{itemize}
-  \item Summary
-  \item Future Applications
-\end{itemize}
+
+In summary, I have utilised the \textsc{Bagpipes} Python module to investigate
+the prior assumptions necessary to detect recent ($<\SI{3.5}{\giga\year}$)
+starburst activity in otherwise quiescent galaxies. I utilise literature values
+on the statistical distributions of various galactic properties, including
+stellar mass, population age, velocity dispersion, nebular ionisation, and dust
+extinction, and the evolution of these properties over varying redshifts to
+inform these assumptions. By simulating galactic spectra with known,
+parametrised SFHs and blind fitting them, I determine that modest assumptions
+about the form of the SFH must be made in order to detect these starbursts
+reliably. Most important are the assumptions that the bulk of the stellar mass
+in the galaxy is formed sometime in the first \SI{6.5}{\giga\year} since the
+Big Bang, and that bursts older than \SI{3.5}{\giga\year}---the typical
+lifetime of an F-type star---are too old to detect. By insisting on an old
+component of star formation but allowing the burst mass to go to zero, I
+differentiate between two possible fit results: the case of a single stellar
+population (the null result), or two (a positive burst detection). Blind
+fitting also illuminates the limitations of these priors: a tendency to
+underestimate the burst mass and the total stellar mass formed, and a tendency
+to smear stellar mass from the burst component into the quenching epoch of the
+old component. Despite these drawbacks, the priors reliably reconstruct the
+priori SFH of mock galaxies, including the presence of moderate to high mass
+starbursts.
+
+I then run fits with the same priors on eight TDE host spectra to investigate
+whether they share a statistical property of AGN: that they occur
+preferentially in galaxies which are post-starburst. The posterior SFHs for the
+eight targets all feature strong starburst components, with most in the last
+\SI{2}{\giga\year}, although not quite with the SFRs which are observed in some
+active starburst galaxies. This result is consistent with previous photometric
+analyses of the targets, which also find very young and blue stellar
+populations. The fits also strongly affirm the paradigm that old star formation
+peaks very early in cosmic history, $1.5<z<3$, despite priors which allow the
+old component to occur much later. The fitted spectra for these targets do not
+fit the observed spectra well, but there are good reasons to believe that the
+reconstructed SFH is still valid. Finer tuning of the prior distributions on of
+the nebular ionisation parameter in a later undertaking may improve this fit.
+
+These results demonstrate that the methods applied by Carnall et al. 2019a to
+quenched quiescent galaxies can also be used to infer star formation histories
+containing recent variability, given reasonable assumptions based on the
+statistical properties of similar galaxies at low redshifts. In the future, the
+blind fitting method could be used to further investigate correlated parameters
+in inferred star formation histories, providing additional insight to
+complicated problem of nuclear/starburst driven feedback and quenching. A more
+finely tuned set of priors turned on a larger sample of AGN and TDE hosts,
+cross referenced by AGN-type, Hubble morphology, and other properties, could
+well illuminate statistical trends in the SFHs of these taxonomies. Certainly
+the SDSS archives of galactic spectra and photometry are a prime candidate for
+this type of study.
+
 \section{Acknowledgements}\label{sec:acknowledgements}
 
-Special thanks to Andy Lawrence, professor at the Royal Observatory Edinburgh, for his support and advice throughout this project. Thanks also to Philip Short, a PhD candidate at the University of Edinburgh, for his preparation of the XSHOOTER data and for participating in my blind fitting trials. Thanks to Patrick Smith, for endowing me with a love of empiricism in my formative school years. And finally, thanks to my father, who even before I could stand, took me for walks under the stars.
+This work made use of the NASA/IPAC Extragalactic Database (NED), which is
+operated by the Jet Propulsion Laboratory, California Institute of Technology,
+under contract with the National Aeronautics and Space Administration. It also
+made use of the The SAO/NASA Astrophysics Data System (ADS), which is operated
+by the Smithsonian Astrophysical Observatory under NASA Cooperative Agreement.
+Finally, this project made extensive use of the \textsc{AstroPy}
+module.\cite{Astropy_2013, Astropy_2018} Special thanks to Andy Lawrence,
+professor at the Royal Observatory Edinburgh, for his support and advice
+throughout this project. Thanks also to Philip Short, a PhD candidate at the
+University of Edinburgh, for his preparation of the XSHOOTER data and for
+participating in my blind fitting trials. Thanks to Patrick Smith, for endowing
+me with a love of empiricism and mentoring me through my formative school
+years. And finally, thanks to my father, who even before I could stand, took me
+for walks under the stars.
 
 \printbibliography
-
-% \begin{figure}[h!]
-% \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_01_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/lognormal_noburst/phil_model_01_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_lognormal_burst/phil_model_01_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/lognormal_burst_final/phil_model_1_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_02_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst/phil_model_02_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_dblplaw_burst/phil_model_02_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst_final/phil_model_2_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_03_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/delayed_burst/phil_model_03_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_delayed_burst/phil_model_03_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_04_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/lognormal_burst/phil_model_04_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_lognormal_burst/phil_model_04_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst_final/phil_model_4_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_05_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_noburst/phil_model_05_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_noburst/phil_model_05_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/delayed_burst_final/phil_model_5_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_06_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_noburst/phil_model_06_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_delayed_burst/phil_model_06_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_07_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst/phil_model_07_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_exponential_burst/phil_model_07_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/delayed_burst_final/phil_model_7_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_08_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/lognormal_burst/phil_model_08_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_dblplaw_burst/phil_model_08_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_09_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst/phil_model_09_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_exponential_burst/phil_model_09_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
-%
-% \newpage
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/priors/phil_model_10_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/exponential_burst/phil_model_10_sfh.pdf}
-%   \includegraphics[width=0.9\textwidth]{../pipes/plots/wide_dblplaw_burst/phil_model_10_sfh.pdf}
-%   \caption{A priori and posterior SFH.}
-%   \label{}
-% \end{figure}
 
 \end{document}
